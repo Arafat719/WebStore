@@ -1,6 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({showAlert}) => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        showAlert("You are login out", 'warning')
+        navigate("/login");
+    };
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow">
@@ -18,9 +26,11 @@ const Navbar = () => {
                                 <Link className="nav-link" to="/About">About</Link>
                             </li>
                         </ul>
-                        <form className="d-flex">
-                                <button className="btn btn-primary mx-1" type="submit">Login</button>
-                                <button className="btn btn-primary mx-1" type="submit">Signup</button>
+                        <form className="d-flex">{token ? (<button type='button' className='btn btn-primary mx-1' onClick={handleLogout}>Logout</button>) : (<>
+                            <Link className="btn btn-primary mx-1" type="submit" to="/login">Login</Link>
+                            <Link className="btn btn-primary mx-1" type="submit" to="signup">Signup</Link>
+                        </>
+                        )}
                         </form>
                     </div>
                 </div>
