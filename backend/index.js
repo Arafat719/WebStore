@@ -3,7 +3,7 @@ import express from "express"
 import connectToMongo from './db.js'
 import dotenv from 'dotenv'
 import path from 'path';  
-
+import cors from 'cors'
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -15,6 +15,8 @@ connectToMongo();
 
 const app = express()
 const port = process.env.port;
+
+app.use(cors())
 
 app.use(express.json());
 

@@ -7,7 +7,7 @@ const Home = () => {
   const {name} = context
   return (
     <div>
-          Hello my name is {name.type}       
+          Hello my name is        
     </div>
   )
 }
