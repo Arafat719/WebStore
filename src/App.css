@@ -1,0 +1,16 @@
+body {
+    /* background-color: #a691e2; */
+    background: linear-gradient(to right, #7e69b6, #0072ff);
+}
+.contact-section {
+  background: #f8f9fa;
+}
+
+.contact-section h2 {
+  font-weight: 700;
+}
+
+.contact-section .btn-primary {
+  background: #007bff;
+  border: none;
+}

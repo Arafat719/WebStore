@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react'
-import noteContext from '../context/noteContext'
+import userContext from '../context/userContext'
 import Token from './Token';
 import { Link } from 'react-router-dom';
 
 const Signup = ({ showAlert }) => {
     const [token, settoken] = useState(null)
-    const context = useContext(noteContext)
+    const context = useContext(userContext)
     const { signUP } = context;
 
     const [user, setuser] = useState([])
