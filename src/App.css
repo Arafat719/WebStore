@@ -1,7 +1,13 @@
 body {
-    /* background-color: #a691e2; */
-    background: linear-gradient(to right, #7e69b6, #0072ff);
+  /* background-color: #a691e2; */
+  background: linear-gradient(to right, #8871c9, #177eaa);
 }
+
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
 .contact-section {
   background: #f8f9fa;
 }
@@ -14,3 +20,8 @@ body {
   background: #007bff;
   border: none;
 }
+
+:root {
+  --wave-bg: url('./assets/wave.svg');
+}
+

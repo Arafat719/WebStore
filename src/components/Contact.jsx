@@ -69,8 +69,8 @@ function Contact() {
                     {/* Contact Info */}
                     <div className="col-md-6">
                         <h5>Get in Touch</h5>
-                        <p>Email: info@webmarket.com</p>
-                        <p>Phone: +880 123 456 789</p>
+                        <p>Email: Arafatkhan01867160064@gmail.com</p>
+                        <p>Phone: +880 1867160064</p>
                         <p>Address: Dhaka, Bangladesh</p>
                     </div>
                 </div>

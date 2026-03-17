@@ -3,21 +3,20 @@ import React from 'react'
 const AddProducts = ({ arr }) => {
     console.log(arr)
     return (
-        <div className="card col my-1 pt-4" style={{
-            backgroundColor: "rgba(0,0,0,0.2)", // black with transparency
-            // backdropFilter: "blur(10px)",       // blur effect
-            // WebkitBackdropFilter: "blur(10px)", // Safari support
-            padding: "20px",
+        <div className="card col-lg-3 col-md-4 col-sm-12 col-12 my-2" style={{
+            backgroundColor: "white", // black with transparency
             borderRadius: "10px",
-            color: "white",
-            // width: "300px",
-            // textAlign: "center",
+            // color: "white",
+            width: "300px",
         }}>
-            <img src={arr.img} className="card-img-top" alt="img" />
-            <div className="card-body">
-                <h5 className="card-title">{arr.caption}</h5>
-                <h3 className="card-text">{arr.price}</h3>
-                <a href="#" className="btn btn-primary">Visit website</a>
+            <div className='p-3'>
+                <img src={arr.img} className="card-img-top" alt="img" />
+                <div className="card-body p-0 pt-2" style={{color: "#8682fa"}}>
+                    <h5 className="card-title">{arr.caption}</h5>
+                    <hr />
+                    <h3 className="card-text p-0">{arr.price}</h3>
+                    <a href="#" className="btn text-white" style={{background: "#3b379c"}}>Visit website</a>
+                </div>
             </div>
         </div>
     )
