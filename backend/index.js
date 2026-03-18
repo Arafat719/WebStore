@@ -1,4 +1,5 @@
 import route from './routes/auth.js'
+import routerProducts from './routes/webproducts.js'
 import express from "express"
 import connectToMongo from './db.js'
 import dotenv from 'dotenv'
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/auth', route )
+app.use('/products', routerProducts )
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`)

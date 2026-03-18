@@ -1,6 +1,7 @@
 body {
   /* background-color: #a691e2; */
   background: linear-gradient(to right, #8871c9, #177eaa);
+  padding-top: 70px; /* navbar height */
 }
 
 body::-webkit-scrollbar {
@@ -24,4 +25,3 @@ body::-webkit-scrollbar {
 :root {
   --wave-bg: url('./assets/wave.svg');
 }
-

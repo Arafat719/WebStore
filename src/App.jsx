@@ -11,7 +11,7 @@ import UserState from './context/userState'
 import ProtectedRoute from "./components/ProtectedRoute";
 import Alert from './components/Alert'
 import Footer from './components/Footer'
-import Contact from './components/Contact'
+import AddProducts from './components/AddProducts'
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -32,14 +32,13 @@ function App() {
       <UserState>
         <Routes>
           <Route path="/" element={
-            <ProtectedRoute>
-              <Home showAlert={showAlert} />
-            </ProtectedRoute>} />
-            <Route>
+            <Home showAlert={showAlert} />
+          } />
+          <Route>
           </Route>
           <Route path="/login" element={<Login showAlert={showAlert} />} />
           <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/addproducts" element={<AddProducts/>} />
         </Routes>
       </UserState>
       <Footer />

@@ -27,8 +27,8 @@ const Footer = () => {
 
                         <div className="col-md-3 mb-4">
                             <h5 className="fw-bold">Contact</h5>
-                            <p>Email: info@webmarket.com</p>
-                            <p>Phone: +880 1234 567890</p>
+                            <p>Email: ArafatKhn01867160064@gmail.com</p>
+                            <p>Phone: +880 1867160064</p>
                             <p>Address: Dhaka, Bangladesh</p>
                         </div>
 

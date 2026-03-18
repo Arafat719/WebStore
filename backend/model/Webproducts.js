@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Step 1: Schema define করা
-const noteSchema = new mongoose.Schema({
+const webproductSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
@@ -10,13 +10,17 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    img: {
+        type: String, 
+        required: true
+    },
     description: {
         type: String,
         required: true
     },
-    tag: {
-        type: String,
-        default: "General"
+    price: {
+        type: Number,
+        required: true
     },
     date: {
         type: Date,
@@ -25,6 +29,6 @@ const noteSchema = new mongoose.Schema({
 });
 
 // Step 2: Model create করা
-const Note = mongoose.model("Note", noteSchema);
+const Products = mongoose.model("Webproduct", webproductSchema);
 
-export default Note;
+export default Products;

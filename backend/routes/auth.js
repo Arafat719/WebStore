@@ -1,9 +1,9 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
+import fetchUser from "../middlewere/fetchuser.js";
 import User from "../model/User.js";
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken';
-import fetchUser from "../middlewere/fetchuser.js";
 
 const route = express.Router()
 

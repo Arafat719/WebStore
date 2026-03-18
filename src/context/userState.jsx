@@ -1,7 +1,27 @@
 import UserContext from "./userContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const UserState = (props) => {
+
+    const [array, setarray] = useState([])
+
+    //Getting all notes from db
+    const getProducts = async () => {
+        const response = await fetch("http://localhost:5000/products/getproducts", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        const data = await response.json()
+        setarray(data)
+        console.log(data)
+    };
+
+    useEffect(() => {
+      getProducts()
+    }, [])
+    
 
     const signUP = async (name, email, password) => {
         const response = await fetch("http://localhost:5000/auth/createuser", {
@@ -16,137 +36,22 @@ const UserState = (props) => {
         return json;
     }
 
-    const [array, setarray] = useState([
-        {
-            "id": "01256325asd412563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256322632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "0125632541365",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "012563asd25412563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01365336532563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "0265632541365",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256325412563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256336532563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01236582632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "012563296832563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "0125258632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256363652563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "012563558832563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "012569865632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256625632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256961632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256859632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "012568982632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01256362632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01896322632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-        {
-            "id": "01656322632563",
-            "img": "https://img.freepik.com/free-photo/olden-norway-may-17-2023_58702-16437.jpg?semt=ais_user_personalization&w=740&q=80",
-            "caption": "A blog Website",
-            "price": "50.00"
-        },
-    ])
+    const addProducts = async (title, img, description, price) => {
+        const response = await fetch("http://localhost:5000/products/addproduct", {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title, img, description, price })
+        })
+        const json = await response.json();
+        console.log(json)
+        return json;
+    }
+
 
     return (
-        <UserContext.Provider value={{ signUP, array, setarray }}>
+        <UserContext.Provider value={{ signUP, array, setarray, addProducts }}>
             {props.children}
         </UserContext.Provider>
     )
