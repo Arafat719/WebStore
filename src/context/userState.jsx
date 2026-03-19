@@ -7,7 +7,7 @@ const UserState = (props) => {
 
     //Getting all notes from db
     const getProducts = async () => {
-        const response = await fetch("http://localhost:5000/products/getproducts", {
+        const response = await fetch("https://webmarketbackend.onrender.com/products/getproducts", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -23,7 +23,7 @@ const UserState = (props) => {
     
 
     const signUP = async (name, email, password) => {
-        const response = await fetch("http://localhost:5000/auth/createuser", {
+        const response = await fetch("https://webmarketbackend.onrender.com/auth/createuser", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -36,7 +36,7 @@ const UserState = (props) => {
     }
 
     const addProducts = async (title, img, description, price) => {
-        const response = await fetch("http://localhost:5000/products/addproduct", {
+        const response = await fetch("https://webmarketbackend.onrender.com/products/addproduct", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
