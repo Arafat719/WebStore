@@ -15,7 +15,6 @@ const UserState = (props) => {
         })
         const data = await response.json()
         setarray(data)
-        console.log(data)
     };
 
     useEffect(() => {

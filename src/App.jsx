@@ -12,6 +12,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Alert from './components/Alert'
 import Footer from './components/Footer'
 import AddProducts from './components/AddProducts'
+import NotFound from './components/NotFound'
+import About from './components/About'
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -38,7 +40,8 @@ function App() {
           </Route>
           <Route path="/login" element={<Login showAlert={showAlert} />} />
           <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-          <Route path="/addproducts" element={<AddProducts/>} />
+          <Route path="/about" element={<About/>} />
+          <Route path="/addproducts" element={<AddProducts />} />
         </Routes>
       </UserState>
       <Footer />

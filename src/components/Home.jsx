@@ -1,24 +1,39 @@
 import React, { useContext, useEffect } from 'react'
-import Navbar from './Navbar'
 import userContext from '../context/userContext'
 import Productcard from './Productcard'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const context = useContext(userContext)
   const { array } = context;
 
+  const navigate = useNavigate()
+
+  const handleNavigate = () => {
+    navigate("/addproducts")
+    console.log("hello sire")
+  }
+
+  // console.log(array)
+  // const MIN_ITEMS = 4;
+
+// const filledProducts = [...array];
+
+// while (filledProducts.length < MIN_ITEMS) {
+//   filledProducts.push(null);
+// }
   return (
     <div className='container'>
 
       <h1 className=' my-4 fw text-white'>Buy and Sell Websites Esily</h1>
       <p className=' fw-bold text-white'>Find The best Website To Buy And Sell, Your Online Business today</p>
       <button className='btn btn-primary me-2 border-0 px-3 fw-bold' style={{ color: "#8682fa", background: "#F3F4F4" }}>Explore Listing</button>
-      <button className='btn btn-primary border-0 px-3 fw-bold' style={{ background: "#3b379c" }}>Sell your Website</button>
-      <h3 className='mt-5 text-white'>All Cetagories</h3>
-      <p className='text-white'>Discover Website by Cetagories</p>
-      <div className='row g-0 justify-content-between'>
-        {array.map((arr) => {
-          return <Productcard key={arr._id} arr={arr} />
+      <button className='btn btn-primary border-0 px-3 fw-bold' onClick={() => {handleNavigate()}} style={{ background: "#3b379c" }}>Sell your Website</button>
+      <h3 className='mt-5 text-white'>Featured website for sale.</h3>
+      <p className='text-white'>Hot website available now.</p>
+      <div className='row g-0 justify-content-around'>
+        {array.map((arr, index) => {
+          return <Productcard key={arr?._id || index} arr={arr}/>
         })}
       </div>
     </div>
