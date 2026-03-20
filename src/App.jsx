@@ -14,6 +14,7 @@ import Footer from './components/Footer'
 import AddProducts from './components/AddProducts'
 import NotFound from './components/NotFound'
 import About from './components/About'
+import Loader from './components/Loader'
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -42,6 +43,7 @@ function App() {
           <Route path="/signup" element={<Signup showAlert={showAlert} />} />
           <Route path="/about" element={<About/>} />
           <Route path="/addproducts" element={<AddProducts />} />
+          <Route path="/loader" element={<Loader/>} />
         </Routes>
       </UserState>
       <Footer />

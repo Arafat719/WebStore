@@ -64,9 +64,9 @@ const Navbar = ({ showAlert }) => {
                                 <Link className="nav-link mx-2" style={{ color: "#8682fa" }} to="/addproducts">Add Website</Link>
                             </li>
                         </ul>
-                        <form className="d-flex">{token ? (<button type='button' className='btn btn-primary mx-1' onClick={handleLogout}>Logout</button>) : (<>
-                            <Link className="btn btn-primary mx-1" type="submit" to="/login">Login</Link>
-                            <Link className="btn btn-primary mx-1" type="submit" to="/signup">Signup</Link>
+                        <form className="d-flex">{token ? (<button type='button' className='btn mx-1' style={{backgroundColor: "#8682fa"}} onClick={handleLogout}>Logout</button>) : (<>
+                            <Link className="btn mx-1" type="submit" to="/login" style={{backgroundColor: "#8682fa"}}>Login</Link>
+                            <Link className="btn  mx-1" type="submit" to="/signup" style={{backgroundColor: "#8682fa"}}>Signup</Link>
                         </>
                         )}
                         </form>

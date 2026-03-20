@@ -37,3 +37,7 @@ body::-webkit-scrollbar {
 .btn:active {
   transform: scale(0.96);
 }
+
+.btntwo:hover {
+  text-decoration: underline
+}

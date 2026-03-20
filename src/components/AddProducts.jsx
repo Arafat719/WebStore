@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import userContext from '../context/userContext'
 
 function AddProducts() {
-    const naviate = useNavigate()
+    const navigate = useNavigate()
 
     const context = useContext(userContext);
     const {addProducts} = context
@@ -12,10 +12,8 @@ function AddProducts() {
 
     const handleClick = (e) => {
         e.preventDefault()
-        // console.log(products)
-        addProducts(products.title, products.img, products.description, products.price)
-        setproducts(products.title, products.img, products.description, products.price)
-        naviate('/')
+        addProducts(products.img, products.title, products.description, products.price)
+        navigate('/')
     }    
 
     const onchange = (e) => {
@@ -27,12 +25,12 @@ function AddProducts() {
                 <form className='card p-5 col-md-5 mx-auto shadow border-0'>
                     <h2 className='my-3'>Add website for sell</h2>
                     <div className="mb-3">
-                        <label htmlFor="title" className="form-label">Title</label>
-                        <input type="text" className="form-control" id="title" name="title" onChange={onchange} />
+                        <label htmlFor="img" className="form-label">Product's Photo</label>
+                        <input type="text" className="form-control" id="img" name="img" onChange={onchange} placeholder='Image URL link' />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="img" className="form-label">Product's Photo</label>
-                        <input type="text" className="form-control" id="img" name="img" onChange={onchange} />
+                        <label htmlFor="title" className="form-label">Title</label>
+                        <input type="text" className="form-control" id="title" name="title" onChange={onchange} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="description" className="form-label">Description</label>
@@ -42,7 +40,7 @@ function AddProducts() {
                         <label htmlFor="price" className="form-label">Price</label>
                         <input type="text" className="form-control" id="price" name="price" onChange={onchange} />
                     </div>
-                    <button type="submit" className="btn btn-primary" onClick={handleClick}>Add Products</button>
+                    <button type="submit" className="btn" style={{backgroundColor: "#8682fa"}} onClick={handleClick}>Add Products</button>
                 </form>
             </div>
         </>

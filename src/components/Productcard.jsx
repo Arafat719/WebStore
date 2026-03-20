@@ -17,7 +17,8 @@ const Productcard = ({ arr }) => {
                             <p className="card-title text-dark">{arr.description}</p>
                             <hr />
                             <h3 className="card-text px-2 text-end">${arr.price}</h3>
-                            <a href="#" className="btn text-white" style={{ background: "#3b379c" }}>Visit website</a>
+                            <a href="#" className="btntwo btn ms-2" style={{ color: "#3b379c" }}>Visit website</a>
+                            <a href="#" className="btn text-white ms-5" style={{ background: "#3b379c" }}>Buy Free</a>
                         </div>
                     </>
                 ) : (
