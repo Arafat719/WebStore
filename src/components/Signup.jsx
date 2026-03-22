@@ -35,10 +35,10 @@ const Signup = ({ showAlert }) => {
                     <label htmlFor="password" className="form-label">Password</label>
                     <input type="password" className="form-control" id="password" name='password' onChange={onchange} />
                 </div>
-                <button type="button" className="btn btn-primary" onClick={() => { handleClick() }}>Submit</button>
+                <button type="button" className="btn btn-primary rounded-pill" onClick={() => { handleClick() }} style={{ backgroundColor: "#8682fa" }}>Sign up</button>
                 <div className='my-3'>
                     Already have an Account
-                    <Link to='/login' className='btn-link mx-3'>Login</Link>
+                    <Link to='/login' className='btn-link mx-3'  style={{ color: "#8682fa" }}>Login</Link>
                 </div>
             </form>
             {token ? <Token token={token} /> : ''}

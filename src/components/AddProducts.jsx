@@ -6,7 +6,7 @@ function AddProducts() {
     const navigate = useNavigate()
 
     const context = useContext(userContext);
-    const {addProducts} = context
+    const { addProducts } = context
 
     const [products, setproducts] = useState([])
 
@@ -14,10 +14,10 @@ function AddProducts() {
         e.preventDefault()
         addProducts(products.img, products.title, products.description, products.price)
         navigate('/')
-    }    
+    }
 
     const onchange = (e) => {
-        setproducts({...products, [e.target.name]: e.target.value})
+        setproducts({ ...products, [e.target.name]: e.target.value })
     }
     return (
         <>
@@ -40,7 +40,7 @@ function AddProducts() {
                         <label htmlFor="price" className="form-label">Price</label>
                         <input type="text" className="form-control" id="price" name="price" onChange={onchange} />
                     </div>
-                    <button type="submit" className="btn" style={{backgroundColor: "#8682fa"}} onClick={handleClick}>Add Products</button>
+                    <button type="submit" className="btn rounded-pill" style={{ backgroundColor: "#8682fa" }} onClick={handleClick}>Add Products</button>
                 </form>
             </div>
         </>
