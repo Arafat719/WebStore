@@ -41,3 +41,7 @@ body::-webkit-scrollbar {
 .btntwo:hover {
   text-decoration: underline
 }
+
+.offcanvas {
+  width: 250px;
+}

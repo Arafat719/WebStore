@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import userContext from '../context/userContext'
 
-function AddProducts() {
+function AddProducts({showAlert}) {
     const navigate = useNavigate()
 
     const context = useContext(userContext);
@@ -19,6 +19,13 @@ function AddProducts() {
     const onchange = (e) => {
         setproducts({ ...products, [e.target.name]: e.target.value })
     }
+    useEffect(() => {
+    const token = localStorage.getItem("token"); // Token check
+    if (!token) {
+      navigate("/login"); 
+      showAlert("To Add website You must be Logged in with us", "danger")
+    }
+  }, []);
     return (
         <>
             <div className='container-md my-5 py-1'>

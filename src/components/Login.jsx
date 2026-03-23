@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useContext, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import userContext from '../context/userContext'
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,23 +8,31 @@ import LoginSocialButtons from './LoginSocialButtons.jsx';
 const Login = () => {
   const [user, setuser] = useState([])
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const context = useContext(userContext)
   const { login, error } = context
 
   const handleClick = (e) => {
-    const result = login(user.email, user.password)
+   login(user.email, user.password)
   }
 
   const onchange = (e) => {
     setuser({ ...user, [e.target.name]: e.target.value })
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Token check
+    if (token) {
+      navigate("/"); // Auto navigate jodi token thake
+    }
+  }, []);
   return (
-    <div className='container-md my-5'>
+    <div className='container container-lg my-5'>
       <form className='card p-5 col-md-5 mx-auto shadow border-0'>
         <h2 className='my-3'>Login WebMarketX</h2>
-        <div>
-          <LoginSocialButtons/>
+        <div className='my-2'>
+          <LoginSocialButtons />
         </div>
         <div>
           <label htmlFor="email" className="form-label">Email address</label>

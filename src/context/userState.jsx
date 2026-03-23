@@ -1,7 +1,9 @@
 import UserContext from "./userContext";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UserState = (props) => {
+    const navigate = useNavigate()
     const [array, setarray] = useState([])
     const [loading, setLoading] = useState(false);
     const [error, seterror] = useState([])
@@ -31,9 +33,22 @@ const UserState = (props) => {
             },
             body: JSON.stringify({ name, email, password })
         })
-        const json = await response.json()
-        localStorage.setItem("token", json)
-        return json;
+        const data = await response.json()
+        if (data.problem === "email") {
+            seterror({ "email": "Invelid Email Address" })
+            setTimeout(() => {
+                seterror([])
+            }, 2000);
+        } else if (data.problem === "password") {
+            seterror({ "password": "Password must be atleast 8 characters" })
+            setTimeout(() => {
+                seterror([])
+            }, 2000);
+        } else {
+            localStorage.setItem("token", data.token)
+            navigate('/')
+            return data;
+        }
     }
 
     const login = async (email, password) => {
@@ -45,20 +60,21 @@ const UserState = (props) => {
             body: JSON.stringify({ email, password })
         })
         const data = await response.json()
-        if(data.problem === "email") {
-            seterror({"email": "Invelid Email Address"})
+        if (data.problem === "email") {
+            seterror({ "email": "Invelid Email Address" })
             setTimeout(() => {
                 seterror([])
             }, 2000);
-        } else if(data.problem === "password") {
-            seterror({"password": "Invelid password"})
+        } else if (data.problem === "password") {
+            seterror({ "password": "Invelid password" })
             setTimeout(() => {
                 seterror([])
             }, 2000);
+        } else {
+            localStorage.setItem("token", data.token)
+            navigate("/")
+            return data;
         }
-        localStorage.setItem("token", data)
-        console.log(data)
-        return data;
     }
 
     const addProducts = async (img, title, description, price) => {
@@ -75,7 +91,7 @@ const UserState = (props) => {
 
 
     return (
-        <UserContext.Provider value={{ signUP, array, setarray, addProducts, loading, login, error }}>
+        <UserContext.Provider value={{ signUP, array, setarray, addProducts, loading, login, error, seterror }}>
             {props.children}
         </UserContext.Provider>
     )

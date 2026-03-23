@@ -2,13 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import '../Navbar.css';
 
-const Navbar = ({ showAlert }) => {
+const Navbar = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        showAlert("You are login out", 'warning')
         navigate("/login");
     };
 
@@ -40,39 +39,191 @@ const Navbar = ({ showAlert }) => {
     }, []);
     return (
         <div>
-            <nav className={`navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top ${show ? 'navbar-show' : 'navbar-hide'}`} >
-                <div className="container-fluid">
-                    <Link className="navbar-brand" to="/"><img
-                        src="/logo.png"
-                        alt="Logo"
-                        width="55"
-                        height="35"
-                        className="d-inline-block align-top me-2"
-                    /></Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse custom-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav ms-auto">
-                            <li className="nav-item">
-                                <Link className="nav-link mx-2 active" style={{ color: "#8682fa" }} aria-current="page" to="/">Home</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link mx-2 active" style={{ color: "#8682fa" }} aria-current="page" to="/about">About</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link mx-2" style={{ color: "#8682fa" }} to="/addproducts">Add Website</Link>
-                            </li>
-                        </ul>
-                        <form className="d-flex">{token ? (<button type='button' className='btn mx-1' style={{backgroundColor: "#8682fa"}} onClick={handleLogout}>Logout</button>) : (<>
-                            <Link className="btn mx-1" type="submit" to="/login" style={{backgroundColor: "#8682fa"}}>Login</Link>
-                            <Link className="btn  mx-1" type="submit" to="/signup" style={{backgroundColor: "#8682fa"}}>Signup</Link>
-                        </>
-                        )}
-                        </form>
-                    </div>
-                </div>
-            </nav>
+            <nav
+      className={`navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top ${
+        show ? "navbar-show" : "navbar-hide"
+      }`}
+    >
+      <div className="container-fluid">
+        {/* Logo */}
+        <Link className="navbar-brand" to="/">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            width="55"
+            height="35"
+            className="d-inline-block align-top me-2"
+          />
+        </Link>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sidebar"
+          aria-controls="sidebar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        {/* Desktop Navbar Items */}
+        <div className="collapse navbar-collapse d-none d-lg-flex">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link
+                className="nav-link mx-2 active"
+                style={{ color: "#8682fa" }}
+                aria-current="page"
+                to="/"
+              >
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link mx-2 active"
+                style={{ color: "#8682fa" }}
+                aria-current="page"
+                to="/about"
+              >
+                About
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link mx-2"
+                style={{ color: "#8682fa" }}
+                to="/addproducts"
+              >
+                Add Website
+              </Link>
+            </li>
+          </ul>
+
+          {/* Desktop Auth Buttons */}
+          <form className="d-flex ms-3">
+            {token ? (
+              <button
+                type="button"
+                className="btn mx-1"
+                style={{ backgroundColor: "#8682fa" }}
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link
+                  className="btn mx-1"
+                  to="/login"
+                  style={{ backgroundColor: "#8682fa" }}
+                >
+                  Login
+                </Link>
+                <Link
+                  className="btn mx-1"
+                  to="/signup"
+                  style={{ backgroundColor: "#8682fa" }}
+                >
+                  Signup
+                </Link>
+              </>
+            )}
+          </form>
+        </div>
+
+        {/* Mobile Sidebar */}
+        <div
+          className="offcanvas offcanvas-end d-lg-none"
+          tabIndex="-1"
+          id="sidebar"
+        >
+          <div className="offcanvas-header">
+            <h5>Menu</h5>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="offcanvas"
+            ></button>
+          </div>
+          <div className="offcanvas-body">
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <Link
+                  className="nav-link mx-2 active"
+                  style={{ color: "#8682fa" }}
+                  aria-current="page"
+                  to="/"
+                  data-bs-dismiss="offcanvas"
+                >
+                  Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link mx-2 active"
+                  style={{ color: "#8682fa" }}
+                  aria-current="page"
+                  to="/about"
+                  data-bs-dismiss="offcanvas"
+                >
+                  About
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link mx-2"
+                  style={{ color: "#8682fa" }}
+                  to="/addproducts"
+                  data-bs-dismiss="offcanvas"
+                >
+                  Add Website
+                </Link>
+              </li>
+            </ul>
+
+            {/* Mobile Auth Buttons */}
+            <form className="d-flex mt-3">
+              {token ? (
+                <button
+                  type="button"
+                  className="btn mx-1"
+                  style={{ backgroundColor: "#8682fa" }}
+                  onClick={() => {
+                    handleLogout();
+                    document.getElementById("sidebar").classList.remove("show");
+                  }}
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    className="btn mx-1"
+                    to="/login"
+                    style={{ backgroundColor: "#8682fa" }}
+                    data-bs-dismiss="offcanvas"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    className="btn mx-1"
+                    to="/signup"
+                    style={{ backgroundColor: "#8682fa" }}
+                    data-bs-dismiss="offcanvas"
+                  >
+                    Signup
+                  </Link>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
+      </div>
+    </nav>
         </div>
     )
 }

@@ -28,22 +28,23 @@ function App() {
       setAlert(null);
     }, 1500);
   }
+  console.log("hello iwrd", import.meta.env.VITE_GOOGLE_CLIENT_ID)
   return (
     <>
-      <Navbar showAlert={showAlert} />
+      <Navbar />
       <Alert alert={alert} />
       <UserState>
         <Routes>
           <Route path="/" element={
-            <Home showAlert={showAlert} />
+            <Home />
           } />
           <Route>
           </Route>
-          <Route path="/login" element={<Login showAlert={showAlert} />} />
-          <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-          <Route path="/about" element={<About/>} />
-          <Route path="/addproducts" element={<AddProducts />} />
-          <Route path="/loader" element={<Loader/>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup/>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
+          <Route path="/loader" element={<Loader />} />
         </Routes>
       </UserState>
       <Footer />
