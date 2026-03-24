@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import userContext from '../context/userContext'
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoginSocialButtons from './LoginSocialButtons.jsx';
 
@@ -14,7 +14,7 @@ const Login = () => {
   const { login, error } = context
 
   const handleClick = (e) => {
-   login(user.email, user.password)
+    login(user.email, user.password)
   }
 
   const onchange = (e) => {
@@ -34,12 +34,13 @@ const Login = () => {
         <div className='my-2'>
           <LoginSocialButtons />
         </div>
-        <div>
+        <div className="mb-3">
           <label htmlFor="email" className="form-label">Email address</label>
           <input type="email" className="form-control" id="email" name='email' aria-describedby="emailHelp" onChange={onchange} />
           <p style={{ color: "#D22B2B", fontSize: "80%", fontWeight: "400" }}>{error.email}</p>
         </div>
-        <div className="mb-3">
+
+        <div className="mb-3 position-relative">
           <label htmlFor="password" className="form-label">Password</label>
           <div className='d-flex justify-content-between border rounded'>
             <input type={showPassword ? "text" : "password"} className="form-control border-0" id="password" name='password' onChange={onchange} />
