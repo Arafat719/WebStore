@@ -15,6 +15,7 @@ import AddProducts from './components/AddProducts'
 import NotFound from './components/NotFound'
 import About from './components/About'
 import Loader from './components/Loader'
+import ProductDetails from './components/ProductsDetails'
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -45,6 +46,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
           <Route path="/loader" element={<Loader />} />
+          <Route path="/products" element={<ProductDetails/>}/>
         </Routes>
       </UserState>
       <Footer />
