@@ -77,17 +77,47 @@ const UserState = (props) => {
         }
     }
 
-    const addProducts = async (img, title, description, price) => {
+    const addProducts = async (
+        images,
+        title,
+        description,
+        price,
+        previewLink,
+        tags,
+        builtWith,
+        features,
+        support,
+        documentation
+    ) => {
+
         const response = await fetch("http://localhost:5000/products/addproduct", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ img, title, description, price })
-        })
+            body: JSON.stringify({
+                images,
+                title,
+                description,
+                price,
+                previewLink,
+                tags,
+                builtWith,
+                features,
+                support,
+                documentation
+            })
+        });
+
         const json = await response.json();
-        setarray(prev => [...prev, json])
-    }
+
+        // 🔥 safely add to state
+        if (response.ok) {
+            setarray(prev => [...prev, json]);
+        } else {
+            console.error("Error:", json);
+        }
+    };
 
 
     return (

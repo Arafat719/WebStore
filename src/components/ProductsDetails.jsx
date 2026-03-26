@@ -9,7 +9,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/products/getbyid/69c3d9d169da93263b2bd057`)
+    fetch(`http://localhost:5000/products/getbyid/${id}`)
       .then((res) => res.json())
       .then((data) => setProduct(data))
       .catch((err) => console.log(err));
@@ -37,7 +37,7 @@ const ProductDetails = () => {
 
             {/* Image */}
             <img
-              src={product.img}
+              src={product.images[0]}
               alt="product"
               className="img-fluid rounded mb-3"
             />
@@ -71,7 +71,7 @@ const ProductDetails = () => {
 
             {/* Gallery */}
             <div className="row mt-4">
-              {[product.img, product.img].map((img, i) => (
+              {product.images.map((img, i) => (
                 <div className="col-md-6" key={i}>
                   <img src={img} className="img-fluid rounded" />
                 </div>

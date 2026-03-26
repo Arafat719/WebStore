@@ -55,3 +55,17 @@ body::-webkit-scrollbar {
   background-color: #8682fa;
   border-color: #8682fa;
 }
+
+.title-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.desc-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 2 line */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

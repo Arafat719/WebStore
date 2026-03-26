@@ -29,7 +29,6 @@ function App() {
       setAlert(null);
     }, 1500);
   }
-  console.log("hello iwrd", import.meta.env.VITE_GOOGLE_CLIENT_ID)
   return (
     <>
       <Navbar />
@@ -46,7 +45,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
           <Route path="/loader" element={<Loader />} />
-          <Route path="/products" element={<ProductDetails/>}/>
+          <Route path="/products/:id" element={<ProductDetails/>}/>
         </Routes>
       </UserState>
       <Footer />
