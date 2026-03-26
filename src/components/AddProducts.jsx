@@ -20,7 +20,7 @@ function AddProducts({ showAlert }) {
         tags: "",
         builtWith: "",
         features: "",
-        documentation: false,
+        documentation: '',
         support: "",
 
         // 🔥 এইটা add কর
@@ -59,7 +59,8 @@ function AddProducts({ showAlert }) {
             finalData.tags,
             finalData.builtWith,
             finalData.features,
-            finalData.support
+            finalData.support,
+            finalData.documentation
         );
         console.log(products)
         navigate('/');
@@ -76,7 +77,7 @@ function AddProducts({ showAlert }) {
         }
     }, []);
     return (
-        
+
         <div className="container-md my-5 py-1">
             <form className="card p-5 col-md-6 mx-auto shadow border-0">
                 <h2 className="my-3">Add website for sell</h2>
@@ -357,10 +358,19 @@ function AddProducts({ showAlert }) {
 
                     <div className="col-md-6 mb-3 d-flex align-items-center mt-md-4">
                         <div className="form-check">
-                            <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+                            <input type="checkbox" className="form-check-input" id="exampleCheck1" checked={products.documentation}
+                                onChange={(e) => {
+                                    const isChecked = e.target.checked;
+
+                                    setproducts((prev) => ({
+                                        ...prev,
+                                        documentation: isChecked,
+                                    }));
+                                }} />
                             <label className="form-check-label" htmlFor="exampleCheck1">
                                 Documentation Included
                             </label>
+
                         </div>
                     </div>
                 </div>

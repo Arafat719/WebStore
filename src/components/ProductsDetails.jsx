@@ -116,15 +116,19 @@ const ProductDetails = () => {
 
             {/* Info */}
             <p>
+              <strong>Uploaded At:</strong>{" "}
+              {new Date(product.createdAt).toDateString()}
+            </p>
+            <p>
               <strong>Last Updated:</strong>{" "}
-              {new Date(product.lastUpdated).toDateString()}
+              {new Date(product.updatedAt).toDateString()}
             </p>
 
             <hr />
 
             <p>
               <strong>Documentation:</strong>{" "}
-              {product.documentation ? "Included" : "Not Included"}
+              {product.documentation ? "Documantation Included" : "No Documantation"}
             </p>
 
             <hr />
@@ -154,9 +158,9 @@ const ProductDetails = () => {
                 <hr/>
             {/* Rating */}
             <div className="mt-3">
-              <h6>Comments (50)</h6>
+              <h6>Comments (0)</h6>
               <h4>
-                {product.rating}{" "}
+                {product.comments}{" "}
                 <i className="fas fa-star text-warning"></i>
               </h4>
             </div>

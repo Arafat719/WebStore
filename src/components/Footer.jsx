@@ -8,7 +8,7 @@ import FiverrI from '../assets/Fiverr.png'
 const Footer = () => {
     return (
         <div>
-            <footer className="shadow text-white pt-5 pb-3" style={{background: "#2b1d1dc7"}}>
+            <footer className="shadow text-light pt-5 pb-3 bg-dark">
                 <div className="container">
                     <div className="row">
 
