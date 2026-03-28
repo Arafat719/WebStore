@@ -22,7 +22,7 @@ function AddProducts({ showAlert }) {
         tags: "",
         builtWith: "",
         features: "",
-        documentation: '',
+        documentation: false,
         support: "",
 
         // 🔥 এইটা add কর

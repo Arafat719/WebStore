@@ -15,7 +15,7 @@ import NotFound from './components/NotFound'
 import About from './components/About'
 import Loader from './components/Loader'
 import ProductDetails from './components/ProductsDetails'
-import Github from './components/Github';
+// import Github from './components/Github';
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -46,7 +46,7 @@ function App() {
           <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
           <Route path="/loader" element={<Loader />} />
           <Route path="/products/:id" element={<ProductDetails/>}/>
-          <Route path="/github" element={<Github/>}/>
+          {/* <Route path="/github" element={<Github/>}/> */}
         </Routes>
       </UserState>
       <Footer />

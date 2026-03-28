@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 const UserState = (props) => {
     const navigate = useNavigate()
-    const [array, setarray] = useState([])
+    const [array, setArray] = useState([])
     const [loading, setLoading] = useState(false);
-    const [error, seterror] = useState([])
+    const [error, setError] = useState([])
+    const [projectName, setProjectName] = useState("");
+    const [repoUrl, setRepoUrl] = useState("");
 
     //Getting all notes from db
     const getProducts = async () => {
@@ -17,8 +19,8 @@ const UserState = (props) => {
             }
         })
         const data = await response.json()
-        setarray(data)
-        setLoading(true)
+        setArray(data)
+        setLoading(false)
     };
 
     useEffect(() => {
@@ -35,14 +37,14 @@ const UserState = (props) => {
         })
         const data = await response.json()
         if (data.problem === "email") {
-            seterror({ "email": "Invelid Email Address" })
+            setError({ "email": "Invalid Email Address" })
             setTimeout(() => {
-                seterror([])
+                setError([])
             }, 2000);
         } else if (data.problem === "password") {
-            seterror({ "password": "Password must be atleast 8 characters" })
+            setError({ "password": "Password must be atleast 8 characters" })
             setTimeout(() => {
-                seterror([])
+                setError([])
             }, 2000);
         } else {
             localStorage.setItem("token", data.token)
@@ -61,14 +63,14 @@ const UserState = (props) => {
         })
         const data = await response.json()
         if (data.problem === "email") {
-            seterror({ "email": "Invelid Email Address" })
+            setError({ "email": "Invalid Email Address" })
             setTimeout(() => {
-                seterror([])
+                setError([])
             }, 2000);
         } else if (data.problem === "password") {
-            seterror({ "password": "Invelid password" })
+            setError({ "password": "Invalid password" })
             setTimeout(() => {
-                seterror([])
+                setError([])
             }, 2000);
         } else {
             localStorage.setItem("token", data.token)
@@ -88,63 +90,29 @@ const UserState = (props) => {
         features,
         support,
         documentation,
-        // projectName,
-        // repoUrl
+        projectName,
+        repoUrl
 
     ) => {
-
-        const response = await fetch("http://localhost:5000/products/addproduct", {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                images,
-                title,
-                description,
-                price,
-                previewLink,
-                tags,
-                builtWith,
-                features,
-                support,
-                documentation
-            })
-        });
-
-
-        // if (!projectName || !repoUrl) {
-        //     alert("All fields are required!");
-        //     return;
-        // }
-
-        // if (!repoUrl.includes("github.com")) {
-        //     alert("Please enter a valid GitHub repo link");
-        //     return;
-        // }
-
         try {
             setLoading(true);
 
-            // const res = await fetch("http://localhost:5000/import-repo", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({ projectName, repoUrl })
-            // });
+            if (!projectName || !repoUrl) {
+                alert("All fields are required!");
+                return;
+            }
 
-            // const data = await res.json();
+            if (!repoUrl.includes("github.com")) {
+                alert("Please enter a valid GitHub repo link");
+                return;
+            }
 
-            // if (res.ok) {
-            //     alert("✅ Project uploaded successfully!");
-            //     setProjectName("");
-            //     setRepoUrl("");
-            // } else {
-            //     alert(data.error || "❌ Something went wrong");
-            // }
-
-                console.log(
+            const response = await fetch("http://localhost:5000/products/addproduct", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
                     images,
                     title,
                     description,
@@ -154,25 +122,55 @@ const UserState = (props) => {
                     builtWith,
                     features,
                     support,
-                    documentation,)
+                    documentation
+                })
+            });
+
+            const res = await fetch("http://localhost:5000/git/import-repo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ projectName, repoUrl })
+            });
+
+            const data = await res.json();
+            const json = await response.json();
+            setLoading(false);
+
+            if (res.ok && response.ok) {
+                alert("✅ Project uploaded successfully!");
+                setArray(prev => [...prev, json]);
+                setProjectName("");
+                setRepoUrl("");
+            } else {
+                alert(data.error || "❌ Something went wrong");
+            }
+
+            console.log(
+                images,
+                title,
+                description,
+                price,
+                previewLink,
+                tags,
+                builtWith,
+                features,
+                support,
+                documentation,
+                projectName,
+                repoUrl
+            );
         } catch (error) {
             console.error(error);
             alert("Server error");
-        }
-
-        const json = await response.json();
-
-        // 🔥 safely add to state
-        if (response.ok) {
-            setarray(prev => [...prev, json]);
-        } else {
-            console.error("Error:", json);
+            setLoading(false);
         }
     };
 
 
     return (
-        <UserContext.Provider value={{ signUP, array, setarray, addProducts, loading, login, error, seterror }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, error, setError }}>
             {props.children}
         </UserContext.Provider>
     )
