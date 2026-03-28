@@ -25,8 +25,8 @@ const Productcard = ({ arr }) => {
                     <hr />
                     <h3 className="card-text px-2 text-end">{arr.price === "Free" ? "Free" : `$${arr.price}`}</h3>
                     <div className='d-flex justify-content-between'>
-                        <Link to={`/products/${arr._id}`} className="btntwo" style={{ color: "#3b379c" }}>Explore More</Link>
-                        <Link to="/" className="btn text-white" style={{ background: "#3b379c" }}>Buy Free</Link>
+                        <Link to={`/products/${arr._id}`} className="btn" style={{background: "#8682fa"}} >Explore More</Link>
+                        {/* <Link to="/" className="btn text-white" style={{ background: "#3b379c" }}>Buy Free</Link> */}
                     </div>
                 </div>
             </div>

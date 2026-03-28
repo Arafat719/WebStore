@@ -87,7 +87,10 @@ const UserState = (props) => {
         builtWith,
         features,
         support,
-        documentation
+        documentation,
+        // projectName,
+        // repoUrl
+
     ) => {
 
         const response = await fetch("http://localhost:5000/products/addproduct", {
@@ -108,6 +111,54 @@ const UserState = (props) => {
                 documentation
             })
         });
+
+
+        // if (!projectName || !repoUrl) {
+        //     alert("All fields are required!");
+        //     return;
+        // }
+
+        // if (!repoUrl.includes("github.com")) {
+        //     alert("Please enter a valid GitHub repo link");
+        //     return;
+        // }
+
+        try {
+            setLoading(true);
+
+            // const res = await fetch("http://localhost:5000/import-repo", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: JSON.stringify({ projectName, repoUrl })
+            // });
+
+            // const data = await res.json();
+
+            // if (res.ok) {
+            //     alert("✅ Project uploaded successfully!");
+            //     setProjectName("");
+            //     setRepoUrl("");
+            // } else {
+            //     alert(data.error || "❌ Something went wrong");
+            // }
+
+                console.log(
+                    images,
+                    title,
+                    description,
+                    price,
+                    previewLink,
+                    tags,
+                    builtWith,
+                    features,
+                    support,
+                    documentation,)
+        } catch (error) {
+            console.error(error);
+            alert("Server error");
+        }
 
         const json = await response.json();
 

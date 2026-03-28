@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Navbar from './components/Navbar'
@@ -16,6 +15,7 @@ import NotFound from './components/NotFound'
 import About from './components/About'
 import Loader from './components/Loader'
 import ProductDetails from './components/ProductsDetails'
+import Github from './components/Github';
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -46,6 +46,7 @@ function App() {
           <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
           <Route path="/loader" element={<Loader />} />
           <Route path="/products/:id" element={<ProductDetails/>}/>
+          <Route path="/github" element={<Github/>}/>
         </Routes>
       </UserState>
       <Footer />
