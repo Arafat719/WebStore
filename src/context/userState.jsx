@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 const UserState = (props) => {
     const navigate = useNavigate()
     const [array, setArray] = useState([])
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState([])
     const [projectName, setProjectName] = useState("");
     const [repoUrl, setRepoUrl] = useState("");
+
 
     //Getting all notes from db
     const getProducts = async () => {
@@ -94,6 +95,7 @@ const UserState = (props) => {
         repoUrl
 
     ) => {
+        const token = localStorage.getItem('token')
         try {
             setLoading(true);
 
@@ -111,6 +113,7 @@ const UserState = (props) => {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
+                    "auth-token": token
                 },
                 body: JSON.stringify({
                     images,
@@ -129,7 +132,8 @@ const UserState = (props) => {
             const res = await fetch("http://localhost:5000/git/import-repo", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "auth-token": token
                 },
                 body: JSON.stringify({ projectName, repoUrl })
             });

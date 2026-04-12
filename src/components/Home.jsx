@@ -25,7 +25,7 @@ const Home = ({ showAlert }) => {
       <h3 className='mt-5 text-white'>Featured website for sale.</h3>
       <p className='text-white'>Hot website available now.</p>
       <div className='row justify-content-around'>
-        <div>{loading || <Loader />}</div>
+        {/* <div>{loading || <Loader />}</div> */}
         {array.map((arr, index) => {
           return <Productcard key={arr?._id || index} arr={arr} />
         })}
