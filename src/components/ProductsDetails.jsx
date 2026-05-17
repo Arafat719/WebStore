@@ -14,6 +14,21 @@ const ProductDetails = () => {
       .then((data) => setProduct(data))
       .catch((err) => console.log(err));
   }, [id]);
+  const handleDownload = async () => {
+  const res = await fetch(`/api/download/${repoName}`, {
+    headers: {
+      "auth-token": localStorage.getItem("token")
+    }
+  });
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${repoName}.zip`;
+  a.click();
+};
 
   if (!product) return <div className="text-center mt-5">Loading...</div>;
   const rating = 2;
@@ -86,7 +101,7 @@ const ProductDetails = () => {
           <div className="card shadow-sm p-3 py-4">
 
             {/* Buy Button */}
-            <button className="btn w-100 mb-3" style={{ backgroundColor: "#8682fa" }}>
+            <button className="btn w-100 mb-3" style={{ backgroundColor: "#8682fa" }} onClick={() => handleDownload }>
               Buy Now
             </button>
 
