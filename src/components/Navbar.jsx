@@ -1,9 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import '../Navbar.css';
 import Logo from "../assets/logo.png"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import userContext from '../context/userContext'
+
 
 const Navbar = () => {
+  const context = useContext(userContext);
+  const {userId, firstLetter } = context
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -38,6 +45,7 @@ const Navbar = () => {
       window.removeEventListener("scroll", controlNavbar);
     };
   }, []);
+
   return (
     <div>
       <nav
@@ -98,6 +106,7 @@ const Navbar = () => {
                   style={{ color: "#3b379c" }}
                   to="/addproducts"
                 >
+                  <FontAwesomeIcon icon={faPlus} className='mx-1' />
                   Add Website
                 </Link>
               </li>
@@ -106,14 +115,21 @@ const Navbar = () => {
             {/* Desktop Auth Buttons */}
             <form className="d-flex ms-3">
               {token ? (
-                <button
-                  type="button"
-                  className="btn mx-1"
-                  style={{ backgroundColor: "#8682fa" }}
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
+                <div className="dropdown">
+                  <button type="button"
+                    className="btn rounded-circle fw-bold"
+                    style={{ backgroundColor: "#8682fa" }}
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    {firstLetter[0]}
+                  </button>
+                  <div className="dropdown-menu dropdown-menu-end shadow border-0">
+                    <Link className="dropdown-item" to={`/profile/${userId}`} >View Profile</Link>
+                    <Link className="dropdown-item" >Something else here</Link>
+                    <Link className="dropdown-item" onClick={handleLogout} >Logout</Link>
+                  </div>
+                </div>
+
               ) : (
                 <>
                   <Link

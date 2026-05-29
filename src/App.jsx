@@ -15,6 +15,7 @@ import NotFound from './components/NotFound'
 import About from './components/About'
 import Loader from './components/Loader'
 import ProductDetails from './components/ProductsDetails'
+import ProfilePage from './components/ProfilePage';
 // import Github from './components/Github';
 
 function App() {
@@ -29,11 +30,12 @@ function App() {
       setAlert(null);
     }, 1500);
   }
+  
   return (
     <>
-      <Navbar />
       <Alert alert={alert} />
       <UserState>
+      <Navbar />
         <Routes>
           <Route path="/" element={
             <Home />
@@ -44,8 +46,9 @@ function App() {
           <Route path="/signup" element={<Signup/>} />
           <Route path="/about" element={<About />} />
           <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
-          <Route path="/loader" element={<Loader />} />
+          <Route path="/loader" element={<Loader />} /> 
           <Route path="/products/:id" element={<ProductDetails/>}/>
+          <Route path="/profile/:id" element={<ProfilePage/>}/>
           {/* <Route path="/github" element={<Github/>}/> */}
         </Routes>
       </UserState>

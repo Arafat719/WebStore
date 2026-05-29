@@ -36,7 +36,8 @@ const UserState = (props) => {
             },
             body: JSON.stringify({ name, email, password })
         })
-        const data = await response.json()
+        const text = await response.text()
+        console.log(text)
         if (data.problem === "email") {
             setError({ "email": "Invalid Email Address" })
             setTimeout(() => {
@@ -50,6 +51,7 @@ const UserState = (props) => {
         } else {
             localStorage.setItem("token", data.token)
             navigate('/')
+            console.log(data)
             return data;
         }
     }
@@ -75,11 +77,18 @@ const UserState = (props) => {
             }, 2000);
         } else {
             localStorage.setItem("token", data.token)
+            localStorage.setItem("user", JSON.stringify({
+                name: data.name,
+            }))
+            localStorage.setItem("id", JSON.stringify({
+                id: data.id
+            }))
             navigate("/")
+            console.log(data.id)
+
             return data;
         }
     }
-
     const addProducts = async (
         images,
         title,
@@ -172,9 +181,16 @@ const UserState = (props) => {
         }
     };
 
+    const user = JSON.parse(localStorage.getItem("user"))
+    const id = JSON.parse(localStorage.getItem("id"))
+    let userId = id.id
+
+    let firstLetter = user.name
+
+
 
     return (
-        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, error, setError }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, error, setError, firstLetter, userId }}>
             {props.children}
         </UserContext.Provider>
     )
