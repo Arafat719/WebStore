@@ -183,11 +183,12 @@ const UserState = (props) => {
 
     const user = JSON.parse(localStorage.getItem("user"))
     const id = JSON.parse(localStorage.getItem("id"))
-    let userId = id.id
+    // let userId = id.id
+    let userId = 2
+    // console.log(id)
+    // let firstLetter = user.name
 
-    let firstLetter = user.name
-
-
+    let firstLetter = 2
 
     return (
         <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, error, setError, firstLetter, userId }}>

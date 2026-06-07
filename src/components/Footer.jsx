@@ -1,54 +1,371 @@
 import React from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faFacebook,  faLinkedin, faWhatsapp} from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faFacebook, faLinkedin, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope, faPhone, faLocationDot, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import FiverrI from '../assets/Fiverr.png'
+import FiverrI from '../assets/Fiverr.png';
 
 const Footer = () => {
     return (
-        <div>
-            <footer className="shadow text-light pt-5 pb-3 bg-dark">
-                <div className="container">
-                    <div className="row">
+        <>
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-                        <div className="col-md-4 mb-4">
-                            <h4 className="fw-bold">WebMarketX</h4>
-                            <p>Your one-stop marketplace to buy & sell websites easily.</p>
+                .wmx-footer {
+                    background: #0a0a0f;
+                    position: relative;
+                    overflow: hidden;
+                    font-family: 'DM Sans', sans-serif;
+                    border-top: 1px solid rgba(134, 130, 250, 0.15);
+                }
+
+                .wmx-footer::before {
+                    content: '';
+                    position: absolute;
+                    top: -120px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 600px;
+                    height: 250px;
+                    background: radial-gradient(ellipse at center, rgba(134, 130, 250, 0.12) 0%, transparent 70%);
+                    pointer-events: none;
+                }
+
+                .wmx-footer-inner {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 72px 32px 32px;
+                }
+
+                /* Brand */
+                .wmx-brand-name {
+                    font-family: 'Syne', sans-serif;
+                    font-weight: 800;
+                    font-size: 1.75rem;
+                    color: #ffffff;
+                    letter-spacing: -0.5px;
+                    margin-bottom: 4px;
+                }
+
+                .wmx-brand-name span {
+                    color: #8682fa;
+                }
+
+                .wmx-brand-tag {
+                    display: inline-block;
+                    font-size: 0.7rem;
+                    font-weight: 500;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    color: #8682fa;
+                    background: rgba(134, 130, 250, 0.1);
+                    border: 1px solid rgba(134, 130, 250, 0.25);
+                    border-radius: 20px;
+                    padding: 3px 10px;
+                    margin-bottom: 14px;
+                }
+
+                .wmx-brand-desc {
+                    font-size: 0.875rem;
+                    color: #7a7a8a;
+                    line-height: 1.7;
+                    max-width: 260px;
+                    margin-bottom: 24px;
+                }
+
+                /* Social Icons */
+                .wmx-socials {
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .wmx-social-btn {
+                    width: 38px;
+                    height: 38px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(255,255,255,0.04);
+                    border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: 10px;
+                    color: #9999aa;
+                    text-decoration: none;
+                    transition: all 0.25s ease;
+                    font-size: 0.9rem;
+                }
+
+                .wmx-social-btn:hover {
+                    background: rgba(134, 130, 250, 0.15);
+                    border-color: rgba(134, 130, 250, 0.4);
+                    color: #8682fa;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(134, 130, 250, 0.2);
+                }
+
+                .wmx-fiverr-btn img {
+                    width: 18px;
+                    filter: grayscale(1) brightness(0.7);
+                    transition: filter 0.25s;
+                }
+
+                .wmx-fiverr-btn:hover img {
+                    filter: grayscale(0) brightness(1);
+                }
+
+                /* Column Headings */
+                .wmx-col-title {
+                    font-family: 'Syne', sans-serif;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                    letter-spacing: 1.5px;
+                    text-transform: uppercase;
+                    color: #ffffff;
+                    margin-bottom: 20px;
+                    position: relative;
+                    padding-bottom: 12px;
+                }
+
+                .wmx-col-title::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 24px;
+                    height: 2px;
+                    background: #8682fa;
+                    border-radius: 2px;
+                }
+
+                /* Nav Links */
+                .wmx-nav-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .wmx-nav-list a {
+                    color: #7a7a8a;
+                    text-decoration: none;
+                    font-size: 0.875rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: color 0.2s;
+                }
+
+                .wmx-nav-list a .arrow-icon {
+                    font-size: 0.6rem;
+                    opacity: 0;
+                    transform: translateX(-4px);
+                    transition: all 0.2s;
+                }
+
+                .wmx-nav-list a:hover {
+                    color: #8682fa;
+                }
+
+                .wmx-nav-list a:hover .arrow-icon {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+
+                /* Contact Items */
+                .wmx-contact-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .wmx-contact-item {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 10px;
+                    font-size: 0.875rem;
+                    color: #7a7a8a;
+                    line-height: 1.5;
+                }
+
+                .wmx-contact-icon {
+                    color: #8682fa;
+                    font-size: 0.8rem;
+                    margin-top: 2px;
+                    flex-shrink: 0;
+                }
+
+                /* Divider */
+                .wmx-divider {
+                    border: none;
+                    border-top: 1px solid rgba(255,255,255,0.07);
+                    margin: 48px 0 24px;
+                }
+
+                /* Bottom Bar */
+                .wmx-bottom {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    gap: 12px;
+                }
+
+                .wmx-copyright {
+                    font-size: 0.8rem;
+                    color: #4a4a5a;
+                }
+
+                .wmx-copyright span {
+                    color: #8682fa;
+                }
+
+                .wmx-bottom-links {
+                    display: flex;
+                    gap: 20px;
+                }
+
+                .wmx-bottom-links a {
+                    font-size: 0.78rem;
+                    color: #4a4a5a;
+                    text-decoration: none;
+                    transition: color 0.2s;
+                }
+
+                .wmx-bottom-links a:hover {
+                    color: #8682fa;
+                }
+
+                /* Grid */
+                .wmx-grid {
+                    display: grid;
+                    grid-template-columns: 1.8fr 1fr 1.4fr;
+                    gap: 48px;
+                }
+
+                @media (max-width: 768px) {
+                    .wmx-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 36px;
+                    }
+
+                    .wmx-brand-col {
+                        grid-column: 1 / -1;
+                    }
+
+                    .wmx-bottom {
+                        flex-direction: column;
+                        align-items: center;
+                        text-align: center;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .wmx-grid {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .wmx-footer-inner {
+                        padding: 48px 20px 28px;
+                    }
+                }
+            `}</style>
+
+            <footer className="wmx-footer">
+                <div className="wmx-footer-inner">
+                    <div className="wmx-grid">
+
+                        {/* Brand Column */}
+                        <div className="wmx-brand-col">
+                            <div className="wmx-brand-tag">Digital Marketplace</div>
+                            <div className="wmx-brand-name">Web<span>Market</span>X</div>
+                            <p className="wmx-brand-desc">
+                                Your one-stop marketplace to buy and sell websites, templates, and online businesses — fast and securely.
+                            </p>
+                            <div className="wmx-socials">
+                                <a href="https://github.com/webmarketx1-maker" target="_blank" rel="noreferrer" className="wmx-social-btn">
+                                    <FontAwesomeIcon icon={faGithub} />
+                                </a>
+                                <a href="https://www.facebook.com/share/1AhxGuw7xY/" target="_blank" rel="noreferrer" className="wmx-social-btn">
+                                    <FontAwesomeIcon icon={faFacebook} />
+                                </a>
+                                <a href="https://wa.me/8801867160064" target="_blank" rel="noreferrer" className="wmx-social-btn">
+                                    <FontAwesomeIcon icon={faWhatsapp} />
+                                </a>
+                                <a href="mailto:webmarketx1@gmail.com" className="wmx-social-btn">
+                                    <FontAwesomeIcon icon={faEnvelope} />
+                                </a>
+                                <a href="https://www.fiverr.com/arafatkhan147/buying?source=avatar_menu_profile" target="_blank" rel="noreferrer" className="wmx-social-btn wmx-fiverr-btn">
+                                    <img src={FiverrI} alt="Fiverr" />
+                                </a>
+                            </div>
                         </div>
 
-                        <div className="col-md-2 mb-4">
-                            <h5 className="fw-bold">Quick Links</h5>
-                            <ul className="list-unstyled">
-                                <li><Link to="/" className="text-white text-decoration-none">Home</Link></li>
-                                <li><Link to="/addproducts" className="text-white text-decoration-none">Add Websites</Link></li>
-                                <li><Link to="/about" className="text-white text-decoration-none">About</Link></li>
+                        {/* Quick Links */}
+                        <div>
+                            <h5 className="wmx-col-title">Quick Links</h5>
+                            <ul className="wmx-nav-list">
+                                <li>
+                                    <Link to="/">
+                                        <FontAwesomeIcon icon={faArrowRight} className="arrow-icon" />
+                                        Home
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/addproducts">
+                                        <FontAwesomeIcon icon={faArrowRight} className="arrow-icon" />
+                                        Add Website
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/about">
+                                        <FontAwesomeIcon icon={faArrowRight} className="arrow-icon" />
+                                        About Us
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
 
-                        <div className="col-md-3 mb-4">
-                            <h5 className="fw-bold">Contact</h5>
-                            <p>Email: webmarketx1@gmail.com</p>
-                            <p>Phone: +880 1885327180</p>
-                            <p>Address: Dhaka, Bangladesh</p>
-                        </div>
-
-                        <div className="col-md-3 mb-4">
-                            <h5 className="fw-bold">Follow Us</h5>
-                            <a href="https://github.com/webmarketx1-maker" target='_blank' className="text-white me-3"><i className="bi bi-github"><FontAwesomeIcon style={{ color: "#8682fa" }} icon={faGithub} /></i></a>
-                            <a href="https://www.facebook.com/share/1AhxGuw7xY/" target='_blank' className="text-white me-3"><i className="bi bi-facebook"><FontAwesomeIcon style={{ color: "#8682fa" }} icon={faFacebook} /></i></a>
-                            <a href="https://wa.me/8801867160064" target='_blank' className="text-white me-3"><i className="bi bi-instagram"><FontAwesomeIcon style={{ color: "#8682fa" }} icon={faWhatsapp} /></i></a>
-                            <a href="https://www.fiverr.com/arafatkhan147/buying?source=avatar_menu_profile" target='_blank' className="text-white me-3"><img src={FiverrI} alt='Fiverr' style={{width:"20px"}}></img></a>
+                        {/* Contact */}
+                        <div>
+                            <h5 className="wmx-col-title">Contact</h5>
+                            <ul className="wmx-contact-list">
+                                <li className="wmx-contact-item">
+                                    <FontAwesomeIcon icon={faEnvelope} className="wmx-contact-icon" />
+                                    <span>webmarketx1@gmail.com</span>
+                                </li>
+                                <li className="wmx-contact-item">
+                                    <FontAwesomeIcon icon={faPhone} className="wmx-contact-icon" />
+                                    <span>+880 1885327180</span>
+                                </li>
+                                <li className="wmx-contact-item">
+                                    <FontAwesomeIcon icon={faLocationDot} className="wmx-contact-icon" />
+                                    <span>Dhaka, Bangladesh</span>
+                                </li>
+                            </ul>
                         </div>
 
                     </div>
 
-                    <hr className="bg-white"/>
-                        <p className="text-center mb-0">&copy; 2026 WebMarketX. All rights reserved.</p>
+                    <hr className="wmx-divider" />
+
+                    <div className="wmx-bottom">
+                        <p className="wmx-copyright mb-0">
+                            &copy; 2026 <span>WebMarketX</span>. All rights reserved.
+                        </p>
+                        <div className="wmx-bottom-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Use</a>
+                        </div>
+                    </div>
                 </div>
             </footer>
-        </div>
-    )
-}
+        </>
+    );
+};
 
-export default Footer
+export default Footer;
