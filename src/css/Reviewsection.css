@@ -1,0 +1,458 @@
+/* ══════════════════════════════════════════
+   WebMarketX — ReviewSection.css
+   Design: dark #0a0a0f, accent #8682fa
+   Prefix: wmx-
+══════════════════════════════════════════ */
+
+/* ── Section wrapper ── */
+.wmx-reviews {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(134, 130, 250, 0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+}
+
+/* ── Header ── */
+.wmx-reviews__header {
+  margin-bottom: 1.5rem;
+}
+
+.wmx-reviews__title {
+  font-family: "Syne", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.wmx-reviews__title-dot {
+  width: 8px;
+  height: 8px;
+  background: #8682fa;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #8682fa;
+  animation: wmx-pulse 2s ease-in-out infinite;
+}
+
+@keyframes wmx-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── Summary block ── */
+.wmx-reviews__summary {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(134, 130, 250, 0.06);
+  border-radius: 14px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.wmx-reviews__score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 100px;
+}
+
+.wmx-reviews__avg {
+  font-family: "Syne", sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.wmx-reviews__total {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: "DM Sans", sans-serif;
+}
+
+/* ── Rating breakdown bars ── */
+.wmx-reviews__breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.wmx-rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.wmx-rating-bar__label {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: "DM Sans", sans-serif;
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.wmx-rating-bar__track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.wmx-rating-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8682fa, #a89af7);
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.wmx-rating-bar__count {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: "DM Sans", sans-serif;
+  width: 20px;
+}
+
+/* ── Stars ── */
+.wmx-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.wmx-star {
+  color: rgba(255, 255, 255, 0.15);
+  transition: color 0.15s;
+}
+
+.wmx-star--filled {
+  color: #f5c842;
+}
+
+.wmx-stars--sm .wmx-star { font-size: 0.85rem; }
+.wmx-stars--md .wmx-star { font-size: 1.1rem; }
+.wmx-stars--lg .wmx-star { font-size: 1.4rem; }
+
+/* ── Star picker ── */
+.wmx-star-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.wmx-star--pick {
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform 0.1s, color 0.15s;
+}
+
+.wmx-star--pick:hover {
+  transform: scale(1.2);
+}
+
+.wmx-star-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: "DM Sans", sans-serif;
+  margin-left: 0.5rem;
+}
+
+/* ── Write review form ── */
+.wmx-review-form {
+  background: rgba(134, 130, 250, 0.05);
+  border: 1px solid rgba(134, 130, 250, 0.2);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.wmx-review-form__title {
+  font-family: "Syne", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1rem 0;
+}
+
+.wmx-review-form__textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(134, 130, 250, 0.2);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.wmx-review-form__textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.wmx-review-form__textarea:focus {
+  border-color: rgba(134, 130, 250, 0.6);
+  box-shadow: 0 0 0 3px rgba(134, 130, 250, 0.1);
+}
+
+.wmx-review-form__count {
+  text-align: right;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: "DM Sans", sans-serif;
+  margin: 0.3rem 0 0.8rem 0;
+}
+
+.wmx-review-form__error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  font-family: "DM Sans", sans-serif;
+  margin-bottom: 0.8rem;
+}
+
+.wmx-review-form__success {
+  color: #6bffb8;
+  font-size: 0.85rem;
+  font-family: "DM Sans", sans-serif;
+  margin-bottom: 0.8rem;
+}
+
+/* ── Shared button (can also live in App.css) ── */
+.wmx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.6rem;
+  border-radius: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.wmx-btn--primary {
+  background: linear-gradient(135deg, #8682fa, #6c68d4);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(134, 130, 250, 0.3);
+}
+
+.wmx-btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(134, 130, 250, 0.5);
+}
+
+.wmx-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Already reviewed notice ── */
+.wmx-reviews__already {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.85rem;
+  font-family: "DM Sans", sans-serif;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Review cards ── */
+.wmx-reviews__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.wmx-review-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.wmx-review-card:hover {
+  border-color: rgba(134, 130, 250, 0.2);
+  transform: translateY(-2px);
+}
+
+.wmx-review-card__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+/* Avatar */
+.wmx-review-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(134, 130, 250, 0.25);
+}
+
+.wmx-review-avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8682fa33, #8682fa55);
+  color: #a89af7;
+  font-family: "Syne", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.wmx-review-card__meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.wmx-review-card__name {
+  font-family: "Syne", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.wmx-review-card__product {
+  font-size: 0.78rem;
+  color: #8682fa;
+  font-family: "DM Sans", sans-serif;
+}
+
+.wmx-review-card__rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.15rem;
+}
+
+.wmx-review-card__date {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: "DM Sans", sans-serif;
+}
+
+.wmx-review-card__delete {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.wmx-review-card__delete:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.wmx-review-card__comment {
+  margin: 0.9rem 0 0 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  padding-left: calc(42px + 0.9rem);
+}
+
+/* ── Empty state ── */
+.wmx-reviews__empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+}
+
+.wmx-reviews__empty-icon {
+  display: block;
+  font-size: 2.5rem;
+  margin-bottom: 0.8rem;
+  opacity: 0.5;
+}
+
+/* ── Loading skeleton ── */
+.wmx-reviews__loading {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.wmx-review-skeleton {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 14px;
+}
+
+.wmx-review-skeleton__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.2rem;
+}
+
+.wmx-skeleton {
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  animation: wmx-shimmer 1.5s ease-in-out infinite;
+}
+
+.wmx-skeleton--avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wmx-skeleton--line {
+  height: 12px;
+  width: 100%;
+}
+
+@keyframes wmx-shimmer {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .wmx-reviews {
+    padding: 1.2rem;
+  }
+
+  .wmx-reviews__summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wmx-review-card__comment {
+    padding-left: 0;
+  }
+}

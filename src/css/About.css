@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+.wmx-about * { box-sizing: border-box; margin: 0; padding: 0; }
+
+.wmx-about {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.wmx-hero {
+  position: relative;
+  padding: 120px 40px 100px;
+  text-align: center;
+  overflow: hidden;
+}
+.wmx-hero::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(69,67,146,0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.wmx-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, #454392, transparent);
+}
+.wmx-badge {
+  display: inline-block;
+  border: 1px solid rgba(69,67,146,0.6);
+  background: rgba(69,67,146,0.12);
+  color: #9d9bff;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+  font-family: 'DM Sans', sans-serif;
+}
+.wmx-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(42px, 7vw, 80px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 30%, #9d9bff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 24px;
+}
+.wmx-hero p {
+  font-size: 18px;
+  color: var(--text-body);
+  font-weight: 300;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.wmx-fade {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.wmx-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wmx-section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 80px 40px;
+}
+.wmx-section + .wmx-section {
+  border-top: 1px solid var(--border-medium);
+}
+
+.wmx-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6b69a0;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 16px;
+}
+.wmx-section h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.wmx-section p {
+  color: var(--text-body);
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: 300;
+  max-width: 600px;
+}
+
+.wmx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.wmx-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 28px 24px;
+  transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  cursor: default;
+}
+.wmx-card:hover {
+  border-color: rgba(69,67,146,0.5);
+  background: rgba(69,67,146,0.08);
+  transform: translateY(-4px);
+}
+.wmx-card-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+.wmx-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.wmx-card p {
+  font-size: 14px;
+  color: var(--text-about-card);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.wmx-why-list {
+  list-style: none;
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.wmx-why-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 16px;
+  color: var(--text-about-why);
+  font-weight: 400;
+  transition: color 0.2s;
+}
+.wmx-why-list li:hover { color: var(--text-primary); }
+.wmx-why-list li span.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #454392;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(69,67,146,0.8);
+}
+
+.wmx-vision-box {
+  position: relative;
+  background: linear-gradient(135deg, rgba(69,67,146,0.15), rgba(69,67,146,0.05));
+  border: 1px solid rgba(69,67,146,0.3);
+  border-radius: 20px;
+  padding: 52px 48px;
+  overflow: hidden;
+  margin-top: 0;
+}
+.wmx-vision-box::before {
+  content: '◈';
+  position: absolute;
+  top: -20px; right: 40px;
+  font-size: 120px;
+  color: rgba(69,67,146,0.1);
+  font-family: 'Syne', sans-serif;
+  line-height: 1;
+  pointer-events: none;
+}
+.wmx-vision-box p {
+  font-size: 18px;
+  font-style: italic;
+  color: var(--text-vision);
+  line-height: 1.8;
+  font-weight: 300;
+  max-width: 560px;
+}
+
+.wmx-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 36px;
+}
+.wmx-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 16px 24px;
+  text-decoration: none;
+  color: var(--text-about-why);
+  font-size: 14px;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+}
+.wmx-contact-item:hover {
+  border-color: #454392;
+  color: var(--text-primary);
+  background: rgba(69,67,146,0.12);
+}
+.wmx-contact-item .ci-icon {
+  font-size: 18px;
+}
+
+@media (max-width: 600px) {
+  .wmx-hero { padding: 80px 24px 70px; }
+  .wmx-section { padding: 60px 24px; }
+  .wmx-vision-box { padding: 36px 28px; }
+}

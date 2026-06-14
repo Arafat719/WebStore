@@ -1,0 +1,113 @@
+/* ─── DARK THEME (default) ─── */
+:root {
+  --bg-page:           #0a0a0f;
+  --bg-card:           #111118;
+  --bg-card-2:         #0e0e1a;
+  --bg-sidebar:        #0d0d16;
+  --bg-drawer:         #0e0e18;
+  --bg-dropdown:       #14141e;
+  --bg-nav:            rgba(10, 10, 18, 0.6);
+  --bg-nav-scrolled:   rgba(10, 10, 18, 0.85);
+  --bg-input:          rgba(255, 255, 255, 0.03);
+  --bg-subtle:         rgba(255, 255, 255, 0.02);
+  --bg-hover:          rgba(255, 255, 255, 0.04);
+  --bg-hover-md:       rgba(255, 255, 255, 0.05);
+  --bg-hover-lg:       rgba(255, 255, 255, 0.06);
+
+  --text-primary:      #f2f2ff;
+  --text-secondary:    #7a7a90;
+  --text-muted:        #4a4a5a;
+  --text-faint:        #3a3a4a;
+  --text-label:        #6a6a80;
+  --text-body:         #9b99b4;
+  --text-card-desc:    #5e5e72;
+  --text-about-card:   #7a789a;
+  --text-about-why:    #c4c2dd;
+  --text-vision:       #ceccee;
+  --text-info-value:   #c0c0d8;
+  --text-activity:     #9090b0;
+
+  --border-subtle:     rgba(255, 255, 255, 0.05);
+  --border-default:    rgba(255, 255, 255, 0.08);
+  --border-medium:     rgba(255, 255, 255, 0.06);
+  --border-strong:     rgba(255, 255, 255, 0.07);
+  --border-15:         rgba(255, 255, 255, 0.15);
+
+  --placeholder:       #2e2e3e;
+  --icon-color:        #3a3a4a;
+
+  --shadow-nav:        rgba(0, 0, 0, 0.4);
+  --shadow-dropdown:   rgba(0, 0, 0, 0.5);
+  --shadow-modal:      rgba(0, 0, 0, 0.6);
+
+  --card-img-overlay:  rgba(10, 10, 20, 0.85);
+  --star-off:          #2a2a38;
+  --divider:           rgba(255, 255, 255, 0.05);
+
+  --profile-hero-bg:   linear-gradient(135deg, #13112a 0%, #0f0e1e 60%, #0a0a14 100%);
+  --premium-bg:        linear-gradient(140deg, #161230 0%, #100e20 100%);
+}
+
+/* ─── LIGHT THEME ─── */
+html[data-theme='light'] {
+  --bg-page:           #f4f4f8;
+  --bg-card:           #ffffff;
+  --bg-card-2:         #f9f9fd;
+  --bg-sidebar:        #f0f0f6;
+  --bg-drawer:         #ffffff;
+  --bg-dropdown:       #ffffff;
+  --bg-nav:            rgba(244, 244, 248, 0.82);
+  --bg-nav-scrolled:   rgba(244, 244, 248, 0.97);
+  --bg-input:          rgba(0, 0, 0, 0.03);
+  --bg-subtle:         rgba(0, 0, 0, 0.02);
+  --bg-hover:          rgba(0, 0, 0, 0.04);
+  --bg-hover-md:       rgba(0, 0, 0, 0.05);
+  --bg-hover-lg:       rgba(0, 0, 0, 0.05);
+
+  --text-primary:      #0d0d1a;
+  --text-secondary:    #55556e;
+  --text-muted:        #7a7a90;
+  --text-faint:        #9a9ab0;
+  --text-label:        #555570;
+  --text-body:         #4a4a62;
+  --text-card-desc:    #5a5a72;
+  --text-about-card:   #606075;
+  --text-about-why:    #2a2a40;
+  --text-vision:       #2a2a40;
+  --text-info-value:   #2a2a48;
+  --text-activity:     #5a5a78;
+
+  --border-subtle:     rgba(0, 0, 0, 0.06);
+  --border-default:    rgba(0, 0, 0, 0.09);
+  --border-medium:     rgba(0, 0, 0, 0.07);
+  --border-strong:     rgba(0, 0, 0, 0.08);
+  --border-15:         rgba(0, 0, 0, 0.13);
+
+  --placeholder:       #b8b8cc;
+  --icon-color:        #9090a8;
+
+  --shadow-nav:        rgba(0, 0, 0, 0.07);
+  --shadow-dropdown:   rgba(0, 0, 0, 0.12);
+  --shadow-modal:      rgba(0, 0, 0, 0.2);
+
+  --card-img-overlay:  rgba(240, 240, 248, 0.2);
+  --star-off:          #d0d0e0;
+  --divider:           rgba(0, 0, 0, 0.06);
+
+  --profile-hero-bg:   linear-gradient(135deg, #eceaf8 0%, #f0effe 60%, #f4f4fa 100%);
+  --premium-bg:        linear-gradient(140deg, #ede8fa 0%, #f3f0fe 100%);
+}
+
+/* ─── LIGHT: About page heading gradient fix ─── */
+html[data-theme='light'] .wmx-hero h1 {
+  background: linear-gradient(135deg, #0d0d1a 30%, #6260d8 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+/* ─── Body base ─── */
+html, body {
+  background: var(--bg-page);
+  overflow-x: hidden;
+  width: 100%;
+}

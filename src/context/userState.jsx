@@ -2,6 +2,12 @@ import UserContext from "./userContext";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const getInitialTheme = () => {
+    const saved = localStorage.getItem("wmx-theme");
+    if (saved) return saved;
+    return "dark";
+};
+
 const UserState = (props) => {
     const navigate = useNavigate()
     const [array, setArray] = useState([])
@@ -9,11 +15,21 @@ const UserState = (props) => {
     const [error, setError] = useState([])
     const [projectName, setProjectName] = useState("");
     const [repoUrl, setRepoUrl] = useState("");
+    const [theme, setTheme] = useState(getInitialTheme);
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("wmx-theme", theme);
+    }, [theme]);
+
+    const toggleTheme = () => setTheme(t => t === "dark" ? "light" : "dark");
 
 
     //Getting all notes from db
+    const API = import.meta.env.VITE_API_URL;
+
     const getProducts = async () => {
-        const response = await fetch("https://webmarketbackend.onrender.com/products/getproducts", {
+        const response = await fetch(`${API}/products/getproducts`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -28,66 +44,76 @@ const UserState = (props) => {
         getProducts()
     }, [])
 
-    const signUP = async (name, email, password) => {
-        const response = await fetch("https://webmarketbackend.onrender.com/auth/signup", {
+    const signUP = async (name, email, password, role = "user") => {
+        const endpoint = role === "seller"
+            ? `${API}/seller/signup`
+            : `${API}/auth/signup`;
+        const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
         })
-        const text = await response.text()
-        console.log(text)
+        const data = await response.json()
         if (data.problem === "email") {
             setError({ "email": "Invalid Email Address" })
-            setTimeout(() => {
-                setError([])
-            }, 2000);
+            setTimeout(() => setError([]), 2000);
         } else if (data.problem === "password") {
             setError({ "password": "Password must be atleast 8 characters" })
-            setTimeout(() => {
-                setError([])
-            }, 2000);
+            setTimeout(() => setError([]), 2000);
         } else {
             localStorage.setItem("token", data.token)
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: role }))
+            localStorage.setItem("id", JSON.stringify({ id: data.id }))
             navigate('/')
-            console.log(data)
             return data;
         }
     }
 
     const login = async (email, password) => {
-        const response = await fetch("https://webmarketbackend.onrender.com/auth/login", {
+        const response = await fetch(`${API}/seller/login`, {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         })
         const data = await response.json()
         if (data.problem === "email") {
             setError({ "email": "Invalid Email Address" })
-            setTimeout(() => {
-                setError([])
-            }, 2000);
+            setTimeout(() => setError([]), 2000);
         } else if (data.problem === "password") {
             setError({ "password": "Invalid password" })
-            setTimeout(() => {
-                setError([])
-            }, 2000);
+            setTimeout(() => setError([]), 2000);
         } else {
             localStorage.setItem("token", data.token)
-            localStorage.setItem("user", JSON.stringify({
-                name: data.name,
-            }))
-            localStorage.setItem("id", JSON.stringify({
-                id: data.id
-            }))
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: "seller" }))
+            localStorage.setItem("id", JSON.stringify({ id: data.id }))
             navigate("/")
-            console.log(data.id)
-
             return data;
         }
+    }
+
+    const getProfile = async () => {
+        const token = localStorage.getItem('token')
+        const response = await fetch(`${API}/seller/profile`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "token": token
+            }
+        })
+        return response.json()
+    }
+
+    const updateProfile = async (profileData) => {
+        const token = localStorage.getItem('token')
+        const response = await fetch(`${API}/seller/profile/edit`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "token": token
+            },
+            body: JSON.stringify(profileData)
+        })
+        return response.json()
     }
     const addProducts = async (
         images,
@@ -118,7 +144,7 @@ const UserState = (props) => {
                 return;
             }
 
-            const response = await fetch("https://webmarketbackend.onrender.com/products/addproduct", {
+            const response = await fetch(`${API}/products/addproduct`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -138,7 +164,7 @@ const UserState = (props) => {
                 })
             });
 
-            const res = await fetch("https://webmarketbackend.onrender.com/git/import-repo", {
+            const res = await fetch(`${API}/git/import-repo`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -181,17 +207,15 @@ const UserState = (props) => {
         }
     };
 
-    const user = JSON.parse(localStorage.getItem("user"))
-    const id = JSON.parse(localStorage.getItem("id"))
-    // let userId = id.id
-    let userId = 2
-    // console.log(id)
-    // let firstLetter = user.name
-
-    let firstLetter = 2
+    const user = JSON.parse(localStorage.getItem("user") || 'null')
+    const id = JSON.parse(localStorage.getItem("id") || 'null')
+    let userId = id?.id || null
+    let firstLetter = user?.name?.[0]?.toUpperCase() || "U"
+    let profilePic = user?.profilePic || null
+    let userType = user?.type || null
 
     return (
-        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, error, setError, firstLetter, userId }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, theme, toggleTheme }}>
             {props.children}
         </UserContext.Provider>
     )

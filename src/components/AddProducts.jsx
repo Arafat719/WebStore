@@ -2,534 +2,272 @@ import { useNavigate } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
 import userContext from '../context/userContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-
+import { faTimes, faCloudArrowUp, faPlus, faCode, faLink, faDollarSign, faTags, faWrench, faList, faHeadset, faFileLines, faGlobe, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import '../css/AddProducts.css';
 
 function AddProducts({ showAlert }) {
     const navigate = useNavigate()
     const [projectName, setProjectName] = useState("");
     const [repoUrl, setRepoUrl] = useState("");
+    const [dragOver, setDragOver] = useState(false);
 
     const context = useContext(userContext);
     const { addProducts } = context
 
     const [products, setproducts] = useState({
-        title: "",
-        images: [""],
-        description: "",
-        price: "",
-        previewLink: "",
-        tags: "",
-        builtWith: "",
-        features: "",
-        documentation: false,
-        support: "",
-
-        // 🔥 এইটা add কর
+        title: "", images: [""], description: "", price: "",
+        previewLink: "", tags: "", builtWith: "", features: "",
+        documentation: false, support: "",
     });
 
     const handleClick = async (e) => {
         e.preventDefault();
-
-        // 🔥 Cloudinary upload function
         const handleUpload = async (file) => {
             const formData = new FormData();
             formData.append("file", file);
             formData.append("upload_preset", "my_upload");
-
-            const res = await fetch(
-                "https://api.cloudinary.com/v1_1/dps2dk2tj/image/upload",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
+            const res = await fetch("https://api.cloudinary.com/v1_1/dps2dk2tj/image/upload", { method: "POST", body: formData });
             const data = await res.json();
-            console.log(data, 'from cloudinary')
             return data.secure_url;
         };
-
-        // 🔥 images upload করে URL বানানো
         let uploadedImages = [];
-
         for (let img of products.images) {
             if (img && img.file instanceof File) {
                 const url = await handleUpload(img.file);
                 uploadedImages.push(url);
             }
         }
-
         const finalData = {
             ...products,
-
-            // 🔥 string → array convert
-            tags: products.tags
-                ? products.tags.split(",").map(item => item.trim())
-                : [],
-
-            builtWith: products.builtWith
-                ? products.builtWith.split(",").map(item => item.trim())
-                : [],
-
-            features: products.features
-                ? products.features.split(",").map(item => item.trim())
-                : [],
-
-            // 🔥 এখন images হবে Cloudinary URL
+            tags: products.tags ? products.tags.split(",").map(i => i.trim()) : [],
+            builtWith: products.builtWith ? products.builtWith.split(",").map(i => i.trim()) : [],
+            features: products.features ? products.features.split(",").map(i => i.trim()) : [],
             images: uploadedImages
         };
-
-        // 🔥 same function call (no change)
-        addProducts(
-            finalData.images,
-            finalData.title,
-            finalData.description,
-            finalData.price,
-            finalData.previewLink,
-            finalData.tags,
-            finalData.builtWith,
-            finalData.features,
-            finalData.support,
-            finalData.documentation,
-            projectName,
-            repoUrl
-        );
-
-        console.log(finalData);
-        // navigate('/');
+        await addProducts(finalData.images, finalData.title, finalData.description, finalData.price,
+            finalData.previewLink, finalData.tags, finalData.builtWith, finalData.features,
+            finalData.support, finalData.documentation, projectName, repoUrl);
     };
-    const onchange = (e) => {
-        setproducts({ ...products, [e.target.name]: e.target.value })
-    }
+
+    const onchange = (e) => setproducts({ ...products, [e.target.name]: e.target.value });
+
+    const addImages = (files) => {
+        const newImages = Array.from(files).map(file => ({ file, preview: URL.createObjectURL(file) }));
+        setproducts(prev => ({ ...prev, images: [...prev.images, ...newImages] }));
+    };
 
     useEffect(() => {
-        const token = localStorage.getItem("token"); // Token check
-        if (!token) {
-            navigate("/login");
-            showAlert("To Add website You must be Logged in with us", "warning")
-        }
+        const token = localStorage.getItem("token");
+        if (!token) showAlert("To Add website You must be Logged in with us", "warning");
     }, []);
+
     return (
+        <>
 
-        <div className="container-md my-5 py-1">
-            <form className="card p-5 col-md-6 mx-auto shadow border-0">
-                <h2 className="my-3">Add website for sell</h2>
-                <div className="mb-3 position-relative">
-                    <label htmlFor="title" className="form-label"><strong>Project name (Repo name)</strong></label>
-                    <input
-                        type="text"
-                        placeholder="Project Name"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                        className="form-control"
-                    />
-                    {projectName && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setProjectName("")}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "72%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
-                <div className="mb-3 position-relative">
+            <div className="wmx-add-page">
+                <div className="wmx-add-wrap">
 
+                    {/* Header */}
+                    <div className="wmx-add-header">
+                        <div className="wmx-add-eyebrow">
+                            <span className="wmx-add-dot" />
+                            Sell on WebMarketX
+                        </div>
+                        <h1 className="wmx-add-title">List Your <span>Website</span></h1>
+                        <p className="wmx-add-sub">Fill in the details below to publish your product.</p>
+                    </div>
 
-                    <label htmlFor="title" className="form-label"><strong>Repo URL</strong></label>
+                    {/* ── Section 1: Repository ── */}
+                    <div className="wmx-add-section">
+                        <div className="wmx-add-section-title">
+                            <FontAwesomeIcon icon={faCode} /> Repository Info
+                        </div>
 
-                    <input
-                        type="url"
-                        placeholder="GitHub Repo URL"
-                        value={repoUrl}
-                        onChange={(e) => setRepoUrl(e.target.value)}
-                        className="form-control"
-                    />
-                    {repoUrl && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setRepoUrl("")}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "72%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
+                        <div className="wmx-add-field">
+                            <label className="wmx-add-label">Project / Repo Name</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faBoxOpen} /></span>
+                                <input className="wmx-add-input" type="text" placeholder="my-awesome-project"
+                                    value={projectName} onChange={e => setProjectName(e.target.value)} />
+                                {projectName && <button className="wmx-clear-btn" type="button" onClick={() => setProjectName("")}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
+                        </div>
 
-                {/* Product Images */}
-                <div className="mb-4">
-                    <label className="form-label fw-bold mb-2">Product Images</label>
-
-                    {/* Upload Box */}
-                    <div
-                        className="border rounded-4 p-4 text-center position-relative"
-                        style={{
-                            borderStyle: "dashed",
-                            borderColor: "#d1d5db",
-                            background: "#f9fafb",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => document.getElementById("imageUploadInput").click()}
-                    >
-                        <input
-                            id="imageUploadInput"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            hidden
-                            onChange={(e) => {
-                                const files = Array.from(e.target.files);
-
-                                const newImages = files.map((file) => ({
-                                    file: file,
-                                    preview: URL.createObjectURL(file),
-                                }));
-
-                                setproducts({
-                                    ...products,
-                                    images: [...products.images, ...newImages],
-                                });
-                            }}
-                        />
-
-                        <div>
-                            <i className="fas fa-cloud-upload-alt mb-2" style={{ fontSize: "28px", color: "#8682fa" }}></i>
-                            <p className="mb-1 fw-semibold">Click or Drag images to upload</p>
-                            <small className="text-muted">PNG, JPG up to 5MB</small>
+                        <div className="wmx-add-field" style={{ marginBottom: 0 }}>
+                            <label className="wmx-add-label">GitHub Repo URL</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faLink} /></span>
+                                <input className="wmx-add-input" type="url" placeholder="https://github.com/user/repo"
+                                    value={repoUrl} onChange={e => setRepoUrl(e.target.value)} />
+                                {repoUrl && <button className="wmx-clear-btn" type="button" onClick={() => setRepoUrl("")}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
                         </div>
                     </div>
 
-                    {/* Preview Grid */}
-                    <div className="row mt-3 g-3">
-                        {products.images.map((img, index) => (
-                            <div key={index} className="col-4 col-md-3 col-lg-2">
-                                <div
-                                    className="position-relative rounded-3 overflow-hidden shadow-sm"
-                                    style={{
-                                        height: "100px",
-                                        background: "#f3f4f6",
-                                    }}
-                                >
-                                    <img
-                                        src={img.preview}
-                                        alt="preview"
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            objectFit: "cover",
-                                        }}
-                                    />
+                    {/* ── Section 2: Images ── */}
+                    <div className="wmx-add-section">
+                        <div className="wmx-add-section-title">
+                            <FontAwesomeIcon icon={faCloudArrowUp} /> Product Images
+                        </div>
 
-                                    {/* Remove Button */}
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            const newImages = products.images.filter((_, i) => i !== index);
-                                            setproducts({ ...products, images: newImages });
-                                        }}
-                                        className="btn btn-sm position-absolute"
-                                        style={{
-                                            top: "5px",
-                                            right: "5px",
-                                            background: "rgba(0,0,0,0.6)",
-                                            color: "#fff",
-                                            borderRadius: "50%",
-                                            width: "25px",
-                                            height: "25px",
-                                            padding: "0",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        ×
-                                    </button>
+                        <div
+                            className={`wmx-upload-zone ${dragOver ? 'drag' : ''}`}
+                            onClick={() => document.getElementById("wmx-img-input").click()}
+                            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                            onDragLeave={() => setDragOver(false)}
+                            onDrop={e => { e.preventDefault(); setDragOver(false); addImages(e.dataTransfer.files); }}
+                        >
+                            <input id="wmx-img-input" type="file" accept="image/*" multiple hidden
+                                onChange={e => addImages(e.target.files)} />
+                            <FontAwesomeIcon icon={faCloudArrowUp} className="wmx-upload-icon" />
+                            <div className="wmx-upload-label">Click or drag images here</div>
+                            <div className="wmx-upload-hint">PNG, JPG up to 5MB each</div>
+                        </div>
+
+                        {products.images.filter(i => i?.preview).length > 0 && (
+                            <div className="wmx-preview-grid">
+                                {products.images.map((img, index) => img?.preview && (
+                                    <div key={index} className="wmx-preview-item">
+                                        <img src={img.preview} alt="preview" />
+                                        <button type="button" className="wmx-preview-remove"
+                                            onClick={() => setproducts(p => ({ ...p, images: p.images.filter((_, i) => i !== index) }))}>
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <button type="button" className="wmx-add-more-btn"
+                            onClick={() => document.getElementById("wmx-img-input").click()}>
+                            <FontAwesomeIcon icon={faPlus} /> Add More Images
+                        </button>
+                    </div>
+
+                    {/* ── Section 3: Product Info ── */}
+                    <div className="wmx-add-section">
+                        <div className="wmx-add-section-title">
+                            <FontAwesomeIcon icon={faBoxOpen} /> Product Details
+                        </div>
+
+                        <div className="wmx-add-field">
+                            <label className="wmx-add-label">Title</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faBoxOpen} /></span>
+                                <input className="wmx-add-input" type="text" name="title" placeholder="E-commerce React Template"
+                                    value={products.title} onChange={onchange} />
+                                {products.title && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, title: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
+                        </div>
+
+                        <div className="wmx-add-field">
+                            <label className="wmx-add-label">Description</label>
+                            <textarea className="wmx-add-textarea" name="description"
+                                placeholder="Describe what your website/template does..."
+                                value={products.description} onChange={onchange} />
+                        </div>
+
+                        <div className="wmx-two-col">
+                            <div className="wmx-add-field" style={{ marginBottom: 0 }}>
+                                <label className="wmx-add-label">Price (USD)</label>
+                                <div className="wmx-add-input-wrap">
+                                    <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faDollarSign} /></span>
+                                    <input className="wmx-add-input" type="text" name="price" placeholder='29 or "Free"'
+                                        value={products.price} onChange={onchange} />
+                                    {products.price && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, price: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
                                 </div>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Add More Button */}
-                    <button
-                        type="button"
-                        className="btn mt-3 px-4 py-2"
-                        style={{
-                            background: "linear-gradient(135deg, #8682fa, #6c63ff)",
-                            color: "#fff",
-                            borderRadius: "10px",
-                            fontWeight: "500",
-                        }}
-                        onClick={() => document.getElementById("imageUploadInput").click()}
-                    >
-                        + Add More Images
-                    </button>
-                </div>
-
-                {/* Title */}
-                <div className="mb-3 position-relative">
-                    <label htmlFor="title" className="form-label"><strong>Title</strong></label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="title"
-                        name="title"
-                        onChange={onchange}
-                        value={products.title}
-                        style={{ paddingRight: "2rem" }}
-                    />
-                    {products.title && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setproducts({ ...products, title: "" })}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "72%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
-
-                {/* Description */}
-                <div className="mb-3 position-relative">
-                    <label htmlFor="description" className="form-label"><strong>Description</strong></label>
-                    <textarea
-                        type="text"
-                        className="form-control"
-                        id="description"
-                        name="description"
-                        onChange={onchange}
-                        value={products.description}
-                        style={{ paddingRight: "2rem" }}
-                    />
-                    {products.description && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setproducts({ ...products, description: "" })}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "52%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
-
-                {/* Price & Preview Link */}
-                <div className="row">
-                    <div className="col-md-6 mb-3 position-relative">
-                        <label htmlFor="price" className="form-label"><strong>Price</strong></label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="price"
-                            name="price"
-                            onChange={onchange}
-                            value={products.price}
-                        />
-                        {products.price && (
-                            <FontAwesomeIcon
-                                icon={faTimes}
-                                onClick={() => setproducts({ ...products, price: "" })}
-                                style={{
-                                    position: "absolute",
-                                    right: "1.2rem",
-                                    top: "72%",
-                                    transform: "translateY(-50%)",
-                                    cursor: "pointer",
-                                    color: "#888",
-                                }}
-                            />
-                        )}
-                    </div>
-
-                    <div className="col-md-6 mb-3 position-relative">
-                        <label htmlFor="preview" className="form-label"><strong>Preview Link</strong></label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="preview"
-                            name="previewLink"
-                            onChange={onchange}
-                            value={products.previewLink}
-                        />
-                        {products.previewLink && (
-                            <FontAwesomeIcon
-                                icon={faTimes}
-                                onClick={() => setproducts({ ...products, previewLink: "" })}
-                                style={{
-                                    position: "absolute",
-                                    right: "1.2rem",
-                                    top: "72%",
-                                    transform: "translateY(-50%)",
-                                    cursor: "pointer",
-                                    color: "#888",
-                                }}
-                            />
-                        )}
-                    </div>
-                </div>
-
-                {/* Tags */}
-                <div className="mb-3 position-relative">
-                    <label htmlFor="tags" className="form-label">
-                        <strong>Tags</strong> (Comma separated)
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="tags"
-                        name="tags"
-                        onChange={onchange}
-                        value={products.tags}
-                    />
-                    {products.tags.length > 0 && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setproducts({ ...products, tags: "" })}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "73%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
-
-                {/* Build With */}
-                <div className="mb-3 position-relative">
-                    <label htmlFor="build" className="form-label"><strong>Build with</strong></label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="build"
-                        name="builtWith"
-                        onChange={onchange}
-                        value={products.builtWith}
-                    />
-                    {products.builtWith.length > 0 && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setproducts({ ...products, builtWith: "" })}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "73%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
-
-                {/* Features */}
-                <div className="mb-3 position-relative">
-                    <label htmlFor="feature" className="form-label"><strong>Feature</strong></label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="feature"
-                        name="features"
-                        onChange={onchange}
-                        value={products.features}
-                    />
-                    {products.features.length > 0 && (
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            onClick={() => setproducts({ ...products, features: "" })}
-                            style={{
-                                position: "absolute",
-                                right: "0.5rem",
-                                top: "73%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                                color: "#888",
-                            }}
-                        />
-                    )}
-                </div>
-
-                <hr />
-
-                {/* Support Duration & Checkbox */}
-                <div className="row align-items-center">
-                    <div className="col-md-6 mb-3 position-relative">
-                        <label htmlFor="support" className="form-label"><strong>Support Duration</strong></label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="support"
-                            name="support"
-                            onChange={onchange}
-                            value={products.support}
-                        />
-                        {products.support && (
-                            <FontAwesomeIcon
-                                icon={faTimes}
-                                onClick={() => setproducts({ ...products, support: "" })}
-                                style={{
-                                    position: "absolute",
-                                    right: "1.1rem",
-                                    top: "72%",
-                                    transform: "translateY(-50%)",
-                                    cursor: "pointer",
-                                    color: "#888",
-                                }}
-                            />
-                        )}
-                    </div>
-
-                    <div className="col-md-6 mb-3 d-flex align-items-center mt-md-4">
-                        <div className="form-check">
-                            <input type="checkbox" className="form-check-input" id="exampleCheck1" checked={products.documentation}
-                                onChange={(e) => {
-                                    const isChecked = e.target.checked;
-
-                                    setproducts((prev) => ({
-                                        ...prev,
-                                        documentation: isChecked,
-                                    }));
-                                }} />
-                            <label className="form-check-label" htmlFor="exampleCheck1">
-                                Documentation Included
-                            </label>
-
+                            <div className="wmx-add-field" style={{ marginBottom: 0 }}>
+                                <label className="wmx-add-label">Preview Link</label>
+                                <div className="wmx-add-input-wrap">
+                                    <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faGlobe} /></span>
+                                    <input className="wmx-add-input" type="text" name="previewLink" placeholder="https://mysite.vercel.app"
+                                        value={products.previewLink} onChange={onchange} />
+                                    {products.previewLink && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, previewLink: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Submit Button */}
-                <button
-                    type="submit"
-                    className="btn rounded-pill text-white"
-                    onClick={handleClick}
-                    style={{ backgroundColor: "#8682fa" }}
-                >
-                    Publish Products
-                </button>
-            </form>
-        </div>
+                    {/* ── Section 4: Meta ── */}
+                    <div className="wmx-add-section">
+                        <div className="wmx-add-section-title">
+                            <FontAwesomeIcon icon={faTags} /> Tags & Tech Stack
+                        </div>
+
+                        <div className="wmx-add-field">
+                            <label className="wmx-add-label">Tags</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faTags} /></span>
+                                <input className="wmx-add-input" type="text" name="tags" placeholder="ecommerce, landing-page, dashboard"
+                                    value={products.tags} onChange={onchange} />
+                                {products.tags.length > 0 && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, tags: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
+                            <span className="wmx-hint">Separate with commas</span>
+                        </div>
+
+                        <div className="wmx-add-field">
+                            <label className="wmx-add-label">Built With</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faWrench} /></span>
+                                <input className="wmx-add-input" type="text" name="builtWith" placeholder="React, Node.js, MongoDB"
+                                    value={products.builtWith} onChange={onchange} />
+                                {products.builtWith.length > 0 && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, builtWith: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
+                            <span className="wmx-hint">Separate with commas</span>
+                        </div>
+
+                        <div className="wmx-add-field" style={{ marginBottom: 0 }}>
+                            <label className="wmx-add-label">Features</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faList} /></span>
+                                <input className="wmx-add-input" type="text" name="features" placeholder="Responsive, Dark mode, Auth included"
+                                    value={products.features} onChange={onchange} />
+                                {products.features.length > 0 && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, features: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
+                            <span className="wmx-hint">Separate with commas</span>
+                        </div>
+                    </div>
+
+                    {/* ── Section 5: Support ── */}
+                    <div className="wmx-add-section">
+                        <div className="wmx-add-section-title">
+                            <FontAwesomeIcon icon={faHeadset} /> Support & Docs
+                        </div>
+
+                        <div className="wmx-add-field">
+                            <label className="wmx-add-label">Support Duration</label>
+                            <div className="wmx-add-input-wrap">
+                                <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faHeadset} /></span>
+                                <input className="wmx-add-input" type="text" name="support" placeholder="6 months, Lifetime, None"
+                                    value={products.support} onChange={onchange} />
+                                {products.support && <button className="wmx-clear-btn" type="button" onClick={() => setproducts(p => ({ ...p, support: "" }))}><FontAwesomeIcon icon={faTimes} /></button>}
+                            </div>
+                        </div>
+
+                        <label className="wmx-checkbox-row" style={{ marginBottom: 0 }}>
+                            <input
+                                type="checkbox"
+                                className="wmx-checkbox"
+                                checked={products.documentation}
+                                onChange={e => setproducts(p => ({ ...p, documentation: e.target.checked }))}
+                            />
+                            <div>
+                                <div className="wmx-checkbox-label">Documentation Included</div>
+                                <div style={{ fontSize: '0.68rem', color: '#3a3a4a', marginTop: 2 }}>Check if this product comes with written documentation</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    {/* Submit */}
+                    <button type="submit" className="wmx-submit" onClick={handleClick}>
+                        <FontAwesomeIcon icon={faCloudArrowUp} />
+                        Publish Product
+                    </button>
+
+                </div>
+            </div>
+        </>
     );
 }
 

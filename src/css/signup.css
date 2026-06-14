@@ -1,0 +1,371 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+.wmx-signup-page {
+    min-height: 100vh;
+    background: var(--bg-page);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px 60px;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.wmx-signup-page::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -100px;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle,
+            rgba(134, 130, 250, 0.11) 0%,
+            transparent 65%);
+    pointer-events: none;
+}
+
+.wmx-signup-page::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -60px;
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle,
+            rgba(91, 88, 200, 0.09) 0%,
+            transparent 65%);
+    pointer-events: none;
+}
+
+.wmx-signup-card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-card);
+    border: 1px solid rgba(134, 130, 250, 0.14);
+    border-radius: 22px;
+    padding: 40px 36px 36px;
+    animation: wmx-su-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes wmx-su-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.wmx-signup-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    background-image: radial-gradient(rgba(134, 130, 250, 0.055) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+.wmx-su-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #8682fa;
+    background: rgba(134, 130, 250, 0.1);
+    border: 1px solid rgba(134, 130, 250, 0.2);
+    border-radius: 30px;
+    padding: 4px 12px;
+    margin-bottom: 18px;
+}
+
+.wmx-su-dot {
+    width: 5px;
+    height: 5px;
+    background: #8682fa;
+    border-radius: 50%;
+    animation: wmx-su-blink 2s ease-in-out infinite;
+}
+
+@keyframes wmx-su-blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.wmx-su-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    margin: 0 0 6px;
+}
+
+.wmx-su-title span {
+    color: #8682fa;
+}
+
+.wmx-su-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0 0 26px;
+    font-weight: 300;
+}
+
+.wmx-su-social {
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.wmx-su-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.wmx-su-div-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-default);
+}
+
+.wmx-su-div-text {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.wmx-su-field {
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.wmx-su-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-label);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.wmx-su-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: 11px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+}
+
+.wmx-su-input-wrap:focus-within {
+    border-color: rgba(134, 130, 250, 0.45);
+    box-shadow: 0 0 0 3px rgba(134, 130, 250, 0.08);
+}
+
+.wmx-su-input-wrap.has-error {
+    border-color: rgba(220, 80, 80, 0.4);
+}
+
+.wmx-su-icon {
+    padding: 0 12px;
+    color: var(--icon-color);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.wmx-su-input-wrap:focus-within .wmx-su-icon {
+    color: #8682fa;
+}
+
+.wmx-su-input {
+    flex: 1;
+    padding: 12px 12px 12px 0;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+.wmx-su-input::placeholder {
+    color: var(--placeholder);
+}
+
+.wmx-su-eye {
+    background: none;
+    border: none;
+    color: var(--icon-color);
+    font-size: 0.78rem;
+    padding: 0 14px;
+    cursor: pointer;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.wmx-su-eye:hover {
+    color: #8682fa;
+}
+
+.wmx-su-error {
+    font-size: 0.72rem;
+    color: #e05555;
+    margin: 6px 0 0 4px;
+    min-height: 16px;
+    display: block;
+}
+
+.wmx-strength-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.wmx-strength-seg {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border-default);
+    transition: background 0.3s;
+}
+
+.wmx-strength-seg.weak {
+    background: #e05555;
+}
+
+.wmx-strength-seg.medium {
+    background: #f5a623;
+}
+
+.wmx-strength-seg.strong {
+    background: #4caf82;
+}
+
+.wmx-su-submit {
+    width: 100%;
+    padding: 13px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+    background: linear-gradient(135deg, #8682fa, #5f5bc7);
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 22px rgba(134, 130, 250, 0.32);
+    transition: all 0.25s ease;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.wmx-su-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 32px rgba(134, 130, 250, 0.5);
+}
+
+.wmx-su-submit:active {
+    transform: translateY(0);
+}
+
+.wmx-su-footer {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    position: relative;
+    z-index: 1;
+}
+
+.wmx-su-footer a {
+    color: #8682fa;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 6px;
+    transition: color 0.2s;
+}
+
+.wmx-su-footer a:hover {
+    color: #b8b5ff;
+}
+
+.wmx-terms {
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    text-align: center;
+    margin-top: 14px;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+.wmx-terms a {
+    color: var(--text-label);
+    text-decoration: underline;
+}
+
+.wmx-su-toggle {
+    display: flex;
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: 30px;
+    padding: 4px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.wmx-su-toggle-btn {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    border-radius: 26px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+}
+
+.wmx-su-toggle-btn.active {
+    background: linear-gradient(135deg, #8682fa, #5f5bc7);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(134, 130, 250, 0.35);
+}
+
+@media (max-width: 480px) {
+    .wmx-signup-card {
+        padding: 28px 20px 26px;
+    }
+}

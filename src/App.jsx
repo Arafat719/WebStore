@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import viteLogo from '/vite.svg'
-import './App.css'
+import './css/App.css'
 import Navbar from './components/Navbar'
 import { Routes, Route } from 'react-router-dom';
 import Home from './components/Home'
@@ -28,14 +28,14 @@ function App() {
     })
     setTimeout(() => {
       setAlert(null);
-    }, 1500);
+    }, 5000);
   }
   
   return (
     <>
-      <Alert alert={alert} />
+      <Alert alert={alert} setAlert={setAlert} />
       <UserState>
-      <Navbar />
+      <Navbar setAlert={setAlert} />
         <Routes>
           <Route path="/" element={
             <Home />
@@ -45,11 +45,16 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup/>} />
           <Route path="/about" element={<About />} />
-          <Route path="/addproducts" element={<AddProducts showAlert={showAlert} />} />
+          <Route path="/addproducts" element={
+            <ProtectedRoute role="seller" showAlert={showAlert}>
+              <AddProducts showAlert={showAlert} />
+            </ProtectedRoute>
+          } />
           <Route path="/loader" element={<Loader />} /> 
-          <Route path="/products/:id" element={<ProductDetails/>}/>
-          <Route path="/profile/:id" element={<ProfilePage/>}/>
+          <Route path="/products/:id" element={<ProductDetails showAlert={showAlert}/>}/>
+          <Route path="/profile/:id" element={<ProfilePage showAlert={showAlert}/>}/>
           {/* <Route path="/github" element={<Github/>}/> */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </UserState>
       <Footer />

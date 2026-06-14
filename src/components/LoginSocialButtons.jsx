@@ -12,7 +12,7 @@ function LoginSocialButtons() {
       console.log("Credentials token is:", token);
 
       // Backend এ পাঠানো
-      const res = await fetch("http://localhost:5000/auth/google", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,8 +25,9 @@ function LoginSocialButtons() {
       }
 
       const data = await res.json();
-      // Token localStorage-এ save করা
-      localStorage.setItem("token", data.token || data);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user" }));
+      localStorage.setItem("id", JSON.stringify({ id: data.id }));
       navigate("/")
       console.log("Server response:", data);
     } catch (err) {
