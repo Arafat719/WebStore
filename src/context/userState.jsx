@@ -36,7 +36,7 @@ const UserState = (props) => {
             }
         })
         const data = await response.json()
-        setArray(data)
+        setArray(Array.isArray(data) ? data : data.products ?? [])
         setLoading(false)
     };
 
