@@ -1,0 +1,1078 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ─── Reset & base ────────────────────────────────────────────── */
+.wmx-settings-root *,
+.wmx-settings-root *::before,
+.wmx-settings-root *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.wmx-settings-root {
+  min-height: 100vh;
+  background: #0a0a0f;
+  color: #e2e2f0;
+  font-family: 'DM Sans', sans-serif;
+  padding-top: 64px; /* offset for fixed navbar */
+}
+
+/* ─── Keyframes ───────────────────────────────────────────────── */
+@keyframes wmx-fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wmx-slideInLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes wmx-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+@keyframes wmx-pulse-ring {
+  0%   { box-shadow: 0 0 0 0   rgba(134,130,250,0.50); }
+  70%  { box-shadow: 0 0 0 12px rgba(134,130,250,0); }
+  100% { box-shadow: 0 0 0 0   rgba(134,130,250,0); }
+}
+
+@keyframes wmx-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Page header ─────────────────────────────────────────────── */
+.wmx-settings-header {
+  padding: 2.4rem 2.5rem 1.5rem;
+  border-bottom: 1px solid rgba(134,130,250,0.1);
+  background: linear-gradient(180deg, rgba(134,130,250,0.05) 0%, transparent 100%);
+}
+
+.wmx-settings-header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 30%, #8682fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.03em;
+}
+
+.wmx-settings-header p {
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  color: rgba(226,226,240,0.45);
+}
+
+/* ─── Layout ──────────────────────────────────────────────────── */
+.wmx-settings-layout {
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  gap: 1.75rem;
+  align-items: flex-start;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────────── */
+.wmx-settings-sidebar {
+  width: 224px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+  animation: wmx-slideInLeft 0.4s ease both;
+}
+
+.wmx-sidebar-group { margin-bottom: 0.25rem; }
+
+.wmx-sidebar-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(134,130,250,0.55);
+  padding: 0.7rem 0.85rem 0.3rem;
+  display: block;
+}
+
+.wmx-sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  color: rgba(226,226,240,0.55);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+  position: relative;
+}
+
+.wmx-sidebar-btn:hover {
+  background: rgba(134,130,250,0.07);
+  color: #e2e2f0;
+  transform: translateX(2px);
+}
+
+.wmx-sidebar-btn.wmx-active {
+  background: rgba(134,130,250,0.14);
+  color: #b0adfc;
+}
+
+.wmx-sidebar-btn.wmx-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  height: 56%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #8682fa, #b8b5fc);
+}
+
+.wmx-sidebar-icon {
+  font-size: 0.95rem;
+  width: 1.1rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ─── Content ─────────────────────────────────────────────────── */
+.wmx-settings-content { flex: 1; min-width: 0; }
+
+.wmx-panel { animation: wmx-fadeIn 0.32s ease both; }
+
+/* ─── Glass card ──────────────────────────────────────────────── */
+.wmx-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(134,130,250,0.11);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  margin-bottom: 1.25rem;
+  transition: border-color 0.22s;
+}
+
+.wmx-card:last-child { margin-bottom: 0; }
+.wmx-card:hover { border-color: rgba(134,130,250,0.2); }
+
+.wmx-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wmx-card-desc {
+  font-size: 0.82rem;
+  color: rgba(226,226,240,0.42);
+  margin-bottom: 1.4rem;
+  line-height: 1.55;
+}
+
+/* ─── Form fields ─────────────────────────────────────────────── */
+.wmx-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.wmx-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  margin-bottom: 1rem;
+}
+
+.wmx-form-group:last-of-type { margin-bottom: 0; }
+
+.wmx-label {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: rgba(226,226,240,0.65);
+  letter-spacing: 0.01em;
+}
+
+.wmx-input,
+.wmx-textarea,
+.wmx-select {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(134,130,250,0.18);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  color: #e2e2f0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.wmx-input::placeholder,
+.wmx-textarea::placeholder { color: rgba(226,226,240,0.22); }
+
+.wmx-input:focus,
+.wmx-textarea:focus,
+.wmx-select:focus {
+  border-color: #8682fa;
+  background: rgba(134,130,250,0.055);
+  box-shadow: 0 0 0 3px rgba(134,130,250,0.11);
+}
+
+.wmx-textarea {
+  resize: vertical;
+  min-height: 88px;
+  line-height: 1.55;
+}
+
+.wmx-select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%238682fa' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.4rem;
+}
+
+.wmx-select option { background: #13131f; color: #e2e2f0; }
+
+/* ─── Save button ─────────────────────────────────────────────── */
+.wmx-btn-save {
+  margin-top: 1.4rem;
+  padding: 0.68rem 1.75rem;
+  background: linear-gradient(135deg, #8682fa 0%, #6663d8 100%);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 18px rgba(134,130,250,0.3);
+}
+
+.wmx-btn-save:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 26px rgba(134,130,250,0.44);
+}
+
+.wmx-btn-save:active { transform: translateY(0); }
+
+/* ─── Avatar upload ───────────────────────────────────────────── */
+.wmx-avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.wmx-avatar-circle {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8682fa 0%, #5753c9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  border: 2.5px solid rgba(134,130,250,0.35);
+  animation: wmx-pulse-ring 2.8s ease-in-out infinite;
+}
+
+.wmx-avatar-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.wmx-btn-upload {
+  padding: 0.48rem 1.05rem;
+  border: 1px solid rgba(134,130,250,0.38);
+  border-radius: 8px;
+  background: rgba(134,130,250,0.09);
+  color: #a8a5fc;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.wmx-btn-upload:hover {
+  background: rgba(134,130,250,0.17);
+  border-color: #8682fa;
+}
+
+.wmx-avatar-hint { font-size: 0.72rem; color: rgba(226,226,240,0.32); }
+
+/* ─── Toggle switch ───────────────────────────────────────────── */
+.wmx-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(134,130,250,0.06);
+}
+
+.wmx-toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.wmx-toggle-info { display: flex; flex-direction: column; gap: 0.12rem; }
+
+.wmx-toggle-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e2e2f0;
+}
+
+.wmx-toggle-desc {
+  font-size: 0.75rem;
+  color: rgba(226,226,240,0.38);
+}
+
+/* pure CSS switch — NO library */
+.wmx-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.wmx-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.wmx-switch-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.24s, border-color 0.24s;
+}
+
+.wmx-switch-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(226,226,240,0.35);
+  transition: transform 0.24s cubic-bezier(0.4,0,0.2,1), background 0.24s;
+}
+
+.wmx-switch input:checked + .wmx-switch-track {
+  background: rgba(134,130,250,0.32);
+  border-color: #8682fa;
+}
+
+.wmx-switch input:checked + .wmx-switch-track::after {
+  transform: translateX(20px);
+  background: #8682fa;
+}
+
+/* ─── Danger zone ─────────────────────────────────────────────── */
+.wmx-danger-card {
+  background: rgba(255,60,60,0.035);
+  border: 1px solid rgba(255,80,80,0.22);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.wmx-danger-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wmx-danger-desc {
+  font-size: 0.82rem;
+  color: rgba(255,107,107,0.55);
+  margin-bottom: 1.1rem;
+  line-height: 1.55;
+}
+
+.wmx-btn-danger {
+  padding: 0.62rem 1.45rem;
+  background: rgba(255,60,60,0.1);
+  border: 1px solid rgba(255,80,80,0.38);
+  border-radius: 10px;
+  color: #ff6b6b;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.wmx-btn-danger:hover {
+  background: rgba(255,60,60,0.18);
+  border-color: #ff6b6b;
+  transform: translateY(-1px);
+}
+
+/* ─── Sessions ────────────────────────────────────────────────── */
+.wmx-session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.wmx-session-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(134,130,250,0.08);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+
+.wmx-session-icon { font-size: 1.25rem; flex-shrink: 0; }
+
+.wmx-session-info { flex: 1; min-width: 0; }
+
+.wmx-session-device {
+  font-size: 0.845rem;
+  font-weight: 500;
+  color: #e2e2f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wmx-session-meta {
+  font-size: 0.73rem;
+  color: rgba(226,226,240,0.38);
+  margin-top: 0.1rem;
+}
+
+.wmx-session-badge {
+  font-size: 0.67rem;
+  font-weight: 600;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.wmx-session-badge.wmx-current {
+  background: rgba(134,130,250,0.14);
+  color: #a8a5fc;
+  border: 1px solid rgba(134,130,250,0.28);
+}
+
+.wmx-session-badge.wmx-other {
+  background: rgba(255,255,255,0.04);
+  color: rgba(226,226,240,0.42);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.wmx-btn-revoke {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: #ff6b6b;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  transition: opacity 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  flex-shrink: 0;
+}
+
+.wmx-btn-revoke:hover { opacity: 0.7; }
+
+/* ─── Credit card UI ──────────────────────────────────────────── */
+.wmx-payment-card {
+  background: linear-gradient(135deg, #1b1847 0%, #2d2980 50%, #1b1847 100%);
+  border: 1px solid rgba(134,130,250,0.22);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  user-select: none;
+}
+
+.wmx-payment-card::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: rgba(134,130,250,0.1);
+  pointer-events: none;
+}
+
+.wmx-payment-card::after {
+  content: '';
+  position: absolute;
+  bottom: -35px; left: 25px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: rgba(134,130,250,0.06);
+  pointer-events: none;
+}
+
+.wmx-card-chip {
+  width: 36px; height: 28px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #d4af37, #f5d567, #b8962e);
+  margin-bottom: 1.2rem;
+}
+
+.wmx-card-number {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 1rem;
+}
+
+.wmx-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.wmx-card-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.18rem;
+}
+
+.wmx-card-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.88);
+}
+
+.wmx-card-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff9f43, #ee5a24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Table ───────────────────────────────────────────────────── */
+.wmx-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(134,130,250,0.09);
+}
+
+.wmx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.wmx-table thead { background: rgba(134,130,250,0.07); }
+
+.wmx-table th {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(134,130,250,0.75);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.wmx-table td {
+  padding: 0.7rem 1rem;
+  color: rgba(226,226,240,0.78);
+  border-bottom: 1px solid rgba(134,130,250,0.055);
+  white-space: nowrap;
+}
+
+.wmx-table tbody tr:last-child td { border-bottom: none; }
+.wmx-table tbody tr:hover td { background: rgba(134,130,250,0.035); }
+
+.wmx-tx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+}
+
+.wmx-tx-badge.wmx-sale     { background: rgba(52,211,153,0.11);  color: #34d399; }
+.wmx-tx-badge.wmx-purchase { background: rgba(134,130,250,0.11); color: #a8a5fc; }
+.wmx-tx-badge.wmx-withdrawal { background: rgba(251,191,36,0.11); color: #fbbf24; }
+
+/* ─── Connected accounts ──────────────────────────────────────── */
+.wmx-connect-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.wmx-connect-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(134,130,250,0.09);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+}
+
+.wmx-connect-left { display: flex; align-items: center; gap: 0.85rem; }
+
+.wmx-connect-logo {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.wmx-connect-logo.wmx-google {
+  background: rgba(234,67,53,0.1);
+  border: 1px solid rgba(234,67,53,0.18);
+  color: #ea4335;
+}
+
+.wmx-connect-logo.wmx-github {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #e2e2f0;
+}
+
+.wmx-connect-name { font-size: 0.875rem; font-weight: 600; color: #e2e2f0; }
+
+.wmx-connect-status { font-size: 0.74rem; color: rgba(226,226,240,0.38); margin-top: 0.1rem; }
+.wmx-connect-status.wmx-connected { color: #34d399; }
+
+.wmx-btn-connect {
+  padding: 0.48rem 1.05rem;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.wmx-btn-connect.wmx-do-connect {
+  background: linear-gradient(135deg, #8682fa, #6663d8);
+  border: none;
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(134,130,250,0.28);
+}
+
+.wmx-btn-connect.wmx-do-connect:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.wmx-btn-connect.wmx-do-disconnect {
+  background: transparent;
+  border: 1px solid rgba(255,107,107,0.3);
+  color: #ff6b6b;
+}
+
+.wmx-btn-connect.wmx-do-disconnect:hover { background: rgba(255,60,60,0.07); }
+
+/* ─── Theme picker ────────────────────────────────────────────── */
+.wmx-theme-row { display: flex; gap: 0.85rem; margin-top: 0.45rem; }
+
+.wmx-theme-opt {
+  flex: 1;
+  border: 2px solid rgba(134,130,250,0.13);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255,255,255,0.02);
+  text-align: center;
+}
+
+.wmx-theme-opt.wmx-selected {
+  border-color: #8682fa;
+  background: rgba(134,130,250,0.07);
+}
+
+.wmx-theme-preview {
+  width: 100%; height: 46px;
+  border-radius: 7px;
+  margin-bottom: 0.6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.wmx-theme-preview.wmx-dark {
+  background: #0a0a0f;
+  border: 1px solid rgba(134,130,250,0.18);
+}
+
+.wmx-theme-preview.wmx-light {
+  background: #f3f3f8;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.wmx-theme-preview::after {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(134,130,250,0.45);
+}
+
+.wmx-theme-label { font-size: 0.8rem; font-weight: 600; color: rgba(226,226,240,0.65); }
+.wmx-theme-opt.wmx-selected .wmx-theme-label { color: #a8a5fc; }
+
+/* ─── Payout radios ───────────────────────────────────────────── */
+.wmx-radio-group { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 0.3rem; }
+
+.wmx-radio-opt {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(134,130,250,0.16);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255,255,255,0.02);
+  font-size: 0.85rem;
+  color: rgba(226,226,240,0.65);
+}
+
+.wmx-radio-opt input[type="radio"] { accent-color: #8682fa; width: 14px; height: 14px; flex-shrink: 0; }
+.wmx-radio-opt:has(input:checked) { border-color: #8682fa; background: rgba(134,130,250,0.07); color: #e2e2f0; }
+
+/* ─── Misc helpers ────────────────────────────────────────────── */
+.wmx-divider { border: none; border-top: 1px solid rgba(134,130,250,0.09); margin: 1.25rem 0; }
+
+.wmx-hint { font-size: 0.73rem; color: rgba(226,226,240,0.32); margin-top: 0.2rem; line-height: 1.5; }
+
+.wmx-input-wrap { position: relative; }
+.wmx-input-wrap .wmx-input { padding-right: 2.8rem; }
+
+.wmx-eye-btn {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(134,130,250,0.55);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.wmx-eye-btn:hover { color: #8682fa; }
+
+.wmx-inline-btns {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+.wmx-inline-btns .wmx-btn-save,
+.wmx-inline-btns .wmx-btn-danger { margin-top: 0; }
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .wmx-settings-root { padding-top: 64px; }
+
+  .wmx-settings-header { padding: 1.5rem 1.25rem 1rem; }
+  .wmx-settings-header h1 { font-size: 1.5rem; }
+
+  .wmx-settings-layout {
+    flex-direction: column;
+    padding: 0 0 2.5rem;
+    gap: 0;
+  }
+
+  .wmx-settings-sidebar {
+    width: 100%;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.2rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(134,130,250,0.1);
+    animation: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .wmx-settings-sidebar::-webkit-scrollbar { display: none; }
+
+  .wmx-sidebar-group { display: contents; }
+  .wmx-sidebar-label { display: none; }
+
+  .wmx-sidebar-btn {
+    flex-direction: column;
+    gap: 0.22rem;
+    padding: 0.5rem 0.85rem;
+    white-space: nowrap;
+    font-size: 0.7rem;
+    border-radius: 10px;
+    transform: none !important;
+    min-width: fit-content;
+  }
+
+  .wmx-sidebar-btn.wmx-active::before {
+    left: 50%; top: auto; bottom: -1px;
+    transform: translateX(-50%);
+    width: 55%; height: 2px;
+    border-radius: 2px 2px 0 0;
+  }
+
+  .wmx-sidebar-icon { font-size: 1.1rem; width: auto; }
+
+  .wmx-settings-content { padding: 1.25rem 1rem; }
+
+  .wmx-card { padding: 1.25rem 1.1rem; }
+  .wmx-danger-card { padding: 1.25rem 1.1rem; }
+
+  .wmx-form-row { grid-template-columns: 1fr; gap: 0; }
+
+  .wmx-theme-row { gap: 0.6rem; }
+
+  .wmx-table th,
+  .wmx-table td { font-size: 0.76rem; padding: 0.6rem 0.75rem; }
+}
+
+/* ─── LIGHT THEME OVERRIDES ───────────────────────────────────────── */
+html[data-theme='light'] .wmx-settings-root {
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-settings-header {
+  background: linear-gradient(180deg, rgba(134,130,250,0.04) 0%, transparent 100%);
+}
+
+html[data-theme='light'] .wmx-settings-header h1 {
+  background: linear-gradient(135deg, #0d0d1a 30%, #8682fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+html[data-theme='light'] .wmx-settings-header p {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .wmx-sidebar-btn {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .wmx-sidebar-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-sidebar-btn.wmx-active {
+  background: rgba(134,130,250,0.1);
+  color: #6c63ff;
+}
+
+html[data-theme='light'] .wmx-card {
+  background: var(--bg-card);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-card:hover {
+  border-color: rgba(134,130,250,0.25);
+}
+
+html[data-theme='light'] .wmx-card-title {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-card-desc {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .wmx-label {
+  color: var(--text-label);
+}
+
+html[data-theme='light'] .wmx-input,
+html[data-theme='light'] .wmx-textarea,
+html[data-theme='light'] .wmx-select {
+  background: var(--bg-input);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-input::placeholder,
+html[data-theme='light'] .wmx-textarea::placeholder {
+  color: var(--placeholder);
+}
+
+html[data-theme='light'] .wmx-input:focus,
+html[data-theme='light'] .wmx-textarea:focus,
+html[data-theme='light'] .wmx-select:focus {
+  background: var(--bg-hover);
+  border-color: #8682fa;
+}
+
+html[data-theme='light'] .wmx-select option {
+  background: var(--bg-dropdown);
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-hint {
+  color: var(--text-muted);
+}
+
+html[data-theme='light'] .wmx-toggle-row {
+  border-color: var(--border-subtle);
+}
+
+html[data-theme='light'] .wmx-toggle-title {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-toggle-desc {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .wmx-switch-track {
+  background: var(--bg-input);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-switch-track::after {
+  background: var(--text-muted);
+}
+
+html[data-theme='light'] .wmx-avatar-hint {
+  color: var(--text-muted);
+}
+
+html[data-theme='light'] .wmx-session-item {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-session-device {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-session-meta {
+  color: var(--text-muted);
+}
+
+html[data-theme='light'] .wmx-session-badge.wmx-other {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border-color: var(--border-subtle);
+}
+
+html[data-theme='light'] .wmx-connect-item {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-connect-logo.wmx-github {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.1);
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-connect-name {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-connect-status {
+  color: var(--text-muted);
+}
+
+html[data-theme='light'] .wmx-table td {
+  color: var(--text-body);
+  border-color: var(--border-subtle);
+}
+
+html[data-theme='light'] .wmx-table tbody tr:hover td {
+  background: var(--bg-hover);
+}
+
+html[data-theme='light'] .wmx-theme-opt {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-theme-opt.wmx-selected {
+  background: rgba(134,130,250,0.06);
+}
+
+html[data-theme='light'] .wmx-theme-label {
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .wmx-theme-opt.wmx-selected .wmx-theme-label {
+  color: #6c63ff;
+}
+
+html[data-theme='light'] .wmx-radio-opt {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
+html[data-theme='light'] .wmx-radio-opt:has(input:checked) {
+  color: var(--text-primary);
+}
+
+html[data-theme='light'] .wmx-divider {
+  border-color: var(--border-subtle);
+}
+
+html[data-theme='light'] .wmx-eye-btn {
+  color: var(--text-muted);
+}

@@ -336,10 +336,9 @@
 
 /* Cards grid */
 .wmx-cards-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  justify-content: flex-start;
 }
 
 /* Empty state */
@@ -353,19 +352,203 @@
 }
 
 /* ─────────────────────────────────────────
+   LISTINGS LAYOUT (cards + sidebar)
+───────────────────────────────────────── */
+.wmx-listings-layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.wmx-cards-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─────────────────────────────────────────
+   SIDEBAR
+───────────────────────────────────────── */
+.wmx-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 84px;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(134, 130, 250, 0.18);
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: 0 8px 40px var(--shadow-nav), inset 0 0 0 1px rgba(134, 130, 250, 0.06);
+}
+
+.wmx-sidebar-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  letter-spacing: 0.4px;
+  margin: 0 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wmx-sidebar-accent {
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: linear-gradient(180deg, #8682fa, #5f5bc7);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.wmx-sidebar-section {
+  margin-bottom: 24px;
+}
+
+.wmx-sidebar-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.wmx-sidebar-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 0 0 24px;
+}
+
+.wmx-sidebar-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wmx-filter-btn {
+  width: 100%;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 400;
+  color: var(--text-body);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wmx-filter-btn:hover {
+  color: #b8b5ff;
+  background: rgba(134, 130, 250, 0.1);
+  border-color: rgba(134, 130, 250, 0.22);
+  box-shadow: 0 0 12px rgba(134, 130, 250, 0.12);
+}
+
+.wmx-filter-btn.active {
+  color: #8682fa;
+  background: rgba(134, 130, 250, 0.14);
+  border-color: rgba(134, 130, 250, 0.35);
+  font-weight: 500;
+  box-shadow: 0 0 16px rgba(134, 130, 250, 0.18);
+}
+
+/* ─────────────────────────────────────────
    RESPONSIVE
 ───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .wmx-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .wmx-sidebar {
+    display: none;
+  }
+
+  .wmx-listings-layout {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 640px) {
   .wmx-stats {
     gap: 28px;
   }
 
   .wmx-cards-grid {
-    justify-content: center;
+    grid-template-columns: 1fr;
   }
 
   .wmx-section-header-row {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .wmx-listings {
+    padding: 60px 16px;
+  }
+
+  .wmx-hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wmx-btn-primary,
+  .wmx-btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ─────────────────────────────────────────
+   SEARCH + SORT
+───────────────────────────────────────── */
+.wmx-search-bar {
+  margin: 24px 0 16px;
+}
+
+.wmx-search-input {
+  width: 100%;
+  max-width: 480px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(134,130,250,0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.wmx-search-input:focus {
+  border-color: #8682fa;
+}
+
+.wmx-search-input::placeholder {
+  color: rgba(226,226,240,0.35);
+}
+
+.wmx-sort-select {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(134,130,250,0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.wmx-sort-select option {
+  background: #1a1a2e;
+  color: #fff;
 }

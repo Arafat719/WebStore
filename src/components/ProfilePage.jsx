@@ -11,6 +11,7 @@ import userContext from "../context/userContext";
 import "../css/ProfilePage.css";
 import ReviewSection from "./Reviewsection";
 import Productcard from "./Productcard";
+import MyOrders from "../pages/MyOrders/MyOrders";
 
 const ProfilePage = ({ showAlert }) => {
   const { getProfile, updateProfile, userId } = useContext(userContext);
@@ -24,6 +25,7 @@ const ProfilePage = ({ showAlert }) => {
   const [sellerProducts, setSellerProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [reviewStats, setReviewStats] = useState({ totalReviews: 0, averageRating: 0 });
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -48,9 +50,17 @@ const ProfilePage = ({ showAlert }) => {
         });
         setProductsLoading(true);
         try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/products/getbyseller/${data.seller._id}`);
-          const products = await res.json();
+          const [productsRes, reviewsRes] = await Promise.all([
+            fetch(`${import.meta.env.VITE_API_URL}/products/getbyseller/${data.seller._id}`),
+            fetch(`${import.meta.env.VITE_API_URL}/reviews/seller/${data.seller._id}`),
+          ]);
+          const products = await productsRes.json();
+          const reviews = await reviewsRes.json();
           setSellerProducts(Array.isArray(products) ? products : []);
+          setReviewStats({
+            totalReviews: reviews.totalReviews || 0,
+            averageRating: reviews.averageRating || 0,
+          });
         } catch {
           setSellerProducts([]);
         } finally {
@@ -110,10 +120,10 @@ const ProfilePage = ({ showAlert }) => {
   ];
 
   const stats = [
-    { label: "Orders", value: "12", icon: ShoppingBag, color: "#8682fa" },
-    { label: "Wishlist", value: "8", icon: Heart, color: "#e05580" },
-    { label: "Reviews", value: "24", icon: Star, color: "#f0a500" },
-    { label: "Listings", value: "3", icon: Globe, color: "#4caf82" },
+    { label: "Listings", value: String(sellerProducts.length), icon: Globe, color: "#4caf82" },
+    { label: "Reviews", value: String(reviewStats.totalReviews), icon: Star, color: "#f0a500" },
+    { label: "Orders", value: "0", icon: ShoppingBag, color: "#8682fa", soon: true },
+    { label: "Wishlist", value: "0", icon: Heart, color: "#e05580", soon: true },
   ];
 
   const infoFields = [
@@ -164,11 +174,11 @@ const ProfilePage = ({ showAlert }) => {
         </div>
 
         <div className="wmx-sb-stats">
-          <div className="wmx-sb-stat"><span>12</span>Orders</div>
+          <div className="wmx-sb-stat"><span>{sellerProducts.length}</span>Listed</div>
           <div className="wmx-sb-stat-div" />
-          <div className="wmx-sb-stat"><span>8</span>Wishlist</div>
+          <div className="wmx-sb-stat"><span>{reviewStats.totalReviews}</span>Reviews</div>
           <div className="wmx-sb-stat-div" />
-          <div className="wmx-sb-stat"><span>3</span>Listed</div>
+          <div className="wmx-sb-stat"><span>{reviewStats.averageRating > 0 ? reviewStats.averageRating.toFixed(1) : "—"}</span>Rating</div>
         </div>
 
         <div className="wmx-sb-divider" />
@@ -178,7 +188,7 @@ const ProfilePage = ({ showAlert }) => {
             <button
               key={id}
               className={`wmx-sb-btn ${activeTab === id ? "active" : ""}`}
-              onClick={() => setActiveTab(id)}
+              onClick={() => id === "settings" ? navigate("/settings") : setActiveTab(id)}
             >
               <span className="wmx-sb-btn-icon"><Icon size={15} /></span>
               {label}
@@ -196,8 +206,8 @@ const ProfilePage = ({ showAlert }) => {
       {/* ── Main ── */}
       <main className="wmx-prof-main">
 
-        {/* Hero banner */}
-        <div className="wmx-hero">
+        {/* Hero banner — hidden on orders tab */}
+        {activeTab !== "orders" && <div className="wmx-hero">
           <div className="wmx-hero-orb wmx-hero-orb-1" />
           <div className="wmx-hero-orb wmx-hero-orb-2" />
 
@@ -237,18 +247,24 @@ const ProfilePage = ({ showAlert }) => {
             </div>
 
             <div className="wmx-hero-stats">
-              {stats.map(({ label, value, icon: Icon, color }) => (
+              {stats.map(({ label, value, icon: Icon, color, soon }) => (
                 <div key={label} className="wmx-hero-stat">
                   <div className="wmx-hero-stat-icon" style={{ color, background: `${color}18` }}>
                     <Icon size={14} />
                   </div>
                   <div className="wmx-hero-stat-num">{value}</div>
-                  <div className="wmx-hero-stat-label">{label}</div>
+                  <div className="wmx-hero-stat-label">
+                    {label}
+                    {soon && <span style={{ fontSize: "0.55rem", color: "#8682fa", marginLeft: 4, opacity: 0.7 }}>soon</span>}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </div>}
+
+        {/* Orders tab */}
+        {activeTab === "orders" && <MyOrders />}
 
         {/* Reviews tab */}
         {activeTab === "reviews" && seller?._id && (
@@ -262,7 +278,7 @@ const ProfilePage = ({ showAlert }) => {
         )}
 
         {/* Content grid */}
-        <div className="wmx-pg-grid" style={{ display: activeTab === "reviews" ? "none" : undefined }}>
+        <div className="wmx-pg-grid" style={{ display: (activeTab === "reviews" || activeTab === "orders") ? "none" : undefined }}>
 
           {/* ── Left column ── */}
           <div className="wmx-pg-left">
@@ -283,7 +299,7 @@ const ProfilePage = ({ showAlert }) => {
                 {infoFields.map(({ label, value, icon: Icon }) => (
                   <div key={label} className="wmx-info-item">
                     <div className="wmx-info-icon"><Icon size={15} /></div>
-                    <div>
+                    <div className="wmx-info-text">
                       <div className="wmx-info-label">{label}</div>
                       <div className="wmx-info-value">{value ?? "—"}</div>
                     </div>
@@ -421,7 +437,7 @@ const ProfilePage = ({ showAlert }) => {
         </div>
 
         {/* ── My Listings ── */}
-        <div className="wmx-sp-section" style={{ display: activeTab === "reviews" ? "none" : undefined }}>
+        <div className="wmx-sp-section" style={{ display: (activeTab === "reviews" || activeTab === "orders") ? "none" : undefined }}>
           <div className="wmx-sp-header">
             <div className="wmx-card-icon-wrap"><Package size={14} /></div>
             <span>My Listings</span>

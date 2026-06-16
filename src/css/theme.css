@@ -1,8 +1,8 @@
 /* ─── DARK THEME (default) ─── */
 :root {
   --bg-page:           #0a0a0f;
-  --bg-card:           #111118;
-  --bg-card-2:         #0e0e1a;
+  --bg-card:           #1c1b2e;
+  --bg-card-2:         #18172a;
   --bg-sidebar:        #0d0d16;
   --bg-drawer:         #0e0e18;
   --bg-dropdown:       #14141e;
@@ -99,7 +99,7 @@ html[data-theme='light'] {
 }
 
 /* ─── LIGHT: About page heading gradient fix ─── */
-html[data-theme='light'] .wmx-hero h1 {
+html[data-theme='light'] .wmx-about-hero h1 {
   background: linear-gradient(135deg, #0d0d1a 30%, #6260d8 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -110,4 +110,47 @@ html, body {
   background: var(--bg-page);
   overflow-x: hidden;
   width: 100%;
+}
+
+/* ─── Extended design tokens (MyOrders, OrderCard) ─── */
+:root {
+  --accent:            #8682fa;
+  --accent-glow:       rgba(134, 130, 250, 0.3);
+  --accent-end:        #5f5bc7;
+  --glass-bg:          rgba(255, 255, 255, 0.03);
+  --glass-border:      rgba(255, 255, 255, 0.06);
+  --bg-surface:        rgba(255, 255, 255, 0.03);
+  --bg-surface-hover:  rgba(255, 255, 255, 0.06);
+  --bg-primary:        #0a0a0f;
+  --bg-secondary:      #0f0f1a;
+  --border-color:      rgba(255, 255, 255, 0.06);
+  --input-bg:          rgba(255, 255, 255, 0.05);
+  --success:           #4ade80;
+  --warning:           #f59e0b;
+  --danger:            #f87171;
+  --info:              #60a5fa;
+  --shadow:            0 8px 32px rgba(0, 0, 0, 0.4);
+  --scrollbar-thumb:   rgba(134, 130, 250, 0.3);
+  --modal-backdrop:    rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme='light'] {
+  --accent:            #6c63ff;
+  --accent-glow:       rgba(108, 99, 255, 0.2);
+  --accent-end:        #5552cc;
+  --glass-bg:          rgba(255, 255, 255, 0.75);
+  --glass-border:      rgba(134, 130, 250, 0.18);
+  --bg-surface:        rgba(255, 255, 255, 0.8);
+  --bg-surface-hover:  rgba(255, 255, 255, 1);
+  --bg-primary:        #f4f4fb;
+  --bg-secondary:      #ecedf8;
+  --border-color:      rgba(134, 130, 250, 0.15);
+  --input-bg:          rgba(255, 255, 255, 0.9);
+  --success:           #16a34a;
+  --warning:           #d97706;
+  --danger:            #dc2626;
+  --info:              #2563eb;
+  --shadow:            0 8px 32px rgba(108, 99, 255, 0.08);
+  --scrollbar-thumb:   rgba(108, 99, 255, 0.25);
+  --modal-backdrop:    rgba(0, 0, 0, 0.35);
 }

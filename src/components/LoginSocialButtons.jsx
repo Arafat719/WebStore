@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { faFacebook } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 
 function LoginSocialButtons() {
@@ -9,9 +7,7 @@ function LoginSocialButtons() {
   const handleGoogleLogin = async (credentialResponse) => {
     try {
       const token = credentialResponse.credential;
-      console.log("Credentials token is:", token);
 
-      // Backend এ পাঠানো
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/google`, {
         method: "POST",
         headers: {
@@ -29,9 +25,8 @@ function LoginSocialButtons() {
       localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user" }));
       localStorage.setItem("id", JSON.stringify({ id: data.id }));
       navigate("/")
-      console.log("Server response:", data);
-    } catch (err) {
-      console.error("Login failed:", err.message);
+    } catch {
+      // silently handle login failure
     }
   };
 
@@ -39,12 +34,11 @@ function LoginSocialButtons() {
     <div className="flex flex-col" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
       <GoogleLogin
         onSuccess={handleGoogleLogin}
-        onError={() => console.log("Login Failed")}
+        onError={() => {}}
         auto_select={false}
         className="my-1"
-      // useOneTap // Optional: One Tap login enable করতে
       />
-      {/* পরবর্তীতে Facebook / GitHub button add করতে পারো */}
+      {/* Facebook / GitHub buttons can be added here */}
     </div>
   );
 }

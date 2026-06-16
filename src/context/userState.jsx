@@ -8,6 +8,17 @@ const getInitialTheme = () => {
     return "dark";
 };
 
+// Wraps fetch — clears session and redirects to /login on 401
+const apiFetch = async (url, options = {}) => {
+    const response = await fetch(url, options);
+    if (response.status === 401) {
+        localStorage.clear();
+        window.location.href = "/login";
+        return null;
+    }
+    return response;
+};
+
 const UserState = (props) => {
     const navigate = useNavigate()
     const [array, setArray] = useState([])
@@ -24,20 +35,19 @@ const UserState = (props) => {
 
     const toggleTheme = () => setTheme(t => t === "dark" ? "light" : "dark");
 
-
-    //Getting all notes from db
     const API = import.meta.env.VITE_API_URL;
 
     const getProducts = async () => {
-        const response = await fetch(`${API}/products/getproducts`, {
+        const response = await apiFetch(`${API}/products/getproducts`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             }
-        })
-        const data = await response.json()
-        setArray(Array.isArray(data) ? data : data.products ?? [])
-        setLoading(false)
+        });
+        if (!response) return;
+        const data = await response.json();
+        setArray(Array.isArray(data) ? data : data.products ?? []);
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -48,12 +58,13 @@ const UserState = (props) => {
         const endpoint = role === "seller"
             ? `${API}/seller/signup`
             : `${API}/auth/signup`;
-        const response = await fetch(endpoint, {
+        const response = await apiFetch(endpoint, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
-        })
-        const data = await response.json()
+        });
+        if (!response) return;
+        const data = await response.json();
         if (data.problem === "email") {
             setError({ "email": "Invalid Email Address" })
             setTimeout(() => setError([]), 2000);
@@ -70,12 +81,13 @@ const UserState = (props) => {
     }
 
     const login = async (email, password) => {
-        const response = await fetch(`${API}/seller/login`, {
+        const response = await apiFetch(`${API}/seller/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
-        })
-        const data = await response.json()
+        });
+        if (!response) return;
+        const data = await response.json();
         if (data.problem === "email") {
             setError({ "email": "Invalid Email Address" })
             setTimeout(() => setError([]), 2000);
@@ -93,28 +105,31 @@ const UserState = (props) => {
 
     const getProfile = async () => {
         const token = localStorage.getItem('token')
-        const response = await fetch(`${API}/seller/profile`, {
+        const response = await apiFetch(`${API}/seller/profile`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "token": token
             }
-        })
-        return response.json()
+        });
+        if (!response) return null;
+        return response.json();
     }
 
     const updateProfile = async (profileData) => {
         const token = localStorage.getItem('token')
-        const response = await fetch(`${API}/seller/profile/edit`, {
+        const response = await apiFetch(`${API}/seller/profile/edit`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "token": token
             },
             body: JSON.stringify(profileData)
-        })
-        return response.json()
+        });
+        if (!response) return null;
+        return response.json();
     }
+
     const addProducts = async (
         images,
         title,
@@ -127,8 +142,8 @@ const UserState = (props) => {
         support,
         documentation,
         projectName,
-        repoUrl
-
+        repoUrl,
+        repoName
     ) => {
         const token = localStorage.getItem('token')
         try {
@@ -144,11 +159,11 @@ const UserState = (props) => {
                 return;
             }
 
-            const response = await fetch(`${API}/products/addproduct`, {
+            const response = await apiFetch(`${API}/products/addproduct`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": token
+                    "token": token
                 },
                 body: JSON.stringify({
                     images,
@@ -160,18 +175,24 @@ const UserState = (props) => {
                     builtWith,
                     features,
                     support,
-                    documentation
+                    documentation,
+                    repoName
                 })
             });
 
-            const res = await fetch(`${API}/git/import-repo`, {
+            const res = await apiFetch(`${API}/git/import-repo`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": token
+                    "token": token
                 },
                 body: JSON.stringify({ projectName, repoUrl })
             });
+
+            if (!response || !res) {
+                setLoading(false);
+                return;
+            }
 
             const data = await res.json();
             const json = await response.json();
@@ -185,23 +206,7 @@ const UserState = (props) => {
             } else {
                 alert(data.error || "❌ Something went wrong");
             }
-
-            console.log(
-                images,
-                title,
-                description,
-                price,
-                previewLink,
-                tags,
-                builtWith,
-                features,
-                support,
-                documentation,
-                projectName,
-                repoUrl
-            );
         } catch (error) {
-            console.error(error);
             alert("Server error");
             setLoading(false);
         }

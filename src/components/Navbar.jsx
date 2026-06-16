@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useContext } from 'react';
 import Logo from "../assets/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt } from "@fortawesome/free-solid-svg-icons";
 import userContext from '../context/userContext';
 import '../css/Navbar.css';
 
@@ -109,7 +109,15 @@ const Navbar = ({ setAlert }) => {
                     <div className="wmx-dropdown">
                       <Link className="wmx-dd-item" to={`/profile/${userId}`} onClick={() => setDropdownOpen(false)}>
                         <FontAwesomeIcon icon={faUser} style={{ fontSize: '0.75rem', color: '#8682fa' }} />
-                        View Profile
+                        My Profile
+                      </Link>
+                      <Link className="wmx-dd-item" to="/myorders" onClick={() => setDropdownOpen(false)}>
+                        <FontAwesomeIcon icon={faReceipt} style={{ fontSize: '0.75rem', color: '#8682fa' }} />
+                        My Orders
+                      </Link>
+                      <Link className="wmx-dd-item" to="/settings" onClick={() => setDropdownOpen(false)}>
+                        <FontAwesomeIcon icon={faGear} style={{ fontSize: '0.75rem', color: '#8682fa' }} />
+                        Settings
                       </Link>
                       <div className="wmx-dd-divider" />
                       <button className="wmx-dd-item danger" onClick={handleLogout}>
@@ -177,7 +185,21 @@ const Navbar = ({ setAlert }) => {
                 to={`/profile/${userId}`}
                 onClick={() => setMobileOpen(false)}
               >
-                View Profile
+                My Profile
+              </Link>
+              <Link
+                className="wmx-drawer-auth-btn ghost"
+                to="/myorders"
+                onClick={() => setMobileOpen(false)}
+              >
+                My Orders
+              </Link>
+              <Link
+                className="wmx-drawer-auth-btn ghost"
+                to="/settings"
+                onClick={() => setMobileOpen(false)}
+              >
+                Settings
               </Link>
               <button className="wmx-drawer-auth-btn danger" onClick={handleLogout}>
                 Logout

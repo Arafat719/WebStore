@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
 import userContext from '../context/userContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +5,6 @@ import { faTimes, faCloudArrowUp, faPlus, faCode, faLink, faDollarSign, faTags, 
 import '../css/AddProducts.css';
 
 function AddProducts({ showAlert }) {
-    const navigate = useNavigate()
     const [projectName, setProjectName] = useState("");
     const [repoUrl, setRepoUrl] = useState("");
     const [dragOver, setDragOver] = useState(false);
@@ -20,8 +18,37 @@ function AddProducts({ showAlert }) {
         documentation: false, support: "",
     });
 
+    const validateForm = () => {
+        if (!products.title?.trim()) {
+            showAlert("Product title is required", "error");
+            return false;
+        }
+        if (!products.description?.trim()) {
+            showAlert("Description is required", "error");
+            return false;
+        }
+        if (!products.price) {
+            showAlert("Price is required", "error");
+            return false;
+        }
+        if (!projectName?.trim()) {
+            showAlert("Project / Repo name is required", "error");
+            return false;
+        }
+        if (!repoUrl?.trim()) {
+            showAlert("GitHub Repo URL is required", "error");
+            return false;
+        }
+        if (products.images.filter(i => i?.preview).length === 0) {
+            showAlert("At least one image is required", "error");
+            return false;
+        }
+        return true;
+    };
+
     const handleClick = async (e) => {
         e.preventDefault();
+        if (!validateForm()) return;
         const handleUpload = async (file) => {
             const formData = new FormData();
             formData.append("file", file);
@@ -44,9 +71,10 @@ function AddProducts({ showAlert }) {
             features: products.features ? products.features.split(",").map(i => i.trim()) : [],
             images: uploadedImages
         };
+        const repoName = repoUrl ? repoUrl.split("/").filter(Boolean).pop() : "";
         await addProducts(finalData.images, finalData.title, finalData.description, finalData.price,
             finalData.previewLink, finalData.tags, finalData.builtWith, finalData.features,
-            finalData.support, finalData.documentation, projectName, repoUrl);
+            finalData.support, finalData.documentation, projectName, repoUrl, repoName);
     };
 
     const onchange = (e) => setproducts({ ...products, [e.target.name]: e.target.value });

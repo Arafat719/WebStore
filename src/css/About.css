@@ -10,13 +10,13 @@
   overflow-x: hidden;
 }
 
-.wmx-hero {
+.wmx-about-hero {
   position: relative;
   padding: 120px 40px 100px;
   text-align: center;
   overflow: hidden;
 }
-.wmx-hero::before {
+.wmx-about-hero::before {
   content: '';
   position: absolute;
   top: -200px; left: 50%; transform: translateX(-50%);
@@ -24,7 +24,7 @@
   background: radial-gradient(circle, rgba(69,67,146,0.35) 0%, transparent 70%);
   pointer-events: none;
 }
-.wmx-hero::after {
+.wmx-about-hero::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0; height: 1px;
@@ -43,7 +43,7 @@
   margin-bottom: 32px;
   font-family: 'DM Sans', sans-serif;
 }
-.wmx-hero h1 {
+.wmx-about-hero h1 {
   font-family: 'Syne', sans-serif;
   font-size: clamp(42px, 7vw, 80px);
   font-weight: 800;
@@ -55,7 +55,7 @@
   background-clip: text;
   margin-bottom: 24px;
 }
-.wmx-hero p {
+.wmx-about-hero p {
   font-size: 18px;
   color: var(--text-body);
   font-weight: 300;
@@ -229,7 +229,7 @@
 }
 
 @media (max-width: 600px) {
-  .wmx-hero { padding: 80px 24px 70px; }
+  .wmx-about-hero { padding: 80px 24px 70px; }
   .wmx-section { padding: 60px 24px; }
   .wmx-vision-box { padding: 36px 28px; }
 }

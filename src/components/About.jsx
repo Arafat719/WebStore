@@ -44,10 +44,10 @@ const About = () => {
       <div className="wmx-about">
 
         {/* HERO */}
-        <div className="wmx-hero">
+        <div className="wmx-about-hero">
           <div className="wmx-badge">Digital Marketplace</div>
           <h1>About<br />WebMarketX</h1>
-          <p>Your trusted marketplace for buying and selling web products — built for developers & entrepreneurs.</p>
+          <p>Your trusted marketplace for buying and selling web products — built for developers &amp; entrepreneurs.</p>
         </div>
 
         {/* WHO WE ARE + WHAT WE DO */}

@@ -16,6 +16,11 @@ import About from './components/About'
 import Loader from './components/Loader'
 import ProductDetails from './components/ProductsDetails'
 import ProfilePage from './components/ProfilePage';
+import TawkToChat from './components/TawkToChat';
+import Settings from './pages/Settings';
+import MyOrders from './pages/MyOrders/MyOrders';
+import PaymentSuccess from './pages/Payment/PaymentSuccess';
+import PaymentFail from './pages/Payment/PaymentFail';
 // import Github from './components/Github';
 
 function App() {
@@ -40,8 +45,6 @@ function App() {
           <Route path="/" element={
             <Home />
           } />
-          <Route>
-          </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup/>} />
           <Route path="/about" element={<About />} />
@@ -50,14 +53,27 @@ function App() {
               <AddProducts showAlert={showAlert} />
             </ProtectedRoute>
           } />
-          <Route path="/loader" element={<Loader />} /> 
+          <Route path="/loader" element={<Loader />} />
           <Route path="/products/:id" element={<ProductDetails showAlert={showAlert}/>}/>
           <Route path="/profile/:id" element={<ProfilePage showAlert={showAlert}/>}/>
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          } />
+          <Route path="/myorders" element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          } />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/fail" element={<PaymentFail />} />
           {/* <Route path="/github" element={<Github/>}/> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </UserState>
       <Footer />
+      <TawkToChat />
     </>
   )
 }

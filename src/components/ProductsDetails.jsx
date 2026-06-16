@@ -23,19 +23,55 @@ const ProductDetails = ({ showAlert }) => {
     fetch(`${import.meta.env.VITE_API_URL}/products/getbyid/${id}`)
       .then(res => res.json())
       .then(data => setProduct(data))
-      .catch(err => console.log(err));
+      .catch(() => {});
   }, [id]);
 
+  const API = import.meta.env.VITE_API_URL;
+
   const handleDownload = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/download/${product?.repoName}`, {
-      headers: { "auth-token": localStorage.getItem("token") }
-    });
+    const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
+    const res = await fetch(
+      `${API}/git/download/${githubUsername}/${product?.repoName}`,
+      { headers: { "token": localStorage.getItem("token") } }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || "Download failed. Make sure you have purchased this product.");
+      return;
+    }
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `${product?.repoName}.zip`;
     a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleBuy = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showAlert("Please login to purchase", "warning");
+      navigate("/login");
+      return;
+    }
+    const res = await fetch(`${API}/orders/initiate`, {
+      method: "POST",
+      headers: { "token": token, "Content-Type": "application/json" },
+      body: JSON.stringify({ productId: product._id }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showAlert(data.error || "Purchase failed", "error");
+      return;
+    }
+    if (data.free) {
+      showAlert("Added to your orders! You can now download.", "success");
+      return;
+    }
+    if (data.url) {
+      window.location.href = data.url;
+    }
   };
 
   if (!product) return (
@@ -166,7 +202,7 @@ const ProductDetails = ({ showAlert }) => {
               {isFree ? 'Free' : `$${product.price}`}
             </div>
             <div className="wmx-price-note">One-time purchase</div>
-            <button className="wmx-buy-btn" onClick={handleDownload}>
+            <button className="wmx-buy-btn" onClick={isFree ? handleDownload : handleBuy}>
               <FontAwesomeIcon icon={faDownload} />
               {isFree ? 'Download Free' : 'Buy Now'}
             </button>

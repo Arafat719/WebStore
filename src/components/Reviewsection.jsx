@@ -102,7 +102,7 @@ const ReviewSection = ({ productId, sellerId, currentUser, showAlert }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -156,7 +156,7 @@ const ReviewSection = ({ productId, sellerId, currentUser, showAlert }) => {
           "Content-Type": "application/json",
           "token": token,
         },
-        body: JSON.stringify({ productId, rating, comment }),
+        body: JSON.stringify({ productId, sellerId, rating, comment }),
       });
 
       const data = await res.json();
