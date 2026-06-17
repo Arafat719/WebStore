@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  Search, ShoppingBag, ChevronLeft, ChevronRight,
+  Search, ShoppingBag, Package, ChevronLeft, ChevronRight,
   X, CheckCircle, Circle, Clock,
 } from "lucide-react";
 import OrderCard from "../../components/OrderCard/OrderCard";
@@ -60,6 +60,45 @@ const normalizeOrder = (o) => {
   };
 };
 
+const normalizeSaleOrder = (o) => {
+  const rawPrice = o.amount ?? o.product?.price;
+  const price = rawPrice === "Free" || rawPrice === "0" || rawPrice === 0
+    ? 0
+    : typeof rawPrice === "number" ? rawPrice : parseFloat(rawPrice) || 0;
+  return {
+    id: o._id,
+    productName: o.product?.title || "Unknown Product",
+    productImage: o.product?.images?.[0] || null,
+    category: o.product?.tags?.[0] || "Digital Product",
+    license: "Standard License",
+    price,
+    date: o.createdAt,
+    status: o.status || "Pending",
+    buyerName: o.buyer?.name || o.buyerName || "Unknown Buyer",
+    buyerEmail: o.buyer?.email || o.buyerEmail || "",
+  };
+};
+
+const OrderCardSkeleton = ({ index }) => (
+  <div className="wmx-orders-skeleton" style={{ "--i": index }}>
+    <div className="wmx-orders-skeleton-top">
+      <div className="wmx-orders-skeleton-thumb wmx-orders-shimmer" />
+      <div className="wmx-orders-skeleton-info">
+        <div className="wmx-orders-skeleton-line wmx-orders-shimmer" style={{ width: "60%" }} />
+        <div className="wmx-orders-skeleton-line wmx-orders-shimmer" style={{ width: "40%" }} />
+        <div className="wmx-orders-skeleton-line wmx-orders-shimmer" style={{ width: "30%" }} />
+      </div>
+    </div>
+    <div className="wmx-orders-skeleton-footer">
+      <div className="wmx-orders-skeleton-badge wmx-orders-shimmer" />
+      <div className="wmx-orders-skeleton-btns">
+        <div className="wmx-orders-skeleton-btn wmx-orders-shimmer" />
+        <div className="wmx-orders-skeleton-btn wmx-orders-shimmer" />
+      </div>
+    </div>
+  </div>
+);
+
 const MyOrders = () => {
   const [activeTab, setActiveTab]         = useState("purchases");
   const [search, setSearch]               = useState("");
@@ -69,6 +108,9 @@ const MyOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orders, setOrders]               = useState([]);
   const [loading, setLoading]             = useState(true);
+  const [salesOrders, setSalesOrders]     = useState([]);
+  const [salesLoading, setSalesLoading]   = useState(false);
+  const [salesError, setSalesError]       = useState(false);
 
   const API = import.meta.env.VITE_API_URL;
 
@@ -83,9 +125,26 @@ const MyOrders = () => {
       .catch(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (activeTab !== "sales") return;
+    setSalesLoading(true);
+    setSalesError(false);
+    const token = localStorage.getItem("token");
+    fetch(`${API}/orders/sales`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        setSalesOrders((data.orders || []).map(normalizeSaleOrder));
+        setSalesLoading(false);
+      })
+      .catch(() => {
+        setSalesLoading(false);
+        setSalesError(true);
+      });
+  }, [activeTab]);
+
   const baseOrders = useMemo(
-    () => activeTab === "purchases" ? orders : [],
-    [activeTab, orders]
+    () => activeTab === "purchases" ? orders : salesOrders,
+    [activeTab, orders, salesOrders]
   );
 
   const filteredOrders = useMemo(() => {
@@ -112,6 +171,8 @@ const MyOrders = () => {
       return 0;
     });
   }, [baseOrders, search, statusFilter, sort]);
+
+  const isLoading = activeTab === "purchases" ? loading : salesLoading;
 
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE));
   const pageOrders = filteredOrders.slice(
@@ -197,22 +258,39 @@ const MyOrders = () => {
         </select>
       </div>
 
-      {loading ? (
-        <div className="wmx-orders-empty">
-          <p style={{ color: "rgba(226,226,240,0.5)", fontSize: "0.9rem" }}>Loading orders...</p>
+      {isLoading ? (
+        <div className="wmx-orders-list">
+          {[0, 1, 2].map((i) => (
+            <OrderCardSkeleton key={i} index={i} />
+          ))}
+        </div>
+      ) : activeTab === "sales" && salesError ? (
+        <div className="wmx-orders-error">
+          Failed to load sales. Please try again.
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="wmx-orders-empty">
-          <ShoppingBag size={54} className="wmx-orders-empty-icon" />
-          <h3 className="wmx-orders-empty-title">No orders found</h3>
+          {activeTab === "sales" ? (
+            <Package size={54} className="wmx-orders-empty-icon" />
+          ) : (
+            <ShoppingBag size={54} className="wmx-orders-empty-icon" />
+          )}
+          <h3 className="wmx-orders-empty-title">
+            {activeTab === "sales" ? "No sales yet" : "No orders found"}
+          </h3>
           <p className="wmx-orders-empty-sub">
             {activeTab === "purchases"
               ? "You haven't made any purchases yet."
-              : "You haven't made any sales yet."}
+              : "Start selling to see your sales here."}
           </p>
           {activeTab === "purchases" && (
             <Link to="/" className="wmx-orders-btn-accent" style={{ textDecoration: "none" }}>
               Browse Marketplace →
+            </Link>
+          )}
+          {activeTab === "sales" && (
+            <Link to="/addproducts" className="wmx-orders-btn-accent" style={{ textDecoration: "none" }}>
+              Add a Product
             </Link>
           )}
         </div>

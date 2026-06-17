@@ -22,6 +22,7 @@ const Signup = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [role, setRole] = useState("user");
+    const [legalToast, setLegalToast] = useState('');
 
     const [user, setuser] = useState({
         name: '',
@@ -261,9 +262,10 @@ const Signup = () => {
 
                 <div className="wmx-terms">
                     By signing up you agree to our{' '}
-                    <a href="#">Terms of Service</a>
+                    <a href="#" onClick={e => { e.preventDefault(); setLegalToast('Terms of Service — Coming soon!'); setTimeout(() => setLegalToast(''), 3000); }}>Terms of Service</a>
                     {' '}and{' '}
-                    <a href="#">Privacy Policy</a>.
+                    <a href="#" onClick={e => { e.preventDefault(); setLegalToast('Privacy Policy — Coming soon!'); setTimeout(() => setLegalToast(''), 3000); }}>Privacy Policy</a>.
+                    {legalToast && <span style={{ display: 'block', marginTop: 6, fontSize: '0.72rem', color: 'var(--accent)' }}>{legalToast}</span>}
                 </div>
 
                 <div className="wmx-su-footer">

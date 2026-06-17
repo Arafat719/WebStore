@@ -98,6 +98,14 @@ html[data-theme='light'] {
   --premium-bg:        linear-gradient(140deg, #ede8fa 0%, #f3f0fe 100%);
 }
 
+/* ─── LIGHT: Search bar fix ─── */
+html[data-theme='light'] .wmx-search-input {
+  background: rgba(0, 0, 0, 0.05);
+}
+html[data-theme='light'] .wmx-search-input::placeholder {
+  color: rgba(13, 13, 26, 0.35);
+}
+
 /* ─── LIGHT: About page heading gradient fix ─── */
 html[data-theme='light'] .wmx-about-hero h1 {
   background: linear-gradient(135deg, #0d0d1a 30%, #6260d8 100%) !important;

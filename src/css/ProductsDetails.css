@@ -190,6 +190,16 @@
   font-size: 11px;
   color: var(--text-secondary);
 }
+.wmx-chip-seller {
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
+}
+.wmx-chip-seller:hover {
+  color: var(--accent);
+  border-color: rgba(134, 130, 250, 0.35);
+  background: rgba(134, 130, 250, 0.08);
+}
 .wmx-chip-stars { gap: 3px; }
 .wmx-chip-rating {
   margin-left: 4px;
@@ -357,6 +367,25 @@
   background: rgba(134,130,250,0.1);
   color: #b8b5ff;
 }
+.wmx-preview-btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.wmx-preview-btn--disabled:hover {
+  background: transparent;
+  color: #8682fa;
+  transform: none;
+}
+.wmx-preview-unavail {
+  font-size: 11px;
+  color: #8682fa;
+  text-align: center;
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: rgba(134,130,250,0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(134,130,250,0.2);
+}
 
 /* RIGHT CARDS */
 .wmx-r-card {
@@ -459,6 +488,69 @@
   .wmx-img-box { height: 220px; }
   .wmx-product-title { font-size: 1.5rem; }
   .wmx-features-grid { grid-template-columns: 1fr; }
+}
+
+/* WISHLIST BUTTON */
+.wmx-buy-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+.wmx-buy-row .wmx-buy-btn {
+  flex: 1;
+  margin-bottom: 0;
+}
+.wmx-wishlist-btn {
+  width: 46px;
+  flex-shrink: 0;
+  background: rgba(134,130,250,0.08);
+  border: 1px solid rgba(134,130,250,0.25);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.22s ease;
+  line-height: 1;
+  padding: 0;
+}
+.wmx-wishlist-btn:hover {
+  background: rgba(134,130,250,0.15);
+  border-color: rgba(134,130,250,0.4);
+  color: #8682fa;
+}
+.wmx-wishlist-btn.active {
+  color: #8682fa;
+  background: rgba(134,130,250,0.12);
+  border-color: rgba(134,130,250,0.35);
+}
+.wmx-wishlist-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* WISHLIST TOAST */
+.wmx-wl-toast {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  z-index: 3000;
+  background: rgba(18,16,36,0.97);
+  border: 1px solid rgba(134,130,250,0.3);
+  color: #c0c0d8;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  padding: 11px 18px;
+  border-radius: 11px;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+  animation: wmx-fadein 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 .wmx-pd-reviews {

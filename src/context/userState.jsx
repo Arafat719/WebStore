@@ -24,8 +24,6 @@ const UserState = (props) => {
     const [array, setArray] = useState([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState([])
-    const [projectName, setProjectName] = useState("");
-    const [repoUrl, setRepoUrl] = useState("");
     const [theme, setTheme] = useState(getInitialTheme);
 
     useEffect(() => {
@@ -141,74 +139,65 @@ const UserState = (props) => {
         features,
         support,
         documentation,
-        projectName,
-        repoUrl,
-        repoName
+        githubRepoUrl,
+        repoPat,
+        livePreviewUrl
     ) => {
         const token = localStorage.getItem('token')
         try {
             setLoading(true);
 
-            if (!projectName || !repoUrl) {
-                alert("All fields are required!");
-                return;
+            if (!githubRepoUrl || !githubRepoUrl.includes("github.com")) {
+                setLoading(false);
+                return { success: false, message: "Please enter a valid GitHub repo link." };
             }
 
-            if (!repoUrl.includes("github.com")) {
-                alert("Please enter a valid GitHub repo link");
-                return;
+            const githubRepoName = githubRepoUrl.split("/").filter(Boolean).pop();
+
+            // Step 1: Import repo first
+            const importRes = await apiFetch(`${API}/git/import-repo`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "token": token },
+                body: JSON.stringify({ githubRepoUrl, repoPat, githubRepoName })
+            });
+            if (!importRes) {
+                setLoading(false);
+                return { success: false, message: "Request failed. Please try again." };
+            }
+            const importData = await importRes.json();
+            if (!importRes.ok) {
+                setLoading(false);
+                return { success: false, message: importData.error || "Failed to import repository." };
             }
 
-            const response = await apiFetch(`${API}/products/addproduct`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "token": token
-                },
+            const storedRepoName = importData.storedRepoName;
+
+            // Step 2: Add product with storedRepoName
+            const res = await apiFetch(`${API}/products/addproduct`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "token": token },
                 body: JSON.stringify({
-                    images,
-                    title,
-                    description,
-                    price,
-                    previewLink,
-                    tags,
-                    builtWith,
-                    features,
-                    support,
-                    documentation,
-                    repoName
+                    title, images, description, price, repoName: storedRepoName,
+                    githubRepoUrl, livePreviewUrl, tags, builtWith, features,
+                    documentation, support, previewLink
                 })
             });
-
-            const res = await apiFetch(`${API}/git/import-repo`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "token": token
-                },
-                body: JSON.stringify({ projectName, repoUrl })
-            });
-
-            if (!response || !res) {
+            if (!res) {
                 setLoading(false);
-                return;
+                return { success: false, message: "Request failed. Please try again." };
             }
-
             const data = await res.json();
-            const json = await response.json();
             setLoading(false);
 
-            if (res.ok && response.ok) {
-                alert("✅ Project uploaded successfully!");
-                setArray(prev => [...prev, json]);
-                setProjectName("");
-                setRepoUrl("");
+            if (res.ok) {
+                setArray(prev => [...prev, data]);
+                return { success: true, message: "Project uploaded successfully!" };
             } else {
-                alert(data.error || "❌ Something went wrong");
+                return { success: false, message: data.error || "Something went wrong." };
             }
         } catch (error) {
-            alert("Server error");
             setLoading(false);
+            return { success: false, message: "Server error. Please try again." };
         }
     };
 

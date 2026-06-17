@@ -1,17 +1,18 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   User, Mail, Phone, MapPin, ShieldCheck,
   Lock, Heart, ShoppingBag, Settings, LogOut,
   Star, Crown, ChevronRight, Bell, Package,
   TrendingUp, Globe, Edit3, Camera, AtSign,
-  Briefcase, GitBranch, Link, Calendar, X
+  Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil
 } from "lucide-react";
 import userContext from "../context/userContext";
 import "../css/ProfilePage.css";
 import ReviewSection from "./Reviewsection";
 import Productcard from "./Productcard";
 import MyOrders from "../pages/MyOrders/MyOrders";
+import EditProductModal from "./EditProductModal";
 
 const ProfilePage = ({ showAlert }) => {
   const { getProfile, updateProfile, userId } = useContext(userContext);
@@ -25,7 +26,17 @@ const ProfilePage = ({ showAlert }) => {
   const [sellerProducts, setSellerProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const [successToast, setSuccessToast] = useState('');
   const [reviewStats, setReviewStats] = useState({ totalReviews: 0, averageRating: 0 });
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [wishlistFetched, setWishlistFetched] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const [removingIds, setRemovingIds] = useState(new Set());
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -66,10 +77,99 @@ const ProfilePage = ({ showAlert }) => {
         } finally {
           setProductsLoading(false);
         }
+        const token = localStorage.getItem('token');
+        if (token) {
+          fetch(`${import.meta.env.VITE_API_URL}/wishlist/my`, { headers: { token } })
+            .then(r => r.json())
+            .then(d => setWishlistCount(Array.isArray(d) ? d.length : 0))
+            .catch(() => {});
+        }
       }
     };
     load();
   }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'wishlist') {
+      setWishlistFetched(false);
+      return;
+    }
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setWishlistFetched(true);
+      return;
+    }
+    setWishlistLoading(true);
+    fetch(`${import.meta.env.VITE_API_URL}/wishlist/my`, { headers: { "token": token } })
+      .then(r => r.json())
+      .then(data => {
+        const items = Array.isArray(data) ? data : [];
+        setWishlistItems(items);
+        setWishlistCount(items.length);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setWishlistLoading(false);
+        setWishlistFetched(true);
+      });
+  }, [activeTab]);
+
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    setDeleteError('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/products/delete/${deleteTarget}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', token },
+      });
+      if (res.status === 401) {
+        localStorage.clear();
+        window.location.href = '/login';
+        return;
+      }
+      if (res.ok) {
+        setSellerProducts(prev => prev.filter(p => p._id !== deleteTarget));
+        setDeleteTarget(null);
+      } else {
+        const data = await res.json();
+        setDeleteError(data.message || data.error || 'Failed to delete product');
+      }
+    } catch {
+      setDeleteError('Server error. Please try again.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleRemoveWishlist = async (productId) => {
+    const token = localStorage.getItem('token');
+    let res = null;
+    try {
+      res = await fetch(`${import.meta.env.VITE_API_URL}/wishlist/remove/${productId}`, {
+        method: 'DELETE',
+        headers: { token },
+      });
+    } catch {}
+    if (res?.ok) {
+      setRemovingIds(prev => new Set([...prev, productId]));
+      setTimeout(() => {
+        setWishlistItems(prev => prev.filter(item => {
+          const p = item.product || item;
+          return p._id !== productId;
+        }));
+        setWishlistCount(prev => Math.max(0, prev - 1));
+        setRemovingIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
+      }, 300);
+    }
+  };
+
+  const handleUpdateProduct = (updatedProduct) => {
+    setSellerProducts(prev => prev.map(p => p._id === updatedProduct._id ? updatedProduct : p));
+    setEditingProduct(null);
+    setSuccessToast('Product updated successfully!');
+    setTimeout(() => setSuccessToast(''), 3000);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -123,7 +223,7 @@ const ProfilePage = ({ showAlert }) => {
     { label: "Listings", value: String(sellerProducts.length), icon: Globe, color: "#4caf82" },
     { label: "Reviews", value: String(reviewStats.totalReviews), icon: Star, color: "#f0a500" },
     { label: "Orders", value: "0", icon: ShoppingBag, color: "#8682fa", soon: true },
-    { label: "Wishlist", value: "0", icon: Heart, color: "#e05580", soon: true },
+    { label: "Wishlist", value: String(wishlistCount), icon: Heart, color: "#e05580" },
   ];
 
   const infoFields = [
@@ -131,7 +231,7 @@ const ProfilePage = ({ showAlert }) => {
     { label: "Email Address", value: seller?.email, icon: Mail },
     { label: "Phone", value: seller?.phone, icon: Phone },
     { label: "Location", value: seller?.location, icon: MapPin },
-    { label: "Website", value: seller?.website, icon: Link },
+    { label: "Website", value: seller?.website, icon: LinkIcon },
     { label: "Joined", value: seller?.joinedAt ? new Date(seller.joinedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : undefined, icon: Calendar },
   ];
 
@@ -277,8 +377,79 @@ const ProfilePage = ({ showAlert }) => {
           </div>
         )}
 
+        {/* Wishlist tab */}
+        {activeTab === "wishlist" && (
+          <div className="wmx-wl-section">
+            <div className="wmx-sp-header">
+              <div className="wmx-card-icon-wrap"><Heart size={14} /></div>
+              <span>My Wishlist</span>
+            </div>
+            {(!wishlistFetched || wishlistLoading) ? (
+              <div className="wmx-wl-grid">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="wmx-wl-skeleton">
+                    <div className="wmx-wl-sk-img" />
+                    <div className="wmx-wl-sk-body">
+                      <div className="wmx-wl-sk-line wmx-wl-sk-title" />
+                      <div className="wmx-wl-sk-line wmx-wl-sk-price" />
+                      <div className="wmx-wl-sk-line wmx-wl-sk-btn" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : wishlistItems.length === 0 ? (
+              <div className="wmx-wl-empty">
+                <div className="wmx-wl-empty-icon">♡</div>
+                <p>No products in your wishlist yet</p>
+                <button className="wmx-wl-browse-btn" onClick={() => navigate('/')}>
+                  Browse Products
+                </button>
+              </div>
+            ) : (
+              <div className="wmx-wl-grid">
+                {wishlistItems.map(item => {
+                  const prod = item.product || item;
+                  const productId = prod._id;
+                  const isRemoving = removingIds.has(productId);
+                  return (
+                    <div key={productId} className={`wmx-wl-card${isRemoving ? ' removing' : ''}`}>
+                      <button
+                        className="wmx-wl-remove-btn"
+                        onClick={() => handleRemoveWishlist(productId)}
+                        title="Remove from wishlist"
+                      >
+                        ✕
+                      </button>
+                      <div className="wmx-wl-card-img">
+                        {prod.images?.[0]
+                          ? <img src={prod.images[0]} alt={prod.title} />
+                          : <div className="wmx-wl-card-img-placeholder">No Image</div>
+                        }
+                      </div>
+                      <div className="wmx-wl-card-body">
+                        <h4 className="wmx-wl-card-title">{prod.title}</h4>
+                        <div className="wmx-wl-card-price">
+                          {prod.price === 'Free' || prod.price === 0 ? 'Free' : `$${prod.price}`}
+                        </div>
+                        <div className="wmx-wl-card-btns">
+                          <Link to={`/products/${productId}`} className="wmx-wl-view-btn">
+                            View Product
+                          </Link>
+                          <Link to={`/products/${productId}`} className="wmx-wl-buy-btn">
+                            Buy Now
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Content grid */}
-        <div className="wmx-pg-grid" style={{ display: (activeTab === "reviews" || activeTab === "orders") ? "none" : undefined }}>
+        <div className="wmx-pg-grid" style={{ display: (activeTab === "reviews" || activeTab === "orders" || activeTab === "wishlist") ? "none" : undefined }}>
 
           {/* ── Left column ── */}
           <div className="wmx-pg-left">
@@ -405,7 +576,7 @@ const ProfilePage = ({ showAlert }) => {
                 <li><span>✦</span> Advanced analytics</li>
                 <li><span>✦</span> Verified seller badge</li>
               </ul>
-              <button className="wmx-premium-btn">
+              <button className="wmx-premium-btn" onClick={() => { setSuccessToast('Premium plan coming soon! 🚀'); setTimeout(() => setSuccessToast(''), 3500); }}>
                 Upgrade Now <ChevronRight size={13} />
               </button>
             </div>
@@ -420,11 +591,11 @@ const ProfilePage = ({ showAlert }) => {
               </div>
               <div className="wmx-ql-list">
                 {[
-                  { label: "Browse Marketplace", icon: Globe },
-                  { label: "Add New Listing", icon: Package },
-                  { label: "View Wishlist", icon: Heart },
-                ].map(({ label, icon: Icon }) => (
-                  <button key={label} className="wmx-ql-btn">
+                  { label: "Browse Marketplace", icon: Globe, action: () => navigate('/') },
+                  { label: "Add New Listing", icon: Package, action: () => navigate('/addproducts') },
+                  { label: "View Wishlist", icon: Heart, action: () => setActiveTab('wishlist') },
+                ].map(({ label, icon: Icon, action }) => (
+                  <button key={label} className="wmx-ql-btn" onClick={action}>
                     <Icon size={13} />
                     {label}
                     <ChevronRight size={12} className="wmx-ql-arrow" />
@@ -437,7 +608,7 @@ const ProfilePage = ({ showAlert }) => {
         </div>
 
         {/* ── My Listings ── */}
-        <div className="wmx-sp-section" style={{ display: (activeTab === "reviews" || activeTab === "orders") ? "none" : undefined }}>
+        <div className="wmx-sp-section" style={{ display: (activeTab === "reviews" || activeTab === "orders" || activeTab === "wishlist") ? "none" : undefined }}>
           <div className="wmx-sp-header">
             <div className="wmx-card-icon-wrap"><Package size={14} /></div>
             <span>My Listings</span>
@@ -449,14 +620,79 @@ const ProfilePage = ({ showAlert }) => {
           ) : (
             <div className="wmx-sp-grid">
               {sellerProducts.map((product) => (
-                <Productcard key={product._id} arr={product} />
+                <div key={product._id} className="wmx-sp-card-wrap">
+                  <div className="wmx-sp-card-actions">
+                    <button
+                      className="wmx-sp-action-btn wmx-edit"
+                      title="Edit product"
+                      onClick={() => setEditingProduct(product)}
+                    >
+                      <Pencil size={13} />
+                    </button>
+                    <button
+                      className="wmx-sp-action-btn wmx-del"
+                      title="Delete product"
+                      onClick={() => { setDeleteTarget(product._id); setDeleteError(''); }}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                  <Productcard arr={product} />
+                </div>
               ))}
             </div>
           )}
         </div>
       </main>
 
-      {/* ── Edit Modal ── */}
+      {/* ── Delete Confirm Dialog ── */}
+      {deleteTarget && (
+        <div
+          className="wmx-modal-overlay"
+          onClick={e => e.target === e.currentTarget && !deleteLoading && setDeleteTarget(null)}
+        >
+          <div className="wmx-delete-dialog">
+            <div className="wmx-delete-icon">🗑️</div>
+            <h3>Delete Product?</h3>
+            <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+            {deleteError && <div className="wmx-modal-error" style={{ marginBottom: 16 }}>{deleteError}</div>}
+            <div className="wmx-delete-dialog-btns">
+              <button
+                className="wmx-modal-cancel"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleteLoading}
+              >
+                Cancel
+              </button>
+              <button
+                className="wmx-delete-confirm-btn"
+                onClick={handleDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Edit Product Modal ── */}
+      {editingProduct && (
+        <EditProductModal
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onSave={handleUpdateProduct}
+        />
+      )}
+
+      {/* ── Success Toast ── */}
+      {successToast && (
+        <div className="wmx-toast">
+          <span>✓</span> {successToast}
+        </div>
+      )}
+
+      {/* ── Profile Edit Modal ── */}
       {editOpen && (
         <div className="wmx-modal-overlay" onClick={(e) => e.target === e.currentTarget && setEditOpen(false)}>
           <div className="wmx-modal">

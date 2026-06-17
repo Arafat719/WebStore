@@ -108,15 +108,15 @@ const Navbar = ({ setAlert }) => {
                   {dropdownOpen && (
                     <div className="wmx-dropdown">
                       <Link className="wmx-dd-item" to={`/profile/${userId}`} onClick={() => setDropdownOpen(false)}>
-                        <FontAwesomeIcon icon={faUser} style={{ fontSize: '0.75rem', color: '#8682fa' }} />
+                        <FontAwesomeIcon icon={faUser} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
                         My Profile
                       </Link>
                       <Link className="wmx-dd-item" to="/myorders" onClick={() => setDropdownOpen(false)}>
-                        <FontAwesomeIcon icon={faReceipt} style={{ fontSize: '0.75rem', color: '#8682fa' }} />
+                        <FontAwesomeIcon icon={faReceipt} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
                         My Orders
                       </Link>
                       <Link className="wmx-dd-item" to="/settings" onClick={() => setDropdownOpen(false)}>
-                        <FontAwesomeIcon icon={faGear} style={{ fontSize: '0.75rem', color: '#8682fa' }} />
+                        <FontAwesomeIcon icon={faGear} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
                         Settings
                       </Link>
                       <div className="wmx-dd-divider" />

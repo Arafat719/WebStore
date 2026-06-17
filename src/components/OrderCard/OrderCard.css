@@ -265,6 +265,36 @@
   opacity: 1;
 }
 
+/* ─── Buyer info row (sales cards) ─── */
+.wmx-orders-buyer-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.wmx-orders-buyer-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.wmx-orders-buyer-name {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.wmx-orders-buyer-email {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.wmx-orders-buyer-email::before {
+  content: "·";
+  margin-right: 5px;
+  color: var(--text-muted);
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 640px) {
   .wmx-orders-info-header { flex-wrap: wrap; }

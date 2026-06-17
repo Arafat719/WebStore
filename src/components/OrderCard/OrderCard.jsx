@@ -1,4 +1,4 @@
-import { Calendar, Download, MessageCircle, RotateCcw, Eye } from "lucide-react";
+import { Calendar, Download, MessageCircle, RotateCcw, Eye, User } from "lucide-react";
 import "./OrderCard.css";
 
 const STATUS_CONFIG = {
@@ -53,6 +53,16 @@ const OrderCard = ({ order, onViewDetails, userRole, index }) => {
             <span className="wmx-orders-badge-category">{order.category}</span>
             <span className="wmx-orders-badge-license">{order.license}</span>
           </div>
+
+          {order.buyerName && (
+            <div className="wmx-orders-buyer-row">
+              <User size={11} className="wmx-orders-buyer-icon" />
+              <span className="wmx-orders-buyer-name">{order.buyerName}</span>
+              {order.buyerEmail && (
+                <span className="wmx-orders-buyer-email">{order.buyerEmail}</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -82,7 +92,7 @@ const OrderCard = ({ order, onViewDetails, userRole, index }) => {
             View Details
           </button>
 
-          {order.status === "Completed" && (
+          {order.status === "Completed" && userRole !== "seller" && (
             <button className="wmx-orders-btn-ghost">
               <Download size={13} />
               Download
@@ -94,7 +104,7 @@ const OrderCard = ({ order, onViewDetails, userRole, index }) => {
             {userRole === "buyer" ? "Contact Seller" : "Contact Buyer"}
           </button>
 
-          {order.status === "Completed" && (
+          {order.status === "Completed" && userRole !== "seller" && (
             <button className="wmx-orders-btn-danger">
               <RotateCcw size={12} />
               Request Refund

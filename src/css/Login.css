@@ -184,6 +184,21 @@
 }
 .wmx-login-footer a:hover { color: #b8b5ff; }
 
+.wmx-forgot-row {
+  margin-top: 6px;
+  text-align: right;
+  position: relative;
+  z-index: 1;
+}
+.wmx-forgot-link {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.wmx-forgot-link:hover { opacity: 0.75; }
+
 @media (max-width: 480px) {
   .wmx-login-card { padding: 30px 22px 28px; }
 }

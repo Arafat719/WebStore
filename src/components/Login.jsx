@@ -92,6 +92,9 @@ const Login = () => {
               </button>
             </div>
             {error?.password && <span className="wmx-error">{error.password}</span>}
+            <div className="wmx-forgot-row">
+              <Link to="/forgot-password" className="wmx-forgot-link">Forgot Password?</Link>
+            </div>
           </div>
 
           {/* Submit */}

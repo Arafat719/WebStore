@@ -520,7 +520,7 @@
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(134,130,250,0.3);
   border-radius: 8px;
-  color: #fff;
+  color: var(--text-primary);
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   outline: none;
@@ -551,4 +551,97 @@
 .wmx-sort-select option {
   background: #1a1a2e;
   color: #fff;
+}
+
+/* ─────────────────────────────────────────
+   PAGINATION
+───────────────────────────────────────── */
+.wmx-pagination-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-default);
+}
+
+.wmx-pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wmx-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s, opacity 0.18s;
+  white-space: nowrap;
+}
+
+.wmx-page-btn:hover:not(:disabled):not(.wmx-page-active) {
+  background: rgba(134, 130, 250, 0.15);
+  border-color: rgba(134, 130, 250, 0.4);
+  color: var(--accent);
+}
+
+.wmx-page-btn.wmx-page-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  cursor: default;
+  box-shadow: 0 2px 10px rgba(134, 130, 250, 0.35);
+}
+
+.wmx-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.wmx-page-arrow {
+  padding: 0 14px;
+  gap: 4px;
+  font-size: 0.78rem;
+  letter-spacing: 0.2px;
+}
+
+.wmx-page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.wmx-pagination-info {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Light theme adjustments */
+html[data-theme='light'] .wmx-page-btn.wmx-page-active {
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.25);
+}
+
+@media (max-width: 480px) {
+  .wmx-page-arrow { padding: 0 10px; font-size: 0.72rem; }
+  .wmx-page-btn   { min-width: 32px; height: 32px; font-size: 0.78rem; }
 }

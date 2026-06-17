@@ -21,6 +21,9 @@ import Settings from './pages/Settings';
 import MyOrders from './pages/MyOrders/MyOrders';
 import PaymentSuccess from './pages/Payment/PaymentSuccess';
 import PaymentFail from './pages/Payment/PaymentFail';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import PublicProfile from './pages/PublicProfile';
 // import Github from './components/Github';
 
 function App() {
@@ -68,6 +71,9 @@ function App() {
           } />
           <Route path="/payment/success" element={<PaymentSuccess />} />
           <Route path="/payment/fail" element={<PaymentFail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/seller/:id" element={<PublicProfile />} />
           {/* <Route path="/github" element={<Github/>}/> */}
           <Route path="*" element={<NotFound />} />
         </Routes>

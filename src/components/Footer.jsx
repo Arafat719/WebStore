@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faFacebook, faLinkedin, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope, faPhone, faLocationDot, faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +7,12 @@ import FiverrI from '../assets/Fiverr.png';
 import '../css/Footer.css';
 
 const Footer = () => {
+    const [legalToast, setLegalToast] = useState('');
+    const showLegal = (e, label) => {
+        e.preventDefault();
+        setLegalToast(`${label} — Coming soon!`);
+        setTimeout(() => setLegalToast(''), 3000);
+    };
     return (
         <>
 
@@ -93,9 +99,12 @@ const Footer = () => {
                             &copy; 2026 <span>WebMarketX</span>. All rights reserved.
                         </p>
                         <div className="wmx-bottom-links">
-                            <a href="#">Privacy Policy</a>
-                            <a href="#">Terms of Use</a>
+                            <a href="#" onClick={e => showLegal(e, 'Privacy Policy')}>Privacy Policy</a>
+                            <a href="#" onClick={e => showLegal(e, 'Terms of Use')}>Terms of Use</a>
                         </div>
+                        {legalToast && (
+                            <p style={{ fontSize: '0.72rem', color: 'var(--accent)', margin: '6px 0 0', textAlign: 'right' }}>{legalToast}</p>
+                        )}
                     </div>
                 </div>
             </footer>

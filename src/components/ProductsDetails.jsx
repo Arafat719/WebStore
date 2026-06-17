@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck, faStar, faArrowLeft, faGlobe, faDownload,
@@ -15,18 +15,30 @@ const ProductDetails = ({ showAlert }) => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [activeImg, setActiveImg] = useState(0);
+  const [previewMsg, setPreviewMsg] = useState(false);
+  const [wishlisted, setWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [wishlistToast, setWishlistToast] = useState('');
   const { userId } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
+  const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/products/getbyid/${id}`)
+    fetch(`${API}/products/getbyid/${id}`)
       .then(res => res.json())
       .then(data => setProduct(data))
       .catch(() => {});
   }, [id]);
 
-  const API = import.meta.env.VITE_API_URL;
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token || !id) return;
+    fetch(`${API}/wishlist/check/${id}`, { headers: { token } })
+      .then(res => res.json())
+      .then(data => setWishlisted(!!data.wishlisted))
+      .catch(() => {});
+  }, [id]);
 
   const handleDownload = async () => {
     const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
@@ -36,7 +48,7 @@ const ProductDetails = ({ showAlert }) => {
     );
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      alert(err.error || "Download failed. Make sure you have purchased this product.");
+      showAlert(err.error || "Download failed. Make sure you have purchased this product.", "error");
       return;
     }
     const blob = await res.blob();
@@ -72,6 +84,38 @@ const ProductDetails = ({ showAlert }) => {
     if (data.url) {
       window.location.href = data.url;
     }
+  };
+
+  const handleWishlist = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) { navigate('/login'); return; }
+    if (wishlistLoading) return;
+    setWishlistLoading(true);
+    try {
+      if (wishlisted) {
+        const res = await fetch(`${API}/wishlist/remove/${product._id}`, {
+          method: 'DELETE',
+          headers: { token },
+        });
+        if (res.ok) {
+          setWishlisted(false);
+          setWishlistToast('Removed from wishlist');
+          setTimeout(() => setWishlistToast(''), 2500);
+        }
+      } else {
+        const res = await fetch(`${API}/wishlist/add`, {
+          method: 'POST',
+          headers: { token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: product._id }),
+        });
+        if (res.ok) {
+          setWishlisted(true);
+          setWishlistToast('Added to wishlist ♥');
+          setTimeout(() => setWishlistToast(''), 2500);
+        }
+      }
+    } catch {}
+    finally { setWishlistLoading(false); }
   };
 
   if (!product) return (
@@ -134,10 +178,13 @@ const ProductDetails = ({ showAlert }) => {
           </div>
           <h1 className="wmx-product-title">{product.title}</h1>
           <div className="wmx-meta">
-            <span className="wmx-chip">
+            <Link
+              to={`/seller/${product.seller?._id || product.sellerId?._id || product.sellerId || ''}`}
+              className="wmx-chip wmx-chip-seller"
+            >
               <FontAwesomeIcon icon={faUser} />
-              DevMaster
-            </span>
+              {product.seller?.name || product.sellerName || product.sellerId?.name || 'View Seller'}
+            </Link>
             <span className="wmx-chip wmx-chip-stars">
               {[1,2,3,4,5].map(s => (
                 <FontAwesomeIcon
@@ -202,15 +249,35 @@ const ProductDetails = ({ showAlert }) => {
               {isFree ? 'Free' : `$${product.price}`}
             </div>
             <div className="wmx-price-note">One-time purchase</div>
-            <button className="wmx-buy-btn" onClick={isFree ? handleDownload : handleBuy}>
-              <FontAwesomeIcon icon={faDownload} />
-              {isFree ? 'Download Free' : 'Buy Now'}
+            <div className="wmx-buy-row">
+              <button className="wmx-buy-btn" onClick={isFree ? handleDownload : handleBuy}>
+                <FontAwesomeIcon icon={faDownload} />
+                {isFree ? 'Download Free' : 'Buy Now'}
+              </button>
+              <button
+                className={`wmx-wishlist-btn${wishlisted ? ' active' : ''}`}
+                onClick={handleWishlist}
+                disabled={wishlistLoading}
+                title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+              >
+                {wishlisted ? '♥' : '♡'}
+              </button>
+            </div>
+            <button
+              className={`wmx-preview-btn${!product.livePreviewUrl ? ' wmx-preview-btn--disabled' : ''}`}
+              onClick={() => {
+                if (product.livePreviewUrl) {
+                  window.open(product.livePreviewUrl, '_blank', 'noreferrer');
+                } else {
+                  setPreviewMsg(true);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faGlobe} />
+              Live Preview
             </button>
-            {product.previewLink && (
-              <a href={product.previewLink} target="_blank" rel="noreferrer" className="wmx-preview-btn">
-                <FontAwesomeIcon icon={faGlobe} />
-                Live Preview
-              </a>
+            {previewMsg && !product.livePreviewUrl && (
+              <div className="wmx-preview-unavail">No live preview available for this product</div>
             )}
           </div>
 
@@ -277,6 +344,10 @@ const ProductDetails = ({ showAlert }) => {
       <div className="wmx-pd-reviews">
         <ReviewSection productId={product._id} currentUser={currentUser} showAlert={showAlert} />
       </div>
+
+      {wishlistToast && (
+        <div className="wmx-wl-toast">{wishlistToast}</div>
+      )}
     </div>
   );
 };

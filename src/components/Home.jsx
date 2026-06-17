@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Productcard from './Productcard'
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
@@ -7,45 +7,88 @@ const API = import.meta.env.VITE_API_URL;
 
 const CATEGORIES = ['All', 'Templates', 'Websites', 'Businesses'];
 const PRICES = ['All', 'Free', 'Paid'];
+const LIMIT = 12;
+
+const getPageNumbers = (current, total) => {
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+
+  let start = current - 2;
+  let end   = current + 2;
+  if (start < 1)     { start = 1;         end = Math.min(5, total); }
+  if (end > total)   { end = total;        start = Math.max(1, total - 4); }
+
+  const pages = [];
+  if (start > 1) pages.push(1);
+  if (start > 2) pages.push('...');
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < total - 1) pages.push('...');
+  if (end < total) pages.push(total);
+  return pages;
+};
 
 const Home = () => {
   const navigate = useNavigate();
+  const listingsRef = useRef(null);
 
-  const [products, setProducts]       = useState([]);
-  const [loading, setLoading]         = useState(true);
-  const [search, setSearch]           = useState("");
-  const [category, setCategory]       = useState("All");
-  const [priceFilter, setPriceFilter] = useState("All");
-  const [sort, setSort]               = useState("newest");
+  const [products, setProducts]           = useState([]);
+  const [loading, setLoading]             = useState(true);
+  const [search, setSearch]               = useState('');
+  const [category, setCategory]           = useState('All');
+  const [priceFilter, setPriceFilter]     = useState('All');
+  const [sort, setSort]                   = useState('newest');
+  const [currentPage, setCurrentPage]     = useState(1);
+  const [totalPages, setTotalPages]       = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page) => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    if (category !== "All") params.set("category", category);
-    if (priceFilter === "Free") { params.set("minPrice", "0"); params.set("maxPrice", "0"); }
-    if (priceFilter === "Paid") params.set("minPrice", "1");
-    if (sort !== "newest") params.set("sort", sort);
+    if (search) params.set('search', search);
+    if (category !== 'All') params.set('category', category);
+    if (priceFilter === 'Free') { params.set('minPrice', '0'); params.set('maxPrice', '0'); }
+    if (priceFilter === 'Paid') params.set('minPrice', '1');
+    if (sort !== 'newest') params.set('sort', sort);
+    params.set('page', page);
+    params.set('limit', LIMIT);
 
     const res = await fetch(`${API}/products/getproducts?${params}`).catch(() => null);
     if (!res) { setLoading(false); return; }
     const data = await res.json().catch(() => ({}));
     setProducts(data.products || []);
+    setTotalPages(data.totalPages || 1);
+    setTotalProducts(data.totalProducts ?? (data.products?.length ?? 0));
+    setCurrentPage(data.currentPage || page);
     setLoading(false);
   };
 
-  // category / price / sort → immediate fetch
-  useEffect(() => { fetchProducts(); }, [category, priceFilter, sort]);
-
-  // search → debounced fetch
+  // category / price / sort → reset to page 1 and fetch immediately
   useEffect(() => {
-    const timer = setTimeout(fetchProducts, 400);
+    setCurrentPage(1);
+    fetchProducts(1);
+  }, [category, priceFilter, sort]);
+
+  // search → debounced reset to page 1 and fetch
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentPage(1);
+      fetchProducts(1);
+    }, 400);
     return () => clearTimeout(timer);
   }, [search]);
 
-  const handleScroll = () => {
-    document.getElementById("listings").scrollIntoView({ behavior: "smooth" });
+  const handlePageChange = (page) => {
+    if (page === currentPage) return;
+    setCurrentPage(page);
+    fetchProducts(page);
+    listingsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const handleScroll = () => {
+    listingsRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const showingStart = totalProducts === 0 ? 0 : (currentPage - 1) * LIMIT + 1;
+  const showingEnd   = Math.min(currentPage * LIMIT, totalProducts);
 
   return (
     <>
@@ -114,13 +157,13 @@ const Home = () => {
         </section>
 
         {/* ── LISTINGS ── */}
-        <section className="wmx-listings" id="listings">
+        <section className="wmx-listings" id="listings" ref={listingsRef}>
           <div className="wmx-section-header-row">
             <div className="wmx-section-header">
               <span className="wmx-section-tag">🔥 Hot right now</span>
               <h2 className="wmx-section-title">Featured Websites for Sale</h2>
               <p className="wmx-section-sub">
-                {products.length} listing{products.length !== 1 ? 's' : ''} found
+                {totalProducts} listing{totalProducts !== 1 ? 's' : ''} found
               </p>
             </div>
           </div>
@@ -150,6 +193,53 @@ const Home = () => {
                   ))
                 )}
               </div>
+
+              {/* ── PAGINATION ── */}
+              {!loading && totalPages > 1 && (
+                <div className="wmx-pagination-wrap">
+                  <div className="wmx-pagination">
+                    {/* Prev */}
+                    <button
+                      className="wmx-page-btn wmx-page-arrow"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      aria-label="Previous page"
+                    >
+                      ← Prev
+                    </button>
+
+                    {/* Page numbers */}
+                    {getPageNumbers(currentPage, totalPages).map((page, idx) =>
+                      page === '...' ? (
+                        <span key={`ellipsis-${idx}`} className="wmx-page-ellipsis">…</span>
+                      ) : (
+                        <button
+                          key={page}
+                          className={`wmx-page-btn${page === currentPage ? ' wmx-page-active' : ''}`}
+                          onClick={() => handlePageChange(page)}
+                          aria-current={page === currentPage ? 'page' : undefined}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
+
+                    {/* Next */}
+                    <button
+                      className="wmx-page-btn wmx-page-arrow"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      aria-label="Next page"
+                    >
+                      Next →
+                    </button>
+                  </div>
+
+                  <p className="wmx-pagination-info">
+                    Showing {showingStart}–{showingEnd} of {totalProducts} products
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Right Sidebar */}
