@@ -177,7 +177,7 @@ const UserState = (props) => {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "token": token },
                 body: JSON.stringify({
-                    title, images, description, price, repoName: storedRepoName,
+                    title, images, description, price, storedRepoName,
                     githubRepoUrl, livePreviewUrl, tags, builtWith, features,
                     documentation, support, previewLink
                 })
