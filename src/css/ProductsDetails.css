@@ -669,7 +669,8 @@
   color: var(--accent);
   font-weight: 500;
   font-family: 'DM Sans', sans-serif;
-  width: 100
+  width: 100%;
+}
 .wmx-own-product-label {
   display: inline-flex;
   align-items: center;
