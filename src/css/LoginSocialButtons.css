@@ -1,0 +1,21 @@
+.wmx-social-btn-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  z-index: 1;
+}
+
+/* Stretch the container div that GoogleLogin renders into */
+.wmx-social-btn-wrap > div {
+  width: 100% !important;
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+/* iframe rendered by GIS should fill the container */
+.wmx-social-btn-wrap > div iframe {
+  width: 100% !important;
+  min-width: unset !important;
+}
