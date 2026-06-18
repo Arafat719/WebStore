@@ -11,8 +11,8 @@
 
 .wmx-settings-root {
   min-height: 100vh;
-  background: #0a0a0f;
-  color: #e2e2f0;
+  background: var(--bg-page);
+  color: var(--text-primary);
   font-family: 'DM Sans', sans-serif;
   padding-top: 64px; /* offset for fixed navbar */
 }
@@ -172,7 +172,7 @@
   font-family: 'Syne', sans-serif;
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.3rem;
   display: flex;
   align-items: center;
@@ -181,7 +181,7 @@
 
 .wmx-card-desc {
   font-size: 0.82rem;
-  color: rgba(226,226,240,0.42);
+  color: var(--text-secondary);
   margin-bottom: 1.4rem;
   line-height: 1.55;
 }
@@ -206,7 +206,7 @@
 .wmx-label {
   font-size: 0.775rem;
   font-weight: 600;
-  color: rgba(226,226,240,0.65);
+  color: var(--text-label);
   letter-spacing: 0.01em;
 }
 
@@ -217,7 +217,7 @@
   border: 1px solid rgba(134,130,250,0.18);
   border-radius: 10px;
   padding: 0.65rem 0.9rem;
-  color: #e2e2f0;
+  color: var(--text-primary);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.875rem;
   outline: none;
@@ -226,7 +226,7 @@
 }
 
 .wmx-input::placeholder,
-.wmx-textarea::placeholder { color: rgba(226,226,240,0.22); }
+.wmx-textarea::placeholder { color: var(--placeholder); }
 
 .wmx-input:focus,
 .wmx-textarea:focus,
@@ -251,7 +251,7 @@
   padding-right: 2.4rem;
 }
 
-.wmx-select option { background: #13131f; color: #e2e2f0; }
+.wmx-select option { background: var(--bg-dropdown); color: var(--text-primary); }
 
 /* ─── Save button ─────────────────────────────────────────────── */
 .wmx-btn-save {
@@ -323,7 +323,7 @@
   border-color: #8682fa;
 }
 
-.wmx-avatar-hint { font-size: 0.72rem; color: rgba(226,226,240,0.32); }
+.wmx-avatar-hint { font-size: 0.72rem; color: var(--text-faint); }
 
 /* ─── Toggle switch ───────────────────────────────────────────── */
 .wmx-toggle-row {
@@ -341,12 +341,12 @@
 .wmx-toggle-title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #e2e2f0;
+  color: var(--text-primary);
 }
 
 .wmx-toggle-desc {
   font-size: 0.75rem;
-  color: rgba(226,226,240,0.38);
+  color: var(--text-muted);
 }
 
 /* pure CSS switch — NO library */
@@ -468,7 +468,7 @@
 .wmx-session-device {
   font-size: 0.845rem;
   font-weight: 500;
-  color: #e2e2f0;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -476,7 +476,7 @@
 
 .wmx-session-meta {
   font-size: 0.73rem;
-  color: rgba(226,226,240,0.38);
+  color: var(--text-muted);
   margin-top: 0.1rem;
 }
 
@@ -678,12 +678,12 @@
 .wmx-connect-logo.wmx-github {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  color: #e2e2f0;
+  color: var(--text-primary);
 }
 
-.wmx-connect-name { font-size: 0.875rem; font-weight: 600; color: #e2e2f0; }
+.wmx-connect-name { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
 
-.wmx-connect-status { font-size: 0.74rem; color: rgba(226,226,240,0.38); margin-top: 0.1rem; }
+.wmx-connect-status { font-size: 0.74rem; color: var(--text-muted); margin-top: 0.1rem; }
 .wmx-connect-status.wmx-connected { color: #34d399; }
 
 .wmx-btn-connect {
@@ -763,7 +763,7 @@
   background: rgba(134,130,250,0.45);
 }
 
-.wmx-theme-label { font-size: 0.8rem; font-weight: 600; color: rgba(226,226,240,0.65); }
+.wmx-theme-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
 .wmx-theme-opt.wmx-selected .wmx-theme-label { color: #a8a5fc; }
 
 /* ─── Payout radios ───────────────────────────────────────────── */
@@ -778,7 +778,7 @@
   transition: border-color 0.2s, background 0.2s;
   background: rgba(255,255,255,0.02);
   font-size: 0.85rem;
-  color: rgba(226,226,240,0.65);
+  color: var(--text-secondary);
 }
 
 .wmx-radio-opt input[type="radio"] { accent-color: #8682fa; width: 14px; height: 14px; flex-shrink: 0; }
@@ -787,7 +787,7 @@
 /* ─── Misc helpers ────────────────────────────────────────────── */
 .wmx-divider { border: none; border-top: 1px solid rgba(134,130,250,0.09); margin: 1.25rem 0; }
 
-.wmx-hint { font-size: 0.73rem; color: rgba(226,226,240,0.32); margin-top: 0.2rem; line-height: 1.5; }
+.wmx-hint { font-size: 0.73rem; color: var(--text-faint); margin-top: 0.2rem; line-height: 1.5; }
 
 .wmx-input-wrap { position: relative; }
 .wmx-input-wrap .wmx-input { padding-right: 2.8rem; }
@@ -1146,7 +1146,7 @@ html[data-theme='light'] .wmx-coming-soon-banner {
 }
 
 .wmx-modal {
-  background: #0f0f1a;
+  background: var(--bg-card);
   border: 1px solid rgba(134, 130, 250, 0.2);
   border-radius: 18px;
   padding: 2rem;
@@ -1182,7 +1182,7 @@ html[data-theme='light'] .wmx-modal {
 
 .wmx-modal-desc {
   font-size: 0.82rem;
-  color: rgba(226, 226, 240, 0.5);
+  color: var(--text-secondary);
   text-align: center;
   line-height: 1.55;
   margin: 0;
@@ -1206,7 +1206,7 @@ html[data-theme='light'] .wmx-modal-desc {
   background: transparent;
   border: 1px solid rgba(134, 130, 250, 0.22);
   border-radius: 10px;
-  color: rgba(226, 226, 240, 0.6);
+  color: var(--text-secondary);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
@@ -1217,7 +1217,7 @@ html[data-theme='light'] .wmx-modal-desc {
 .wmx-btn-ghost:hover {
   background: rgba(134, 130, 250, 0.07);
   border-color: rgba(134, 130, 250, 0.4);
-  color: rgba(226, 226, 240, 0.9);
+  color: var(--text-primary);
 }
 
 html[data-theme='light'] .wmx-btn-ghost {

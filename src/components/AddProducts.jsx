@@ -21,6 +21,7 @@ function AddProducts({ showAlert }) {
     const [githubLocked, setGithubLocked] = useState(false);
 
     const [dragOver, setDragOver] = useState(false);
+    const [publishing, setPublishing] = useState(false);
 
     const context = useContext(userContext);
     const { addProducts } = context;
@@ -156,12 +157,13 @@ function AddProducts({ showAlert }) {
     const handleClick = async (e) => {
         e.preventDefault();
         if (!validateForm()) return;
+        setPublishing(true);
 
         const handleUpload = async (file) => {
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("upload_preset", "my_upload");
-            const res = await fetch("https://api.cloudinary.com/v1_1/dps2dk2tj/image/upload", { method: "POST", body: formData });
+            formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_PRESET);
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD}/image/upload`, { method: "POST", body: formData });
             const data = await res.json();
             return data.secure_url;
         };
@@ -194,6 +196,7 @@ function AddProducts({ showAlert }) {
         } else if (result?.message) {
             showAlert(result.message, "error");
         }
+        setPublishing(false);
     };
 
     const onchange = (e) => setproducts({ ...products, [e.target.name]: e.target.value });
@@ -563,9 +566,18 @@ function AddProducts({ showAlert }) {
                     </label>
                 </div>
 
-                <button type="submit" className="wmx-submit" onClick={handleClick}>
-                    <FontAwesomeIcon icon={faCloudArrowUp} />
-                    Publish Product
+                <button type="submit" className="wmx-submit" onClick={handleClick} disabled={publishing}>
+                    {publishing ? (
+                        <>
+                            <FontAwesomeIcon icon={faCircleNotch} spin />
+                            Publishing... Please wait
+                        </>
+                    ) : (
+                        <>
+                            <FontAwesomeIcon icon={faCloudArrowUp} />
+                            Publish Product
+                        </>
+                    )}
                 </button>
 
             </div>

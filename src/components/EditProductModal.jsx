@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { X, Upload } from 'lucide-react';
 
-const CLOUDINARY_CLOUD = 'dps2dk2tj';
-const CLOUDINARY_PRESET = 'my_upload';
+const CLOUDINARY_CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD;
+const CLOUDINARY_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
 
 const EditProductModal = ({ product, onClose, onSave }) => {
   const [form, setForm] = useState({

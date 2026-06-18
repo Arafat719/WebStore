@@ -57,6 +57,7 @@ const normalizeOrder = (o) => {
     price,
     date: o.createdAt,
     status: o.status || "Pending",
+    repoName: o.product?.repoName || null,
   };
 };
 
@@ -111,6 +112,7 @@ const MyOrders = () => {
   const [salesOrders, setSalesOrders]     = useState([]);
   const [salesLoading, setSalesLoading]   = useState(false);
   const [salesError, setSalesError]       = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
 
   const API = import.meta.env.VITE_API_URL;
 
@@ -179,6 +181,27 @@ const MyOrders = () => {
     (page - 1) * ORDERS_PER_PAGE,
     page * ORDERS_PER_PAGE
   );
+
+  const handleDownload = async (order) => {
+    const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
+    const token = localStorage.getItem('token');
+    setDownloadLoading(true);
+    try {
+      const res = await fetch(
+        `${API}/git/download/${githubUsername}/${order.repoName}`,
+        { headers: { token } }
+      );
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${order.repoName}.zip`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch {}
+    finally { setDownloadLoading(false); }
+  };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -422,6 +445,20 @@ const MyOrders = () => {
                 </div>
               </div>
 
+              {activeTab === 'purchases' && (
+                <div>
+                  <div className="wmx-orders-payment-title">Product Delivery</div>
+                  {selectedOrder.repoName ? (
+                    <div className="wmx-orders-delivery-box">
+                      <span className="wmx-orders-delivery-label">Repository</span>
+                      <span className="wmx-orders-delivery-repo">{selectedOrder.repoName}</span>
+                    </div>
+                  ) : (
+                    <p className="wmx-orders-delivery-pending">Delivery info will be available shortly.</p>
+                  )}
+                </div>
+              )}
+
               <div>
                 <div className="wmx-orders-payment-title">Payment Summary</div>
                 <div className="wmx-orders-payment-table">
@@ -449,7 +486,15 @@ const MyOrders = () => {
             </div>
 
             <div className="wmx-orders-modal-ft">
-              <button className="wmx-orders-btn-accent">Download Invoice</button>
+              {activeTab === 'purchases' && selectedOrder.repoName && (
+                <button
+                  className="wmx-orders-btn-accent"
+                  onClick={() => handleDownload(selectedOrder)}
+                  disabled={downloadLoading}
+                >
+                  {downloadLoading ? 'Downloading…' : 'Download Product'}
+                </button>
+              )}
               <button
                 className="wmx-orders-btn-ghost"
                 onClick={() => setSelectedOrder(null)}

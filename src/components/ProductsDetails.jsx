@@ -14,15 +14,17 @@ const ProductDetails = ({ showAlert }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [activeImg, setActiveImg] = useState(0);
   const [previewMsg, setPreviewMsg] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [wishlistToast, setWishlistToast] = useState('');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const { userId } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
   const API = import.meta.env.VITE_API_URL;
+  const images = product?.images ?? [];
 
   useEffect(() => {
     fetch(`${API}/products/getbyid/${id}`)
@@ -39,6 +41,17 @@ const ProductDetails = ({ showAlert }) => {
       .then(data => setWishlisted(!!data.wishlisted))
       .catch(() => {});
   }, [id]);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowRight') setLightboxIndex(i => (i + 1) % images.length);
+      if (e.key === 'ArrowLeft') setLightboxIndex(i => (i - 1 + images.length) % images.length);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxOpen, images.length]);
 
   const handleDownload = async () => {
     const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
@@ -126,7 +139,11 @@ const ProductDetails = ({ showAlert }) => {
   );
 
   const isFree = product.price === "Free" || product.price === 0;
-  const images = product.images ?? [];
+  const isOwnProduct = userId && (
+    userId === product.sellerId ||
+    userId === product.seller?._id ||
+    userId === product.sellerId?._id
+  );
 
   return (
     <div className="wmx-pd">
@@ -145,7 +162,7 @@ const ProductDetails = ({ showAlert }) => {
 
           <div className="wmx-img-box">
             {images.length > 0 ? (
-              <img src={images[activeImg]} alt={product.title} className="wmx-hero-img" />
+              <img src={images[0]} alt={product.title} className="wmx-hero-img" />
             ) : (
               <div className="wmx-img-placeholder">
                 <FontAwesomeIcon icon={faImage} />
@@ -163,8 +180,8 @@ const ProductDetails = ({ showAlert }) => {
               {images.map((img, i) => (
                 <div
                   key={i}
-                  className={`wmx-thumb${activeImg === i ? ' active' : ''}`}
-                  onClick={() => setActiveImg(i)}
+                  className={`wmx-thumb${lightboxIndex === i ? ' active' : ''}`}
+                  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
                 >
                   <img src={img} alt={`thumb-${i}`} />
                 </div>
@@ -189,7 +206,7 @@ const ProductDetails = ({ showAlert }) => {
               {[1,2,3,4,5].map(s => (
                 <FontAwesomeIcon
                   key={s} icon={faStar}
-                  className={s <= product.rating ? 'star-on' : 'star-off'}
+                  className={s <= product.rating ? 'wmx-star-on' : 'wmx-star-off'}
                 />
               ))}
               <span className="wmx-chip-rating">{product.rating}</span>
@@ -232,8 +249,8 @@ const ProductDetails = ({ showAlert }) => {
                     key={i}
                     src={img}
                     alt={`gallery-${i}`}
-                    className={activeImg === i ? 'active' : ''}
-                    onClick={() => setActiveImg(i)}
+                    className={lightboxIndex === i ? 'active' : ''}
+                    onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
                   />
                 ))}
               </div>
@@ -249,20 +266,24 @@ const ProductDetails = ({ showAlert }) => {
               {isFree ? 'Free' : `$${product.price}`}
             </div>
             <div className="wmx-price-note">One-time purchase</div>
-            <div className="wmx-buy-row">
-              <button className="wmx-buy-btn" onClick={isFree ? handleDownload : handleBuy}>
-                <FontAwesomeIcon icon={faDownload} />
-                {isFree ? 'Download Free' : 'Buy Now'}
-              </button>
-              <button
-                className={`wmx-wishlist-btn${wishlisted ? ' active' : ''}`}
-                onClick={handleWishlist}
-                disabled={wishlistLoading}
-                title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-              >
-                {wishlisted ? '♥' : '♡'}
-              </button>
-            </div>
+            {isOwnProduct ? (
+              <div className="wmx-own-product-label">This is your product</div>
+            ) : (
+              <div className="wmx-buy-row">
+                <button className="wmx-buy-btn" onClick={isFree ? handleDownload : handleBuy}>
+                  <FontAwesomeIcon icon={faDownload} />
+                  {isFree ? 'Download Free' : 'Buy Now'}
+                </button>
+                <button
+                  className={`wmx-wishlist-btn${wishlisted ? ' active' : ''}`}
+                  onClick={handleWishlist}
+                  disabled={wishlistLoading}
+                  title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                  {wishlisted ? '♥' : '♡'}
+                </button>
+              </div>
+            )}
             <button
               className={`wmx-preview-btn${!product.livePreviewUrl ? ' wmx-preview-btn--disabled' : ''}`}
               onClick={() => {
@@ -330,7 +351,7 @@ const ProductDetails = ({ showAlert }) => {
               <div>
                 <div className="wmx-rat-stars">
                   {[1,2,3,4,5].map(s => (
-                    <FontAwesomeIcon key={s} icon={faStar} className={s <= product.rating ? 'star-on' : 'star-off'} />
+                    <FontAwesomeIcon key={s} icon={faStar} className={s <= product.rating ? 'wmx-star-on' : 'wmx-star-off'} />
                   ))}
                 </div>
                 <div className="wmx-rat-c">{product.totalReviews} reviews</div>
@@ -344,6 +365,24 @@ const ProductDetails = ({ showAlert }) => {
       <div className="wmx-pd-reviews">
         <ReviewSection productId={product._id} currentUser={currentUser} showAlert={showAlert} />
       </div>
+
+      {lightboxOpen && images.length > 0 && (
+        <div className="wmx-lb-backdrop" onClick={() => setLightboxOpen(false)}>
+          <div className="wmx-lb-modal" onClick={e => e.stopPropagation()}>
+            <button className="wmx-lb-close" onClick={() => setLightboxOpen(false)}>✕</button>
+            {images.length > 1 && (
+              <button className="wmx-lb-arrow wmx-lb-prev" onClick={() => setLightboxIndex(i => (i - 1 + images.length) % images.length)}>‹</button>
+            )}
+            <img src={images[lightboxIndex]} alt={`preview-${lightboxIndex}`} className="wmx-lb-img" />
+            {images.length > 1 && (
+              <button className="wmx-lb-arrow wmx-lb-next" onClick={() => setLightboxIndex(i => (i + 1) % images.length)}>›</button>
+            )}
+            {images.length > 1 && (
+              <div className="wmx-lb-counter">{lightboxIndex + 1} / {images.length}</div>
+            )}
+          </div>
+        </div>
+      )}
 
       {wishlistToast && (
         <div className="wmx-wl-toast">{wishlistToast}</div>

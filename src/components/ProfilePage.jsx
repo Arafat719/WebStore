@@ -15,7 +15,7 @@ import MyOrders from "../pages/MyOrders/MyOrders";
 import EditProductModal from "./EditProductModal";
 
 const ProfilePage = ({ showAlert }) => {
-  const { getProfile, updateProfile, userId } = useContext(userContext);
+  const { getProfile, updateProfile, userId, userType } = useContext(userContext);
   const [seller, setSeller] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
   const [editOpen, setEditOpen] = useState(false);
@@ -37,6 +37,7 @@ const ProfilePage = ({ showAlert }) => {
   const [wishlistFetched, setWishlistFetched] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [removingIds, setRemovingIds] = useState(new Set());
+  const [orderCount, setOrderCount] = useState('—');
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -82,6 +83,10 @@ const ProfilePage = ({ showAlert }) => {
           fetch(`${import.meta.env.VITE_API_URL}/wishlist/my`, { headers: { token } })
             .then(r => r.json())
             .then(d => setWishlistCount(Array.isArray(d) ? d.length : 0))
+            .catch(() => {});
+          fetch(`${import.meta.env.VITE_API_URL}/orders`, { headers: { token } })
+            .then(r => r.json())
+            .then(d => setOrderCount(Array.isArray(d.orders) ? String(d.orders.length) : '—'))
             .catch(() => {});
         }
       }
@@ -222,7 +227,7 @@ const ProfilePage = ({ showAlert }) => {
   const stats = [
     { label: "Listings", value: String(sellerProducts.length), icon: Globe, color: "#4caf82" },
     { label: "Reviews", value: String(reviewStats.totalReviews), icon: Star, color: "#f0a500" },
-    { label: "Orders", value: "0", icon: ShoppingBag, color: "#8682fa", soon: true },
+    { label: "Orders", value: orderCount, icon: ShoppingBag, color: "#8682fa" },
     { label: "Wishlist", value: String(wishlistCount), icon: Heart, color: "#e05580" },
   ];
 
@@ -247,12 +252,6 @@ const ProfilePage = ({ showAlert }) => {
     { label: "2FA Enabled", active: false, icon: Lock },
   ];
 
-  const recentActivity = [
-    { label: "Purchased 'SaaS Starter Kit'", time: "2 days ago", icon: Package, color: "#8682fa" },
-    { label: "Left a review on 'Blog Pro'", time: "5 days ago", icon: Star, color: "#f0a500" },
-    { label: "Added 'E-Commerce Bundle' to wishlist", time: "1 week ago", icon: Heart, color: "#e05580" },
-    { label: "Listed 'Portfolio Template'", time: "2 weeks ago", icon: TrendingUp, color: "#4caf82" },
-  ];
 
   return (
     <div className="wmx-prof">
@@ -270,7 +269,7 @@ const ProfilePage = ({ showAlert }) => {
         <div className="wmx-sb-name">{seller?.name ?? "User"}</div>
         <div className="wmx-sb-role">
           <span className="wmx-sb-dot" />
-          {seller?.isPremium ? "Premium Seller" : "Seller"} · WebMarketX
+          {seller?.isPremium ? "Premium Seller" : (userType === "seller" ? "Seller" : "Buyer")} · WebMarketX
         </div>
 
         <div className="wmx-sb-stats">
@@ -408,8 +407,8 @@ const ProfilePage = ({ showAlert }) => {
             ) : (
               <div className="wmx-wl-grid">
                 {wishlistItems.map(item => {
-                  const prod = item.product || item;
-                  const productId = prod._id;
+                  const prod = item.productId || item.product || item;
+                  const productId = prod._id || item._id;
                   const isRemoving = removingIds.has(productId);
                   return (
                     <div key={productId} className={`wmx-wl-card${isRemoving ? ' removing' : ''}`}>
@@ -516,19 +515,7 @@ const ProfilePage = ({ showAlert }) => {
                 </div>
               </div>
 
-              <div className="wmx-activity-list">
-                {recentActivity.map(({ label, time, icon: Icon, color }, i) => (
-                  <div key={i} className="wmx-activity-item">
-                    <div className="wmx-activity-icon" style={{ color, background: `${color}18` }}>
-                      <Icon size={13} />
-                    </div>
-                    <div className="wmx-activity-text">
-                      <div className="wmx-activity-label">{label}</div>
-                      <div className="wmx-activity-time">{time}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <div className="wmx-empty">No recent activity yet.</div>
             </div>
 
           </div>
@@ -592,7 +579,7 @@ const ProfilePage = ({ showAlert }) => {
               <div className="wmx-ql-list">
                 {[
                   { label: "Browse Marketplace", icon: Globe, action: () => navigate('/') },
-                  { label: "Add New Listing", icon: Package, action: () => navigate('/addproducts') },
+                  ...(userType === "seller" ? [{ label: "Add New Listing", icon: Package, action: () => navigate('/addproducts') }] : []),
                   { label: "View Wishlist", icon: Heart, action: () => setActiveTab('wishlist') },
                 ].map(({ label, icon: Icon, action }) => (
                   <button key={label} className="wmx-ql-btn" onClick={action}>

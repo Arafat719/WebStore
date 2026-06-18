@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import Productcard from './Productcard'
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLock, faBolt, faShield } from '@fortawesome/free-solid-svg-icons'
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -109,7 +111,7 @@ const Home = () => {
 
             <h1 className="wmx-hero-title">
               Buy &amp; Sell<br />
-              <span className="accent">Websites</span> Easily
+              <span className="wmx-accent">Websites</span> Easily
             </h1>
 
             <p className="wmx-hero-sub">
@@ -134,16 +136,16 @@ const Home = () => {
 
             <div className="wmx-stats">
               <div className="wmx-stat-item">
-                <div className="wmx-stat-num">2<span>K+</span></div>
-                <div className="wmx-stat-label">Listings</div>
+                <div className="wmx-stat-icon"><FontAwesomeIcon icon={faLock} /></div>
+                <div className="wmx-stat-label">Secure Payments</div>
               </div>
               <div className="wmx-stat-item">
-                <div className="wmx-stat-num">850<span>+</span></div>
-                <div className="wmx-stat-label">Buyers</div>
+                <div className="wmx-stat-icon"><FontAwesomeIcon icon={faBolt} /></div>
+                <div className="wmx-stat-label">Instant Delivery</div>
               </div>
               <div className="wmx-stat-item">
-                <div className="wmx-stat-num">99<span>%</span></div>
-                <div className="wmx-stat-label">Satisfaction</div>
+                <div className="wmx-stat-icon"><FontAwesomeIcon icon={faShield} /></div>
+                <div className="wmx-stat-label">Buyer Protection</div>
               </div>
             </div>
           </div>

@@ -680,3 +680,35 @@
   .wmx-orders-modal-body,
   .wmx-orders-modal-ft { padding-left: 18px; padding-right: 18px; }
 }
+
+/* ─── Delivery info ─── */
+.wmx-orders-delivery-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(134, 130, 250, 0.06);
+  border: 1px solid rgba(134, 130, 250, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+.wmx-orders-delivery-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  flex-shrink: 0;
+}
+.wmx-orders-delivery-repo {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-family: 'Syne', sans-serif;
+  word-break: break-all;
+}
+.wmx-orders-delivery-pending {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  font-style: italic;
+  margin: 8px 0 0;
+}

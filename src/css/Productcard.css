@@ -141,3 +141,10 @@
 .wmx-btn:hover svg {
     transform: translateX(2px);
 }
+
+@media (max-width: 768px) {
+  .wmx-card-img-wrap { height: 160px; }
+}
+@media (max-width: 480px) {
+  .wmx-card-img-wrap { height: 140px; }
+}

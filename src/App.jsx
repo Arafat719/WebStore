@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import viteLogo from '/vite.svg'
 import './css/App.css'
 import Navbar from './components/Navbar'
 import { Routes, Route } from 'react-router-dom';
