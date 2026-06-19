@@ -107,11 +107,6 @@ function AddProducts({ showAlert }) {
                 setGithubStatus({ error: "❌ You don't have sufficient access to this repository." });
                 return;
             }
-            if (data.size === 0) {
-                setGithubStatus({ error: '❌ This repository has no code. Please submit a project with actual files.' });
-                return;
-            }
-
             let lastCommit = null;
             try {
                 const cRes = await fetch(
@@ -131,6 +126,11 @@ function AddProducts({ showAlert }) {
                 const tree = await tRes.json();
                 fileCount = tree.tree?.filter(i => i.type === 'blob').length ?? '?';
             } catch {}
+
+            if (fileCount === 0) {
+                setGithubStatus({ error: '❌ This repository has no code. Please submit a project with actual files.' });
+                return;
+            }
 
             setGithubStatus({
                 ok: true,
