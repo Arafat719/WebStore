@@ -23,6 +23,7 @@ import PaymentFail from './pages/Payment/PaymentFail';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PublicProfile from './pages/PublicProfile';
+import Help from './pages/Help/Help';
 // import Github from './components/Github';
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/seller/:id" element={<PublicProfile />} />
+          <Route path="/help" element={<Help />} />
           {/* <Route path="/github" element={<Github/>}/> */}
           <Route path="*" element={<NotFound />} />
         </Routes>

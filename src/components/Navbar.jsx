@@ -59,6 +59,7 @@ const Navbar = ({ setAlert }) => {
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/about", label: "About" },
+    { to: "/help", label: "Help" },
   ];
 
   return (

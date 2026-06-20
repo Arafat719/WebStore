@@ -1,0 +1,554 @@
+/* ══════════════════════════════════════════════════════════════
+   Help page
+   ══════════════════════════════════════════════════════════════ */
+
+.wmx-help-page {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Shared containers ───────────────────────────────────────── */
+.wmx-help-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.wmx-help-container-narrow {
+  max-width: 720px;
+}
+
+/* ─── Hero ────────────────────────────────────────────────────── */
+.wmx-help-hero {
+  position: relative;
+  padding: 120px 1.5rem 90px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.wmx-help-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.13;
+}
+
+.wmx-help-orb-1 {
+  width: 650px;
+  height: 650px;
+  background: var(--accent);
+  top: -220px;
+  left: 50%;
+  transform: translateX(-55%);
+}
+
+.wmx-help-orb-2 {
+  width: 420px;
+  height: 420px;
+  background: var(--accent-end);
+  bottom: -120px;
+  right: 8%;
+}
+
+.wmx-help-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(134, 130, 250, 0.1);
+  border: 1px solid rgba(134, 130, 250, 0.22);
+  border-radius: 100px;
+  padding: 0.28rem 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.wmx-help-hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.13;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text-primary) 35%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.wmx-help-hero-sub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto 2.25rem;
+  line-height: 1.7;
+}
+
+.wmx-help-hero-btns {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.wmx-help-btn {
+  padding: 0.68rem 1.75rem;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  border: none;
+  letter-spacing: 0.01em;
+}
+
+.wmx-help-btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-end) 100%);
+  color: #fff;
+  box-shadow: 0 4px 18px var(--accent-glow);
+}
+
+.wmx-help-btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 26px var(--accent-glow);
+}
+
+.wmx-help-btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.wmx-help-btn-ghost:hover {
+  background: var(--bg-hover);
+  border-color: rgba(134, 130, 250, 0.3);
+}
+
+/* ─── Sections ────────────────────────────────────────────────── */
+.wmx-help-section {
+  padding: 3.5rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.wmx-help-section-last {
+  padding-bottom: 6rem;
+}
+
+.wmx-help-section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.wmx-help-section-title-lg {
+  font-size: 1.8rem;
+  margin-bottom: 1.75rem;
+}
+
+.wmx-help-section-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 1.1rem;
+  line-height: 1.55;
+}
+
+/* ─── Glass card (overview + support) ────────────────────────── */
+.wmx-help-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(134, 130, 250, 0.12);
+  border-radius: 18px;
+  padding: 2rem 2.25rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.wmx-help-overview-text {
+  font-size: 0.94rem;
+  color: var(--text-body);
+  line-height: 1.72;
+  margin-bottom: 1.4rem;
+}
+
+/* ─── Callout ─────────────────────────────────────────────────── */
+.wmx-help-callout {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  background: rgba(134, 130, 250, 0.07);
+  border: 1px solid rgba(134, 130, 250, 0.18);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.875rem;
+  color: var(--text-body);
+  line-height: 1.58;
+}
+
+.wmx-help-callout-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.wmx-help-callout strong {
+  color: var(--text-primary);
+}
+
+/* ─── Numbered steps ──────────────────────────────────────────── */
+.wmx-help-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.wmx-help-step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.22s;
+}
+
+.wmx-help-step:hover {
+  border-color: rgba(134, 130, 250, 0.22);
+}
+
+.wmx-help-step-num {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: rgba(134, 130, 250, 0.1);
+  border: 1px solid rgba(134, 130, 250, 0.28);
+  color: var(--accent);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.05rem;
+}
+
+.wmx-help-step-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.wmx-help-step-title {
+  font-weight: 700;
+  font-size: 0.91rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.wmx-help-step-desc {
+  font-size: 0.845rem;
+  color: var(--text-secondary);
+  line-height: 1.58;
+  margin: 0;
+}
+
+/* ─── FAQ accordion ───────────────────────────────────────────── */
+.wmx-help-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.wmx-help-faq-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.22s;
+}
+
+.wmx-help-faq-item.open {
+  border-color: rgba(134, 130, 250, 0.22);
+}
+
+.wmx-help-faq-q {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.895rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.wmx-help-faq-q:hover {
+  background: var(--bg-hover);
+}
+
+.wmx-help-faq-icon {
+  flex-shrink: 0;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: rgba(134, 130, 250, 0.1);
+  border: 1px solid rgba(134, 130, 250, 0.2);
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wmx-help-faq-a {
+  padding: 0.85rem 1.25rem 1.1rem;
+  font-size: 0.855rem;
+  color: var(--text-body);
+  line-height: 1.68;
+  margin: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ─── Support card ────────────────────────────────────────────── */
+.wmx-help-support-card {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.wmx-help-support-text {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.68;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ─── Link ────────────────────────────────────────────────────── */
+.wmx-help-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.wmx-help-link:hover {
+  text-decoration: underline;
+}
+
+/* ─── Light theme overrides ───────────────────────────────────── */
+html[data-theme='light'] .wmx-help-orb {
+  opacity: 0.05;
+}
+
+html[data-theme='light'] .wmx-help-hero-title {
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html[data-theme='light'] .wmx-help-card {
+  background: var(--bg-card);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-help-step {
+  background: var(--bg-card);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-help-faq-item {
+  background: var(--bg-card);
+  border-color: var(--border-default);
+}
+
+html[data-theme='light'] .wmx-help-callout {
+  background: rgba(108, 99, 255, 0.05);
+  border-color: rgba(108, 99, 255, 0.15);
+}
+
+html[data-theme='light'] .wmx-help-faq-icon {
+  background: rgba(108, 99, 255, 0.08);
+  border-color: rgba(108, 99, 255, 0.18);
+}
+
+html[data-theme='light'] .wmx-help-step-num {
+  background: rgba(108, 99, 255, 0.08);
+  border-color: rgba(108, 99, 255, 0.22);
+}
+
+html[data-theme='light'] .wmx-help-badge {
+  background: rgba(108, 99, 255, 0.08);
+  border-color: rgba(108, 99, 255, 0.2);
+}
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .wmx-help-hero {
+    padding: 100px 1.25rem 70px;
+  }
+
+  .wmx-help-section {
+    padding: 2.75rem 0;
+  }
+
+  .wmx-help-section-title-lg {
+    font-size: 1.5rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .wmx-help-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .wmx-help-support-card {
+    padding: 2.25rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .wmx-help-hero {
+    padding: 90px 1rem 60px;
+  }
+
+  .wmx-help-hero-title {
+    font-size: 1.75rem;
+  }
+
+  .wmx-help-step {
+    padding: 1rem 1.1rem;
+    gap: 1rem;
+  }
+
+  .wmx-help-step-num {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.82rem;
+  }
+
+  .wmx-help-faq-q {
+    font-size: 0.845rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .wmx-help-faq-a {
+    padding: 0.75rem 1rem 0.9rem;
+  }
+}
+
+/* ─── Support form ────────────────────────────────────────────── */
+.wmx-support-form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.wmx-support-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.wmx-support-label {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.wmx-support-input,
+.wmx-support-textarea {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 0.875rem;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-primary);
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.wmx-support-input:focus,
+.wmx-support-textarea:focus {
+  border-color: rgba(134, 130, 250, 0.5);
+}
+.wmx-support-input::placeholder,
+.wmx-support-textarea::placeholder {
+  color: var(--text-muted);
+}
+.wmx-support-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.wmx-support-msg {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+.wmx-support-msg-success {
+  color: var(--success, #4ade80);
+  background: rgba(74, 222, 128, 0.07);
+  border: 1px solid rgba(74, 222, 128, 0.18);
+}
+.wmx-support-msg-error {
+  color: var(--danger, #f87171);
+  background: rgba(248, 113, 113, 0.07);
+  border: 1px solid rgba(248, 113, 113, 0.18);
+}
+.wmx-support-noauth {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  margin-top: 1.25rem;
+}
+.wmx-support-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.72rem 1.75rem;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-end, #b8b5ff) 100%);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 18px var(--accent-glow, rgba(134,130,250,0.3));
+  align-self: flex-start;
+}
+.wmx-support-submit:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.wmx-support-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+html[data-theme='light'] .wmx-support-input,
+html[data-theme='light'] .wmx-support-textarea {
+  background: var(--bg-subtle);
+  border-color: var(--border-default);
+}

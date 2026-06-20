@@ -9,6 +9,9 @@ import {
 import '../css/ProductsDetails.css';
 import ReviewSection from "./Reviewsection";
 import userContext from "../context/userContext";
+import { Flag } from 'lucide-react';
+
+const REPORT_REASONS = ['Fake product', 'Wrong description', 'Scam / fraud', 'Inappropriate content', 'Other'];
 
 const ProductDetails = ({ showAlert }) => {
   const { id } = useParams();
@@ -21,10 +24,16 @@ const ProductDetails = ({ showAlert }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [hasPurchased, setHasPurchased] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportNote, setReportNote] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportMsg, setReportMsg] = useState({ text: '', type: '' });
   const { userId } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
   const API = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem('token');
   const images = product?.images ?? [];
 
   useEffect(() => {
@@ -154,6 +163,42 @@ const ProductDetails = ({ showAlert }) => {
       }
     } catch {}
     finally { setWishlistLoading(false); }
+  };
+
+  const closeReport = () => {
+    setReportOpen(false);
+    setReportReason('');
+    setReportNote('');
+    setReportMsg({ text: '', type: '' });
+  };
+
+  const handleReport = async () => {
+    if (!reportReason) return;
+    setReportLoading(true);
+    setReportMsg({ text: '', type: '' });
+    try {
+      const res = await fetch(`${API}/reports/product`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', token },
+        body: JSON.stringify({
+          productId: product._id,
+          productTitle: product.title,
+          reason: reportReason,
+          message: reportNote,
+        }),
+      });
+      if (res.ok) {
+        setReportMsg({ text: 'Report submitted. Thank you for helping keep WebMarketX safe.', type: 'success' });
+        setTimeout(closeReport, 2000);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setReportMsg({ text: data.error || 'Something went wrong. Please try again.', type: 'error' });
+      }
+    } catch {
+      setReportMsg({ text: 'Something went wrong. Please try again.', type: 'error' });
+    } finally {
+      setReportLoading(false);
+    }
   };
 
   if (!product) return (
@@ -384,6 +429,13 @@ const ProductDetails = ({ showAlert }) => {
             </div>
           </div>
 
+          {!isOwnProduct && (
+            <button className="wmx-report-btn" onClick={() => setReportOpen(true)}>
+              <Flag size={12} />
+              Report this product
+            </button>
+          )}
+
         </div>
       </div>
 
@@ -411,6 +463,52 @@ const ProductDetails = ({ showAlert }) => {
 
       {wishlistToast && (
         <div className="wmx-wl-toast">{wishlistToast}</div>
+      )}
+
+      {reportOpen && (
+        <div className="wmx-report-modal-overlay" onClick={closeReport}>
+          <div className="wmx-report-modal" onClick={e => e.stopPropagation()}>
+            <button className="wmx-report-modal-close" onClick={closeReport}>✕</button>
+            <h2 className="wmx-report-modal-title">Report this Product</h2>
+            <p className="wmx-report-modal-sub">Help us keep WebMarketX safe and trustworthy.</p>
+            {!token ? (
+              <p className="wmx-report-noauth">Please log in to submit a report.</p>
+            ) : (
+              <>
+                <div className="wmx-report-reason-grid">
+                  {REPORT_REASONS.map(r => (
+                    <button
+                      key={r}
+                      type="button"
+                      className={`wmx-report-reason-card${reportReason === r ? ' selected' : ''}`}
+                      onClick={() => setReportReason(r)}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  className="wmx-report-textarea"
+                  placeholder="Describe the issue..."
+                  value={reportNote}
+                  onChange={e => setReportNote(e.target.value)}
+                  rows={3}
+                />
+                {reportMsg.text && (
+                  <p className={`wmx-report-msg wmx-report-msg-${reportMsg.type}`}>{reportMsg.text}</p>
+                )}
+                <button
+                  type="button"
+                  className="wmx-report-submit"
+                  onClick={handleReport}
+                  disabled={reportLoading || !reportReason}
+                >
+                  {reportLoading ? 'Submitting…' : 'Submit Report'}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
