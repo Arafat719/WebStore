@@ -429,7 +429,7 @@ const ProductDetails = ({ showAlert }) => {
             </div>
           </div>
 
-          {(
+          {!isOwnProduct && (
             <button className="wmx-report-btn" onClick={() => setReportOpen(true)}>
               <Flag size={12} />
               Report this product
