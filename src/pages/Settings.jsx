@@ -979,10 +979,7 @@ export default function Settings() {
   const [active, setActive] = useState('profile');
   const { userType, userRoles } = useContext(UserContext);
 
-  const visibleNAV = NAV.map(group => ({
-    ...group,
-    items: group.items.filter(item => !(item.id === 'seller' && !userRoles?.includes('seller'))),
-  })).filter(group => group.items.length > 0);
+  const visibleNAV = NAV;
 
   const PANELS = {
     profile:       <ProfilePanel />,
