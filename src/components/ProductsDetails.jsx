@@ -29,7 +29,7 @@ const ProductDetails = ({ showAlert }) => {
   const [reportNote, setReportNote] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [reportMsg, setReportMsg] = useState({ text: '', type: '' });
-  const { userId } = useContext(userContext);
+  const { userId, userType } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
   const API = import.meta.env.VITE_API_URL;
@@ -209,7 +209,10 @@ const ProductDetails = ({ showAlert }) => {
   );
 
   const isFree = product.price === "Free" || product.price === 0;
-  const isOwnProduct = userId && (
+  console.log('userId:', userId);
+  console.log('product.sellerId:', product.sellerId);
+  console.log('product.seller:', product.seller);
+  const isOwnProduct = userId && userType === 'seller' && (
     userId === product.sellerId ||
     userId === product.seller?._id ||
     userId === product.sellerId?._id

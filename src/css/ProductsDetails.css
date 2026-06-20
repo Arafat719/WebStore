@@ -66,6 +66,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 310px;
   min-height: calc(100vh - 57px);
+  align-items: start;
 }
 
 /* LEFT PANEL */
@@ -288,11 +289,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  position: sticky;
-  top: 0;
-  height: fit-content;
-  max-height: 100vh;
-  overflow-y: auto;
+  align-self: flex-start;
 }
 
 /* PRICE HERO CARD */
