@@ -24,6 +24,7 @@ const UserState = (props) => {
     const [array, setArray] = useState([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState([])
+    const [userVersion, setUserVersion] = useState(0)
     const [theme, setTheme] = useState(getInitialTheme);
 
     useEffect(() => {
@@ -52,11 +53,8 @@ const UserState = (props) => {
         getProducts()
     }, [])
 
-    const signUP = async (name, email, password, role = "user") => {
-        const endpoint = role === "seller"
-            ? `${API}/seller/signup`
-            : `${API}/auth/signup`;
-        const response = await apiFetch(endpoint, {
+    const signUP = async (name, email, password) => {
+        const response = await apiFetch(`${API}/auth/signup`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
@@ -71,7 +69,7 @@ const UserState = (props) => {
             setTimeout(() => setError([]), 2000);
         } else {
             localStorage.setItem("token", data.token)
-            localStorage.setItem("user", JSON.stringify({ name: data.name, type: role }))
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
             navigate('/')
             return data;
@@ -79,7 +77,7 @@ const UserState = (props) => {
     }
 
     const login = async (email, password) => {
-        const response = await apiFetch(`${API}/seller/login`, {
+        const response = await apiFetch(`${API}/auth/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -94,7 +92,7 @@ const UserState = (props) => {
             setTimeout(() => setError([]), 2000);
         } else {
             localStorage.setItem("token", data.token)
-            localStorage.setItem("user", JSON.stringify({ name: data.name, type: "seller" }))
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
             navigate("/")
             return data;
@@ -201,15 +199,34 @@ const UserState = (props) => {
         }
     };
 
+    const becomeSeller = async () => {
+        const token = localStorage.getItem('token');
+        const response = await apiFetch(`${API}/auth/become-seller`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json", "token": token }
+        });
+        if (!response) return { success: false };
+        const data = await response.json();
+        if (response.ok && data.token) {
+            localStorage.setItem("token", data.token);
+            const stored = JSON.parse(localStorage.getItem('user') || '{}');
+            localStorage.setItem("user", JSON.stringify({ ...stored, roles: data.roles ?? ["buyer", "seller"] }));
+            setUserVersion(v => v + 1);
+            return { success: true, data };
+        }
+        return { success: false, data };
+    };
+
     const user = JSON.parse(localStorage.getItem("user") || 'null')
     const id = JSON.parse(localStorage.getItem("id") || 'null')
     let userId = id?.id || null
     let firstLetter = user?.name?.[0]?.toUpperCase() || "U"
     let profilePic = user?.profilePic || null
     let userType = user?.type || null
+    let userRoles = user?.roles ?? ["buyer"]
 
     return (
-        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, theme, toggleTheme }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme }}>
             {props.children}
         </UserContext.Provider>
     )

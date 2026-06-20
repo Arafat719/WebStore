@@ -1230,3 +1230,41 @@ html[data-theme='light'] .wmx-btn-ghost:hover {
   border-color: rgba(134, 130, 250, 0.3);
   color: var(--text-primary);
 }
+
+/* ─── Become a Seller card ────────────────────────────────────── */
+.wmx-become-seller-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(134,130,250,0.22);
+  border-radius: 16px;
+  padding: 2.75rem 2rem;
+  text-align: center;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.wmx-bsc-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.wmx-bsc-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+.wmx-become-seller-card .wmx-inline-msg {
+  text-align: left;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html[data-theme='light'] .wmx-become-seller-card {
+  background: var(--bg-card);
+  border-color: var(--border-default);
+}

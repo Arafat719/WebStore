@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children, role, showAlert }) => {
   const navigate = useNavigate();
 
   const isLoggedIn = !!token;
-  const accessDenied = role === "seller" && user?.type !== "seller";
+  const accessDenied = role === "seller" && !user?.roles?.includes("seller");
 
   useEffect(() => {
     if (isLoggedIn && accessDenied) {

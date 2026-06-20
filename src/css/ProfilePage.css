@@ -482,6 +482,39 @@
 .wmx-ql-arrow { margin-left: auto; opacity: 0.35; transition: opacity 0.18s; }
 .wmx-ql-btn:hover .wmx-ql-arrow { opacity: 0.9; }
 
+.wmx-ql-btn-become {
+  color: var(--accent, #8682fa);
+  border-color: rgba(134,130,250,0.2);
+}
+.wmx-ql-btn-become:hover {
+  background: rgba(134,130,250,0.08);
+  border-color: rgba(134,130,250,0.3);
+  color: var(--accent, #8682fa);
+}
+.wmx-ql-btn-become:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wmx-ql-msg {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.38rem 0.7rem;
+  border-radius: 7px;
+  margin-top: 0.2rem;
+  line-height: 1.45;
+}
+.wmx-ql-msg-success {
+  color: var(--success, #4ade80);
+  background: rgba(74,222,128,0.07);
+  border: 1px solid rgba(74,222,128,0.18);
+}
+.wmx-ql-msg-error {
+  color: var(--danger, #f87171);
+  background: rgba(248,113,113,0.07);
+  border: 1px solid rgba(248,113,113,0.18);
+}
+
 /* ─── Edit Modal ─── */
 .wmx-modal-overlay {
   position: fixed; inset: 0; z-index: 1000;

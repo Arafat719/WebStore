@@ -5,7 +5,7 @@ import {
   Lock, Heart, ShoppingBag, Settings, LogOut,
   Star, Crown, ChevronRight, Bell, Package,
   TrendingUp, Globe, Edit3, Camera, AtSign,
-  Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil
+  Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil, Store
 } from "lucide-react";
 import userContext from "../context/userContext";
 import "../css/ProfilePage.css";
@@ -15,7 +15,7 @@ import MyOrders from "../pages/MyOrders/MyOrders";
 import EditProductModal from "./EditProductModal";
 
 const ProfilePage = ({ showAlert }) => {
-  const { getProfile, updateProfile, userId, userType } = useContext(userContext);
+  const { getProfile, updateProfile, userId, userType, userRoles, becomeSeller } = useContext(userContext);
   const [seller, setSeller] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
   const [editOpen, setEditOpen] = useState(false);
@@ -32,6 +32,8 @@ const ProfilePage = ({ showAlert }) => {
   const [deleteError, setDeleteError] = useState('');
   const [successToast, setSuccessToast] = useState('');
   const [reviewStats, setReviewStats] = useState({ totalReviews: 0, averageRating: 0 });
+  const [becomingSellerLoading, setBecomingSellerLoading] = useState(false);
+  const [becomingSellerMsg, setBecomingSellerMsg] = useState({ text: '', type: '' });
   const [wishlistItems, setWishlistItems] = useState([]);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [wishlistFetched, setWishlistFetched] = useState(false);
@@ -183,6 +185,19 @@ const ProfilePage = ({ showAlert }) => {
     navigate("/login");
   };
 
+  const handleBecomeSeller = async () => {
+    setBecomingSellerLoading(true);
+    setBecomingSellerMsg({ text: '', type: '' });
+    const result = await becomeSeller();
+    setBecomingSellerLoading(false);
+    if (result?.success) {
+      setBecomingSellerMsg({ text: "You're now a seller! You can start listing products.", type: 'success' });
+    } else {
+      setBecomingSellerMsg({ text: result?.data?.error || 'Something went wrong. Please try again.', type: 'error' });
+      setTimeout(() => setBecomingSellerMsg({ text: '', type: '' }), 4000);
+    }
+  };
+
   const handleImageFile = (file) => {
     if (!file || !file.type.startsWith("image/")) return;
     const reader = new FileReader();
@@ -269,7 +284,7 @@ const ProfilePage = ({ showAlert }) => {
         <div className="wmx-sb-name">{seller?.name ?? "User"}</div>
         <div className="wmx-sb-role">
           <span className="wmx-sb-dot" />
-          {seller?.isPremium ? "Premium Seller" : (userType === "seller" ? "Seller" : "Buyer")} · WebMarketX
+          {seller?.isPremium ? "Premium Seller" : (userRoles?.includes("seller") ? "Seller" : "Buyer")} · WebMarketX
         </div>
 
         <div className="wmx-sb-stats">
@@ -579,7 +594,7 @@ const ProfilePage = ({ showAlert }) => {
               <div className="wmx-ql-list">
                 {[
                   { label: "Browse Marketplace", icon: Globe, action: () => navigate('/') },
-                  ...(userType === "seller" ? [{ label: "Add New Listing", icon: Package, action: () => navigate('/addproducts') }] : []),
+                  ...(userRoles?.includes("seller") ? [{ label: "Add New Listing", icon: Package, action: () => navigate('/addproducts') }] : []),
                   { label: "View Wishlist", icon: Heart, action: () => setActiveTab('wishlist') },
                 ].map(({ label, icon: Icon, action }) => (
                   <button key={label} className="wmx-ql-btn" onClick={action}>
@@ -588,6 +603,22 @@ const ProfilePage = ({ showAlert }) => {
                     <ChevronRight size={12} className="wmx-ql-arrow" />
                   </button>
                 ))}
+                {!userRoles?.includes("seller") && (
+                  <button
+                    className="wmx-ql-btn wmx-ql-btn-become"
+                    onClick={handleBecomeSeller}
+                    disabled={becomingSellerLoading}
+                  >
+                    <Store size={13} />
+                    {becomingSellerLoading ? 'Activating…' : 'Become a Seller'}
+                    <ChevronRight size={12} className="wmx-ql-arrow" />
+                  </button>
+                )}
+                {becomingSellerMsg.text && (
+                  <p className={`wmx-ql-msg wmx-ql-msg-${becomingSellerMsg.type}`}>
+                    {becomingSellerMsg.text}
+                  </p>
+                )}
               </div>
             </div>
 

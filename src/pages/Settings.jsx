@@ -625,7 +625,7 @@ function BillingPanel() {
    Section: Seller Settings
    ══════════════════════════════════════════════════════════════ */
 function SellerPanel() {
-  const { getProfile } = useContext(UserContext);
+  const { getProfile, userRoles, becomeSeller } = useContext(UserContext);
   const [form, setForm] = useState({
     shopName:      '',
     tagline:       '',
@@ -633,8 +633,10 @@ function SellerPanel() {
     payout:        'bank',
     listingPublic: true,
   });
-  const [msg, setMsg]       = useState({ text: '', type: '' });
-  const [saving, setSaving] = useState(false);
+  const [msg, setMsg]         = useState({ text: '', type: '' });
+  const [saving, setSaving]   = useState(false);
+  const [becoming, setBecoming]     = useState(false);
+  const [becomeMsg, setBecomeMsg]   = useState({ text: '', type: '' });
 
   useEffect(() => {
     getProfile()
@@ -650,6 +652,19 @@ function SellerPanel() {
       })
       .catch(() => {});
   }, []);
+
+  const handleBecomeSeller = async () => {
+    setBecoming(true);
+    setBecomeMsg({ text: '', type: '' });
+    const result = await becomeSeller();
+    setBecoming(false);
+    if (result?.success) {
+      setBecomeMsg({ text: 'You are now a seller! Refresh to see your seller settings.', type: 'success' });
+    } else {
+      setBecomeMsg({ text: result?.data?.error || 'Something went wrong. Please try again.', type: 'error' });
+      setTimeout(() => setBecomeMsg({ text: '', type: '' }), 4000);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -676,80 +691,91 @@ function SellerPanel() {
 
   return (
     <div className="wmx-panel">
-      <div className="wmx-card">
-        <p className="wmx-card-title">🏪 Shop Details</p>
-        <p className="wmx-card-desc">Customise how your seller profile appears on the marketplace.</p>
-
-        <div className="wmx-form-group">
-          <label className="wmx-label">Shop Display Name</label>
-          <input className="wmx-input" type="text" value={form.shopName}
-            onChange={e => setForm(f => ({ ...f, shopName: e.target.value }))} />
-          <span className="wmx-hint">Shown on all your product listings and your public seller page.</span>
+      {!userRoles?.includes('seller') ? (
+        <div className="wmx-become-seller-card">
+          <p className="wmx-bsc-title">Start Selling on WebMarketX</p>
+          <p className="wmx-bsc-desc">List your digital products and reach thousands of buyers.</p>
+          {becomeMsg.text && <p className={`wmx-inline-msg wmx-msg-${becomeMsg.type}`}>{becomeMsg.text}</p>}
+          <button className="wmx-btn-save" onClick={handleBecomeSeller} disabled={becoming}>
+            {becoming ? 'Activating…' : 'Become a Seller'}
+          </button>
         </div>
+      ) : (
+        <div className="wmx-card">
+          <p className="wmx-card-title">🏪 Shop Details</p>
+          <p className="wmx-card-desc">Customise how your seller profile appears on the marketplace.</p>
 
-        <div className="wmx-form-group">
-          <label className="wmx-label">Shop Tagline</label>
-          <input className="wmx-input" type="text" value={form.tagline}
-            placeholder="One-line pitch for your shop"
-            onChange={e => setForm(f => ({ ...f, tagline: e.target.value }))} />
-        </div>
-
-        <div className="wmx-form-group">
-          <label className="wmx-label">Primary Category</label>
-          <select className="wmx-select" value={form.category}
-            onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-            <option>UI / UX Design</option>
-            <option>Templates</option>
-            <option>Icons &amp; Illustrations</option>
-            <option>Code &amp; Scripts</option>
-            <option>Photography</option>
-            <option>Audio &amp; Music</option>
-          </select>
-        </div>
-
-        <hr className="wmx-divider" />
-
-        <div className="wmx-form-group">
-          <label className="wmx-label">Payout Preference</label>
-          <div className="wmx-radio-group">
-            {[
-              { value: 'bank',   label: 'Bank Transfer' },
-              { value: 'paypal', label: 'PayPal' },
-              { value: 'wise',   label: 'Wise' },
-            ].map(opt => (
-              <label key={opt.value} className="wmx-radio-opt">
-                <input type="radio" name="payout" value={opt.value}
-                  checked={form.payout === opt.value}
-                  onChange={() => setForm(f => ({ ...f, payout: opt.value }))} />
-                {opt.label}
-              </label>
-            ))}
+          <div className="wmx-form-group">
+            <label className="wmx-label">Shop Display Name</label>
+            <input className="wmx-input" type="text" value={form.shopName}
+              onChange={e => setForm(f => ({ ...f, shopName: e.target.value }))} />
+            <span className="wmx-hint">Shown on all your product listings and your public seller page.</span>
           </div>
-        </div>
 
-        <hr className="wmx-divider" />
-
-        <div className="wmx-toggle-row" style={{ borderBottom: 'none' }}>
-          <div className="wmx-toggle-info">
-            <p className="wmx-toggle-title">Product Listing Visibility</p>
-            <p className="wmx-toggle-desc">
-              {form.listingPublic
-                ? 'Your products are visible to all marketplace visitors'
-                : 'Your products are hidden from public search'}
-            </p>
+          <div className="wmx-form-group">
+            <label className="wmx-label">Shop Tagline</label>
+            <input className="wmx-input" type="text" value={form.tagline}
+              placeholder="One-line pitch for your shop"
+              onChange={e => setForm(f => ({ ...f, tagline: e.target.value }))} />
           </div>
-          <label className="wmx-switch">
-            <input type="checkbox" checked={form.listingPublic}
-              onChange={() => setForm(f => ({ ...f, listingPublic: !f.listingPublic }))} />
-            <span className="wmx-switch-track" />
-          </label>
-        </div>
 
-        {msg.text && <p className={`wmx-inline-msg wmx-msg-${msg.type}`}>{msg.text}</p>}
-        <button className="wmx-btn-save" onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving…' : 'Save Settings'}
-        </button>
-      </div>
+          <div className="wmx-form-group">
+            <label className="wmx-label">Primary Category</label>
+            <select className="wmx-select" value={form.category}
+              onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
+              <option>UI / UX Design</option>
+              <option>Templates</option>
+              <option>Icons &amp; Illustrations</option>
+              <option>Code &amp; Scripts</option>
+              <option>Photography</option>
+              <option>Audio &amp; Music</option>
+            </select>
+          </div>
+
+          <hr className="wmx-divider" />
+
+          <div className="wmx-form-group">
+            <label className="wmx-label">Payout Preference</label>
+            <div className="wmx-radio-group">
+              {[
+                { value: 'bank',   label: 'Bank Transfer' },
+                { value: 'paypal', label: 'PayPal' },
+                { value: 'wise',   label: 'Wise' },
+              ].map(opt => (
+                <label key={opt.value} className="wmx-radio-opt">
+                  <input type="radio" name="payout" value={opt.value}
+                    checked={form.payout === opt.value}
+                    onChange={() => setForm(f => ({ ...f, payout: opt.value }))} />
+                  {opt.label}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <hr className="wmx-divider" />
+
+          <div className="wmx-toggle-row" style={{ borderBottom: 'none' }}>
+            <div className="wmx-toggle-info">
+              <p className="wmx-toggle-title">Product Listing Visibility</p>
+              <p className="wmx-toggle-desc">
+                {form.listingPublic
+                  ? 'Your products are visible to all marketplace visitors'
+                  : 'Your products are hidden from public search'}
+              </p>
+            </div>
+            <label className="wmx-switch">
+              <input type="checkbox" checked={form.listingPublic}
+                onChange={() => setForm(f => ({ ...f, listingPublic: !f.listingPublic }))} />
+              <span className="wmx-switch-track" />
+            </label>
+          </div>
+
+          {msg.text && <p className={`wmx-inline-msg wmx-msg-${msg.type}`}>{msg.text}</p>}
+          <button className="wmx-btn-save" onClick={handleSave} disabled={saving}>
+            {saving ? 'Saving…' : 'Save Settings'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -951,11 +977,11 @@ function ConnectedPanel() {
    ══════════════════════════════════════════════════════════════ */
 export default function Settings() {
   const [active, setActive] = useState('profile');
-  const { userType } = useContext(UserContext);
+  const { userType, userRoles } = useContext(UserContext);
 
   const visibleNAV = NAV.map(group => ({
     ...group,
-    items: group.items.filter(item => !(item.id === 'seller' && userType !== 'seller')),
+    items: group.items.filter(item => !(item.id === 'seller' && !userRoles?.includes('seller'))),
   })).filter(group => group.items.length > 0);
 
   const PANELS = {

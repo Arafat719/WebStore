@@ -8,7 +8,7 @@ import '../css/Navbar.css';
 
 const Navbar = ({ setAlert }) => {
   const context = useContext(userContext);
-  const { userId, firstLetter, profilePic, userType, theme, toggleTheme } = context;
+  const { userId, firstLetter, profilePic, userType, userRoles, theme, toggleTheme } = context;
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -82,7 +82,7 @@ const Navbar = ({ setAlert }) => {
                   <Link className="wmx-nav-link" to={to}>{label}</Link>
                 </li>
               ))}
-              {userType === "seller" && (
+              {userRoles?.includes("seller") && (
                 <li>
                   <Link className="wmx-nav-link add-btn" to="/addproducts">
                     <FontAwesomeIcon icon={faPlus} style={{ fontSize: '0.7rem' }} />
@@ -165,7 +165,7 @@ const Navbar = ({ setAlert }) => {
               {label}
             </Link>
           ))}
-          {userType === "seller" && (
+          {userRoles?.includes("seller") && (
             <Link className="wmx-drawer-link purple" to="/addproducts" onClick={() => setMobileOpen(false)}>
               <FontAwesomeIcon icon={faPlus} style={{ fontSize: '0.75rem' }} />
               Add Website

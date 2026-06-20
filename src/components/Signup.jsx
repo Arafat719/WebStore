@@ -21,7 +21,6 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
-    const [role, setRole] = useState("user");
     const [legalToast, setLegalToast] = useState('');
 
     const [user, setuser] = useState({
@@ -31,7 +30,7 @@ const Signup = () => {
     });
 
     const handleClick = async () =>
-        signUP(user.name, user.email, user.password, role);
+        signUP(user.name, user.email, user.password);
 
     const onchange = (e) =>
         setuser({
@@ -61,23 +60,6 @@ const Signup = () => {
                 <p className="wmx-su-sub">
                     Start buying & selling websites today.
                 </p>
-
-                <div className="wmx-su-toggle">
-                    <button
-                        type="button"
-                        className={`wmx-su-toggle-btn ${role === "user" ? "active" : ""}`}
-                        onClick={() => setRole("user")}
-                    >
-                        Buyer
-                    </button>
-                    <button
-                        type="button"
-                        className={`wmx-su-toggle-btn ${role === "seller" ? "active" : ""}`}
-                        onClick={() => setRole("seller")}
-                    >
-                        Seller
-                    </button>
-                </div>
 
                 <div className="wmx-su-social">
                     <LoginSocialButtons />
