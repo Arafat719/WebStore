@@ -209,9 +209,6 @@ const ProductDetails = ({ showAlert }) => {
   );
 
   const isFree = product.price === "Free" || product.price === 0;
-  console.log('userId:', userId);
-  console.log('product.sellerId:', product.sellerId);
-  console.log('product.seller:', product.seller);
   const isOwnProduct = userId && userType === 'seller' && (
     userId === product.sellerId ||
     userId === product.seller?._id ||
