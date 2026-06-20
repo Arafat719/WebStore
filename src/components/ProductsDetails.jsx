@@ -20,6 +20,7 @@ const ProductDetails = ({ showAlert }) => {
   const [wishlistToast, setWishlistToast] = useState('');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [hasPurchased, setHasPurchased] = useState(false);
   const { userId } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
@@ -43,6 +44,21 @@ const ProductDetails = ({ showAlert }) => {
   }, [id]);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token || !id) return;
+    fetch(`${API}/orders`, { headers: { token } })
+      .then(res => res.json())
+      .then(data => {
+        const orders = data.orders || [];
+        const purchased = orders.some(
+          o => o.product?._id === id && o.status === 'completed'
+        );
+        setHasPurchased(purchased);
+      })
+      .catch(() => {});
+  }, [id]);
+
+  useEffect(() => {
     const handleKey = (e) => {
       if (!lightboxOpen) return;
       if (e.key === 'Escape') setLightboxOpen(false);
@@ -54,14 +70,21 @@ const ProductDetails = ({ showAlert }) => {
   }, [lightboxOpen, images.length]);
 
   const handleDownload = async () => {
+    console.log("DEBUG repoName:", product?.repoName, "| full product:", product);
     const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showAlert("Please login to download", "warning");
+      navigate("/login");
+      return;
+    }
     const res = await fetch(
       `${API}/git/download/${githubUsername}/${product?.repoName}`,
-      { headers: { "token": localStorage.getItem("token") } }
+      { headers: { token } }
     );
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      showAlert(err.error || "Download failed. Make sure you have purchased this product.", "error");
+      showAlert(err.error || "Download failed.", "error");
       return;
     }
     const blob = await res.blob();
@@ -82,7 +105,7 @@ const ProductDetails = ({ showAlert }) => {
     }
     const res = await fetch(`${API}/orders/initiate`, {
       method: "POST",
-      headers: { "token": token, "Content-Type": "application/json" },
+      headers: { token, "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product._id }),
     });
     const data = await res.json();
@@ -91,7 +114,9 @@ const ProductDetails = ({ showAlert }) => {
       return;
     }
     if (data.free) {
-      showAlert("Added to your orders! You can now download.", "success");
+      setHasPurchased(true);
+      showAlert("Added to your orders! Downloading now...", "success");
+      await handleDownload();
       return;
     }
     if (data.url) {
@@ -270,9 +295,9 @@ const ProductDetails = ({ showAlert }) => {
               <div className="wmx-own-product-label">This is your product</div>
             ) : (
               <div className="wmx-buy-row">
-                <button className="wmx-buy-btn" onClick={isFree ? handleDownload : handleBuy}>
+                <button className="wmx-buy-btn" onClick={isFree ? (hasPurchased ? handleDownload : handleBuy) : handleBuy}>
                   <FontAwesomeIcon icon={faDownload} />
-                  {isFree ? 'Download Free' : 'Buy Now'}
+                  {isFree ? (hasPurchased ? 'Download Free' : 'Get Free') : 'Buy Now'}
                 </button>
                 <button
                   className={`wmx-wishlist-btn${wishlisted ? ' active' : ''}`}
