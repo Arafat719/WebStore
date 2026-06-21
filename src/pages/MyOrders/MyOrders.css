@@ -712,3 +712,182 @@
   font-style: italic;
   margin: 8px 0 0;
 }
+
+/* ─── History tab: list container ─── */
+.wmx-orders-hist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ─── History row ─── */
+.wmx-orders-hist-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.wmx-orders-hist-row:hover {
+  border-color: var(--accent-glow);
+  background: var(--bg-surface-hover);
+}
+
+.wmx-orders-hist-icon {
+  font-size: 1.15rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.wmx-orders-hist-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.wmx-orders-hist-title {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wmx-orders-hist-meta {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.wmx-orders-hist-amount {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--success);
+  flex-shrink: 0;
+  min-width: 60px;
+  text-align: right;
+}
+
+.wmx-orders-hist-badge {
+  font-size: 0.63rem;
+  font-weight: 600;
+  padding: 3px 11px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.wmx-orders-hist-badge-purchased {
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(74, 222, 128, 0.22);
+}
+
+.wmx-orders-hist-date {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 138px;
+  text-align: right;
+}
+
+/* ─── History skeleton ─── */
+.wmx-orders-hist-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+.wmx-orders-hist-sk-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.wmx-orders-hist-sk-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.wmx-orders-hist-sk-line {
+  height: 12px;
+  border-radius: 6px;
+}
+
+.wmx-orders-hist-sk-badge {
+  width: 84px;
+  height: 24px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.wmx-orders-hist-sk-amount {
+  width: 60px;
+  height: 16px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* ─── History empty state ─── */
+.wmx-orders-hist-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 20px;
+  text-align: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+}
+
+.wmx-orders-hist-empty-icon {
+  font-size: 2.6rem;
+  opacity: 0.38;
+  line-height: 1;
+}
+
+.wmx-orders-hist-empty-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 4px 0 0;
+}
+
+.wmx-orders-hist-empty-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 700px) {
+  .wmx-orders-hist-date  { display: none; }
+  .wmx-orders-hist-amount { min-width: auto; }
+}
+
+@media (max-width: 540px) {
+  .wmx-orders-hist-row { flex-wrap: wrap; gap: 8px; }
+  .wmx-orders-hist-badge { order: -1; }
+}

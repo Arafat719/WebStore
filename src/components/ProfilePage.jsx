@@ -44,6 +44,16 @@ const ProfilePage = ({ showAlert }) => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
+  const [historyData, setHistoryData] = useState({ transactions: [], totalEarnings: 0 });
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState('');
+  const [historyFetched, setHistoryFetched] = useState(false);
+  const [downloadsData, setDownloadsData] = useState([]);
+  const [downloadsLoading, setDownloadsLoading] = useState(false);
+  const [downloadsError, setDownloadsError] = useState('');
+  const [downloadsFetched, setDownloadsFetched] = useState(false);
+  const [historySubTab, setHistorySubTab] = useState('transactions');
+
   useEffect(() => {
     const load = async () => {
       const data = await getProfile();
@@ -120,6 +130,37 @@ const ProfilePage = ({ showAlert }) => {
         setWishlistFetched(true);
       });
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'history' || historyFetched) return;
+    const token = localStorage.getItem('token');
+    setHistoryLoading(true);
+    setHistoryError('');
+    fetch(`${import.meta.env.VITE_API_URL}/api/history/seller`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        setHistoryData({
+          transactions: Array.isArray(data.transactions) ? data.transactions : [],
+          totalEarnings: data.totalEarnings || 0,
+        });
+      })
+      .catch(() => setHistoryError('Failed to load transaction history.'))
+      .finally(() => { setHistoryLoading(false); setHistoryFetched(true); });
+  }, [activeTab, historyFetched]);
+
+  useEffect(() => {
+    if (activeTab !== 'history' || historySubTab !== 'downloads' || downloadsFetched) return;
+    const token = localStorage.getItem('token');
+    setDownloadsLoading(true);
+    setDownloadsError('');
+    fetch(`${import.meta.env.VITE_API_URL}/api/history/downloads`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        setDownloadsData(Array.isArray(data) ? data : (data.downloads || []));
+      })
+      .catch(() => setDownloadsError('Failed to load download history.'))
+      .finally(() => { setDownloadsLoading(false); setDownloadsFetched(true); });
+  }, [activeTab, historySubTab, downloadsFetched]);
 
   const handleDelete = async () => {
     setDeleteLoading(true);
@@ -231,11 +272,20 @@ const ProfilePage = ({ showAlert }) => {
     }
   };
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const datePart = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const timePart = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    return `${datePart}, ${timePart}`;
+  };
+
   const navItems = [
     { id: "profile", label: "Profile", icon: User },
     { id: "orders", label: "My Orders", icon: ShoppingBag },
     { id: "wishlist", label: "Wishlist", icon: Heart },
     { id: "reviews", label: "Reviews", icon: Star },
+    { id: "history", label: "History", icon: TrendingUp },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -462,8 +512,120 @@ const ProfilePage = ({ showAlert }) => {
           </div>
         )}
 
+        {/* History tab */}
+        {activeTab === "history" && (
+          <div className="wmx-hist-section">
+            {/* Summary cards */}
+            <div className="wmx-hist-summary">
+              <div className="wmx-hist-earnings-card">
+                <div className="wmx-hist-earnings-label">Total Earnings</div>
+                <div className="wmx-hist-earnings-value">
+                  {historyLoading ? '৳—' : `৳${Number(historyData.totalEarnings || 0).toLocaleString()}`}
+                </div>
+              </div>
+              <div className="wmx-hist-stat-card">
+                <div className="wmx-hist-stat-icon" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80' }}>💰</div>
+                <div>
+                  <div className="wmx-hist-stat-num">
+                    {historyLoading ? '—' : historyData.transactions.filter(t => t.type === 'sale').length}
+                  </div>
+                  <div className="wmx-hist-stat-label">Total Sales</div>
+                </div>
+              </div>
+              <div className="wmx-hist-stat-card">
+                <div className="wmx-hist-stat-icon" style={{ background: 'rgba(134,130,250,0.1)', color: '#8682fa' }}>📦</div>
+                <div>
+                  <div className="wmx-hist-stat-num">
+                    {historyLoading ? '—' : historyData.transactions.filter(t => t.type === 'listing').length}
+                  </div>
+                  <div className="wmx-hist-stat-label">Total Listings</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sub-tab switcher */}
+            <div className="wmx-hist-subtabs">
+              <button
+                className={`wmx-hist-subtab${historySubTab === 'transactions' ? ' active' : ''}`}
+                onClick={() => setHistorySubTab('transactions')}
+              >
+                Transactions
+              </button>
+              <button
+                className={`wmx-hist-subtab${historySubTab === 'downloads' ? ' active' : ''}`}
+                onClick={() => setHistorySubTab('downloads')}
+              >
+                Downloads
+              </button>
+            </div>
+
+            {/* Transactions list */}
+            {historySubTab === 'transactions' && (
+              <div className="wmx-hist-txlist">
+                {historyLoading ? (
+                  <div className="wmx-hist-skeletons">
+                    {[1, 2, 3, 4].map(i => <div key={i} className="wmx-hist-skeleton" />)}
+                  </div>
+                ) : historyError ? (
+                  <div className="wmx-hist-error">{historyError}</div>
+                ) : historyData.transactions.length === 0 ? (
+                  <div className="wmx-hist-empty">
+                    <div className="wmx-hist-empty-icon">📋</div>
+                    <p>No history yet</p>
+                  </div>
+                ) : historyData.transactions.map((tx, i) => (
+                  <div key={tx._id || i} className="wmx-hist-tx-row">
+                    <div className="wmx-hist-tx-icon">{tx.type === 'sale' ? '💰' : '📦'}</div>
+                    <div className="wmx-hist-tx-main">
+                      <div className="wmx-hist-tx-title">{tx.productTitle}</div>
+                      {tx.type === 'sale' && tx.counterpartyName && (
+                        <div className="wmx-hist-tx-meta">Buyer: {tx.counterpartyName}</div>
+                      )}
+                    </div>
+                    <span className={`wmx-hist-badge wmx-hist-badge-${tx.type === 'sale' ? 'sale' : 'listing'}`}>
+                      {tx.type === 'sale' ? 'Sale' : 'Listed'}
+                    </span>
+                    <div className="wmx-hist-tx-amount">
+                      {tx.type === 'sale'
+                        ? `৳${tx.amount}`
+                        : tx.amount === 0 ? 'Free' : `৳${tx.amount}`}
+                    </div>
+                    <div className="wmx-hist-tx-date">{formatDate(tx.createdAt)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Downloads list */}
+            {historySubTab === 'downloads' && (
+              <div className="wmx-hist-txlist">
+                {downloadsLoading ? (
+                  <div className="wmx-hist-skeletons">
+                    {[1, 2, 3].map(i => <div key={i} className="wmx-hist-skeleton" />)}
+                  </div>
+                ) : downloadsError ? (
+                  <div className="wmx-hist-error">{downloadsError}</div>
+                ) : downloadsData.length === 0 ? (
+                  <div className="wmx-hist-empty">
+                    <div className="wmx-hist-empty-icon">📥</div>
+                    <p>No downloads yet</p>
+                  </div>
+                ) : downloadsData.map((dl, i) => (
+                  <div key={dl._id || i} className="wmx-hist-tx-row">
+                    <div className="wmx-hist-tx-icon">📥</div>
+                    <div className="wmx-hist-tx-main">
+                      <div className="wmx-hist-tx-title">{dl.productTitle}</div>
+                    </div>
+                    <div className="wmx-hist-tx-date">{formatDate(dl.downloadedAt)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Content grid */}
-        <div className="wmx-pg-grid" style={{ display: (activeTab === "reviews" || activeTab === "orders" || activeTab === "wishlist") ? "none" : undefined }}>
+        <div className="wmx-pg-grid" style={{ display: (activeTab === "reviews" || activeTab === "orders" || activeTab === "wishlist" || activeTab === "history") ? "none" : undefined }}>
 
           {/* ── Left column ── */}
           <div className="wmx-pg-left">
@@ -626,7 +788,7 @@ const ProfilePage = ({ showAlert }) => {
         </div>
 
         {/* ── My Listings ── */}
-        <div className="wmx-sp-section" style={{ display: (activeTab === "reviews" || activeTab === "orders" || activeTab === "wishlist") ? "none" : undefined }}>
+        <div className="wmx-sp-section" style={{ display: (activeTab === "reviews" || activeTab === "orders" || activeTab === "wishlist" || activeTab === "history") ? "none" : undefined }}>
           <div className="wmx-sp-header">
             <div className="wmx-card-icon-wrap"><Package size={14} /></div>
             <span>My Listings</span>

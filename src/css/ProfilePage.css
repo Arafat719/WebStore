@@ -1062,3 +1062,265 @@
   font-size: 0.8rem; color: var(--text-secondary);
   cursor: pointer; user-select: none;
 }
+
+/* ─── History / Transaction Section ─── */
+.wmx-hist-section {
+  padding: 0 0 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Summary cards row */
+.wmx-hist-summary {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+}
+
+.wmx-hist-earnings-card {
+  background: linear-gradient(135deg, rgba(134,130,250,0.1) 0%, rgba(95,91,199,0.06) 100%);
+  border: 1px solid rgba(134,130,250,0.18);
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wmx-hist-earnings-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 600;
+}
+
+.wmx-hist-earnings-value {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 2.1rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.wmx-hist-stat-card {
+  background: var(--bg-card-2);
+  border: 1px solid rgba(134,130,250,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: border-color 0.2s;
+}
+.wmx-hist-stat-card:hover { border-color: rgba(134,130,250,0.16); }
+
+.wmx-hist-stat-icon {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.wmx-hist-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.55rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.wmx-hist-stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Sub-tab switcher */
+.wmx-hist-subtabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 11px;
+  padding: 4px;
+  width: fit-content;
+}
+
+.wmx-hist-subtab {
+  padding: 7px 20px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+}
+
+.wmx-hist-subtab.active {
+  background: var(--bg-card-2);
+  color: var(--text-info-value);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.18);
+}
+
+.wmx-hist-subtab:not(.active):hover { color: var(--text-primary); }
+
+/* Transaction list */
+.wmx-hist-txlist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wmx-hist-tx-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card-2);
+  border: 1px solid rgba(134,130,250,0.07);
+  border-radius: 12px;
+  padding: 13px 18px;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.wmx-hist-tx-row:nth-child(even) { background: var(--bg-subtle); }
+.wmx-hist-tx-row:hover { border-color: rgba(134,130,250,0.16); }
+
+.wmx-hist-tx-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-hover);
+  border-radius: 9px;
+}
+
+.wmx-hist-tx-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.wmx-hist-tx-title {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-info-value);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wmx-hist-tx-meta {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.wmx-hist-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.wmx-hist-badge-sale {
+  background: rgba(74,222,128,0.1);
+  color: #4ade80;
+  border: 1px solid rgba(74,222,128,0.2);
+}
+
+.wmx-hist-badge-listing {
+  background: rgba(134,130,250,0.1);
+  color: #8682fa;
+  border: 1px solid rgba(134,130,250,0.2);
+}
+
+.wmx-hist-tx-amount {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  min-width: 72px;
+  text-align: right;
+}
+
+.wmx-hist-tx-date {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 136px;
+  text-align: right;
+}
+
+/* Skeleton loader */
+.wmx-hist-skeletons { display: flex; flex-direction: column; gap: 6px; }
+
+.wmx-hist-skeleton {
+  height: 64px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--bg-hover) 25%, var(--bg-hover-md) 50%, var(--bg-hover) 75%);
+  background-size: 200% 100%;
+  animation: wmx-wl-shimmer 1.5s infinite;
+}
+
+/* Empty state */
+.wmx-hist-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 52px 20px;
+  text-align: center;
+}
+
+.wmx-hist-empty-icon {
+  font-size: 2.2rem;
+  opacity: 0.35;
+  line-height: 1;
+}
+
+.wmx-hist-empty p {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Error state */
+.wmx-hist-error {
+  font-size: 0.8rem;
+  color: #f87171;
+  background: rgba(248,113,113,0.07);
+  border: 1px solid rgba(248,113,113,0.16);
+  border-radius: 10px;
+  padding: 14px 18px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .wmx-hist-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  .wmx-hist-earnings-card {
+    grid-column: 1 / -1;
+  }
+  .wmx-hist-tx-date { display: none; }
+}
+
+@media (max-width: 540px) {
+  .wmx-hist-summary { grid-template-columns: 1fr; }
+  .wmx-hist-earnings-card { grid-column: auto; }
+  .wmx-hist-tx-row { flex-wrap: wrap; gap: 8px; }
+  .wmx-hist-tx-amount { min-width: auto; }
+}

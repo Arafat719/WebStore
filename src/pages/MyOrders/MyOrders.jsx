@@ -32,6 +32,14 @@ const formatDate = (dateStr) =>
     day: "numeric",
   });
 
+const formatHistDate = (dateStr) => {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  const datePart = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  const timePart = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return `${datePart}, ${timePart}`;
+};
+
 const getTimelineSteps = (order) => {
   const d = formatDate(order.date);
   return [
@@ -57,6 +65,7 @@ const normalizeOrder = (o) => {
     price,
     date: o.createdAt,
     status: o.status || "Pending",
+    productId: o.product?._id || null,
     repoName: o.product?.repoName || null,
   };
 };
@@ -114,6 +123,15 @@ const MyOrders = () => {
   const [salesError, setSalesError]       = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
 
+  const [buyerHistory, setBuyerHistory]             = useState([]);
+  const [buyerHistoryLoading, setBuyerHistoryLoading] = useState(false);
+  const [buyerHistoryError, setBuyerHistoryError]   = useState('');
+  const [buyerHistoryFetched, setBuyerHistoryFetched] = useState(false);
+  const [dlHistory, setDlHistory]                   = useState([]);
+  const [dlHistoryLoading, setDlHistoryLoading]     = useState(false);
+  const [dlHistoryError, setDlHistoryError]         = useState('');
+  const [dlHistoryFetched, setDlHistoryFetched]     = useState(false);
+
   const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -143,6 +161,37 @@ const MyOrders = () => {
         setSalesError(true);
       });
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== "purchaseHistory" || buyerHistoryFetched) return;
+    const token = localStorage.getItem("token");
+    setBuyerHistoryLoading(true);
+    setBuyerHistoryError('');
+    fetch(`${API}/api/history/buyer`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        setBuyerHistory(
+          Array.isArray(data.transactions) ? data.transactions :
+          Array.isArray(data) ? data : []
+        );
+      })
+      .catch(() => setBuyerHistoryError('Failed to load purchase history.'))
+      .finally(() => { setBuyerHistoryLoading(false); setBuyerHistoryFetched(true); });
+  }, [activeTab, buyerHistoryFetched]);
+
+  useEffect(() => {
+    if (activeTab !== "downloadHistory" || dlHistoryFetched) return;
+    const token = localStorage.getItem("token");
+    setDlHistoryLoading(true);
+    setDlHistoryError('');
+    fetch(`${API}/api/history/downloads`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        setDlHistory(Array.isArray(data) ? data : (data.downloads || []));
+      })
+      .catch(() => setDlHistoryError('Failed to load download history.'))
+      .finally(() => { setDlHistoryLoading(false); setDlHistoryFetched(true); });
+  }, [activeTab, dlHistoryFetched]);
 
   const baseOrders = useMemo(
     () => activeTab === "purchases" ? orders : salesOrders,
@@ -199,6 +248,15 @@ const MyOrders = () => {
       a.download = `${order.repoName}.zip`;
       a.click();
       window.URL.revokeObjectURL(url);
+      fetch(`${API}/api/history/log-download`, {
+        method: 'POST',
+        headers: { token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: order.productId,
+          productTitle: order.productName,
+          orderId: order.id,
+        }),
+      }).catch(() => {});
     } catch {}
     finally { setDownloadLoading(false); }
   };
@@ -235,8 +293,10 @@ const MyOrders = () => {
 
       <div className="wmx-orders-tabs">
         {[
-          { id: "purchases", label: "Purchases" },
-          { id: "sales",     label: "Sales" },
+          { id: "purchases",       label: "Purchases" },
+          { id: "sales",           label: "Sales" },
+          { id: "purchaseHistory", label: "Purchase History" },
+          { id: "downloadHistory", label: "Download History" },
         ].map(({ id, label }) => (
           <button
             key={id}
@@ -248,6 +308,7 @@ const MyOrders = () => {
         ))}
       </div>
 
+      {(activeTab === "purchases" || activeTab === "sales") && (
       <div className="wmx-orders-filters">
         <div className="wmx-orders-search-wrap">
           <Search size={15} className="wmx-orders-search-icon" />
@@ -280,8 +341,9 @@ const MyOrders = () => {
           ))}
         </select>
       </div>
+      )}
 
-      {isLoading ? (
+      {(activeTab === "purchases" || activeTab === "sales") && (isLoading ? (
         <div className="wmx-orders-list">
           {[0, 1, 2].map((i) => (
             <OrderCardSkeleton key={i} index={i} />
@@ -371,6 +433,93 @@ const MyOrders = () => {
             </div>
           </div>
         </>
+      ))}
+
+      {/* Purchase History tab */}
+      {activeTab === "purchaseHistory" && (
+        <div className="wmx-orders-hist-list">
+          {buyerHistoryLoading ? (
+            <>
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className="wmx-orders-hist-skeleton">
+                  <div className="wmx-orders-hist-sk-icon wmx-orders-shimmer" />
+                  <div className="wmx-orders-hist-sk-body">
+                    <div className="wmx-orders-hist-sk-line wmx-orders-shimmer" style={{ width: "55%" }} />
+                    <div className="wmx-orders-hist-sk-line wmx-orders-shimmer" style={{ width: "35%" }} />
+                  </div>
+                  <div className="wmx-orders-hist-sk-badge wmx-orders-shimmer" />
+                  <div className="wmx-orders-hist-sk-amount wmx-orders-shimmer" />
+                </div>
+              ))}
+            </>
+          ) : buyerHistoryError ? (
+            <div className="wmx-orders-error">{buyerHistoryError}</div>
+          ) : buyerHistory.length === 0 ? (
+            <div className="wmx-orders-hist-empty">
+              <div className="wmx-orders-hist-empty-icon">🧾</div>
+              <h3 className="wmx-orders-hist-empty-title">No purchases yet</h3>
+              <p className="wmx-orders-hist-empty-sub">Your purchase history will appear here.</p>
+            </div>
+          ) : (
+            <>
+              {buyerHistory.map((tx, i) => (
+                <div key={tx._id || i} className="wmx-orders-hist-row">
+                  <div className="wmx-orders-hist-icon">🧾</div>
+                  <div className="wmx-orders-hist-main">
+                    <div className="wmx-orders-hist-title">{tx.productTitle}</div>
+                    {tx.counterpartyName && (
+                      <div className="wmx-orders-hist-meta">Seller: {tx.counterpartyName}</div>
+                    )}
+                  </div>
+                  <div className="wmx-orders-hist-amount">
+                    {tx.amount === 0 ? 'Free' : `৳${tx.amount}`}
+                  </div>
+                  <span className="wmx-orders-hist-badge wmx-orders-hist-badge-purchased">Purchased</span>
+                  <div className="wmx-orders-hist-date">{formatHistDate(tx.createdAt)}</div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Download History tab */}
+      {activeTab === "downloadHistory" && (
+        <div className="wmx-orders-hist-list">
+          {dlHistoryLoading ? (
+            <>
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className="wmx-orders-hist-skeleton">
+                  <div className="wmx-orders-hist-sk-icon wmx-orders-shimmer" />
+                  <div className="wmx-orders-hist-sk-body">
+                    <div className="wmx-orders-hist-sk-line wmx-orders-shimmer" style={{ width: "60%" }} />
+                  </div>
+                  <div className="wmx-orders-hist-sk-amount wmx-orders-shimmer" />
+                </div>
+              ))}
+            </>
+          ) : dlHistoryError ? (
+            <div className="wmx-orders-error">{dlHistoryError}</div>
+          ) : dlHistory.length === 0 ? (
+            <div className="wmx-orders-hist-empty">
+              <div className="wmx-orders-hist-empty-icon">📥</div>
+              <h3 className="wmx-orders-hist-empty-title">No downloads yet</h3>
+              <p className="wmx-orders-hist-empty-sub">Files you download will appear here.</p>
+            </div>
+          ) : (
+            <>
+              {dlHistory.map((dl, i) => (
+                <div key={dl._id || i} className="wmx-orders-hist-row">
+                  <div className="wmx-orders-hist-icon">📥</div>
+                  <div className="wmx-orders-hist-main">
+                    <div className="wmx-orders-hist-title">{dl.productTitle}</div>
+                  </div>
+                  <div className="wmx-orders-hist-date">{formatHistDate(dl.downloadedAt)}</div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       )}
 
       {selectedOrder && (
