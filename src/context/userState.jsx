@@ -139,7 +139,8 @@ const UserState = (props) => {
         documentation,
         githubRepoUrl,
         repoPat,
-        livePreviewUrl
+        livePreviewUrl,
+        license
     ) => {
         const token = localStorage.getItem('token')
         try {
@@ -177,7 +178,7 @@ const UserState = (props) => {
                 body: JSON.stringify({
                     title, images, description, price, storedRepoName,
                     githubRepoUrl, livePreviewUrl, tags, builtWith, features,
-                    documentation, support, previewLink
+                    documentation, support, previewLink, license
                 })
             });
             if (!res) {

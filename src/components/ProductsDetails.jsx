@@ -13,6 +13,29 @@ import { Flag } from 'lucide-react';
 
 const REPORT_REASONS = ['Fake product', 'Wrong description', 'Scam / fraud', 'Inappropriate content', 'Other'];
 
+const DEFAULT_LICENSE_TEXT = 'This product is sold under Regular License. You can use it in one personal or client project. Reselling or redistributing is strictly prohibited.';
+
+const LicenseSection = ({ license }) => {
+  const [open, setOpen] = useState(true);
+  const licenseText = license || DEFAULT_LICENSE_TEXT;
+  return (
+    <div className="wmx-section wmx-license-section">
+      <div className="wmx-license-header" onClick={() => setOpen(o => !o)}>
+        <div className="wmx-sec-title" style={{ marginBottom: 0 }}>
+          <FontAwesomeIcon icon={faFileLines} />
+          License
+        </div>
+        <span className={`wmx-license-toggle${open ? '' : ' collapsed'}`}>▼</span>
+      </div>
+      {open && (
+        <div className="wmx-license-body">
+          {licenseText}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ProductDetails = ({ showAlert }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -306,6 +329,8 @@ const ProductDetails = ({ showAlert }) => {
               ))}
             </div>
           </div>
+
+          <LicenseSection license={product.license} />
 
           {images.length > 1 && (
             <div className="wmx-section">

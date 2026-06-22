@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useContext } from 'react';
 import Logo from "../assets/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt, faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import userContext from '../context/userContext';
 import '../css/Navbar.css';
 
@@ -116,6 +116,10 @@ const Navbar = ({ setAlert }) => {
                         <FontAwesomeIcon icon={faReceipt} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
                         My Orders
                       </Link>
+                      <Link className="wmx-dd-item" to="/smart-order" onClick={() => setDropdownOpen(false)}>
+                        <FontAwesomeIcon icon={faWandMagicSparkles} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
+                        Smart Order
+                      </Link>
                       <Link className="wmx-dd-item" to="/settings" onClick={() => setDropdownOpen(false)}>
                         <FontAwesomeIcon icon={faGear} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
                         Settings
@@ -194,6 +198,13 @@ const Navbar = ({ setAlert }) => {
                 onClick={() => setMobileOpen(false)}
               >
                 My Orders
+              </Link>
+              <Link
+                className="wmx-drawer-auth-btn ghost"
+                to="/smart-order"
+                onClick={() => setMobileOpen(false)}
+              >
+                Smart Order
               </Link>
               <Link
                 className="wmx-drawer-auth-btn ghost"

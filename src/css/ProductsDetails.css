@@ -863,3 +863,42 @@ html[data-theme='light'] .wmx-report-textarea {
   background: var(--bg-subtle);
   border-color: var(--border-default);
 }
+
+.wmx-license-section {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.wmx-license-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: transparent;
+}
+
+.wmx-license-header:hover {
+  opacity: 0.8;
+}
+
+.wmx-license-body {
+  padding: 12px 16px 16px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.65;
+  border-top: 1px solid var(--border);
+}
+
+.wmx-license-toggle {
+  font-size: 11px;
+  transition: transform 0.2s ease;
+  color: var(--text-muted);
+}
+
+.wmx-license-toggle.collapsed {
+  transform: rotate(-90deg);
+}

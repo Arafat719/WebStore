@@ -5,7 +5,7 @@ import {
     faTimes, faCloudArrowUp, faPlus, faCode, faLink, faDollarSign,
     faTags, faWrench, faList, faHeadset, faGlobe, faBoxOpen,
     faEye, faEyeSlash, faCheck, faCircleNotch, faLock, faPen,
-    faStar, faFile, faClock, faKey, faCodeBranch
+    faStar, faFile, faClock, faKey, faCodeBranch, faFileLines
 } from '@fortawesome/free-solid-svg-icons';
 import '../css/AddProducts.css';
 
@@ -26,10 +26,12 @@ function AddProducts({ showAlert }) {
     const context = useContext(userContext);
     const { addProducts } = context;
 
+    const DEFAULT_LICENSE_TEXT = 'This product is sold under Regular License. You can use it in one personal or client project. Reselling or redistributing is strictly prohibited.';
+
     const [products, setproducts] = useState({
         title: "", images: [""], description: "", price: "",
         previewLink: "", livePreviewUrl: "", tags: "", builtWith: "", features: "",
-        documentation: false, support: "",
+        documentation: false, support: "", license: DEFAULT_LICENSE_TEXT,
     });
 
     const isGithubVerified = githubStatus?.ok === true;
@@ -187,7 +189,8 @@ function AddProducts({ showAlert }) {
         const result = await addProducts(
             finalData.images, finalData.title, finalData.description, finalData.price,
             finalData.previewLink, finalData.tags, finalData.builtWith, finalData.features,
-            finalData.support, finalData.documentation, githubUrl, repoPat, finalData.livePreviewUrl
+            finalData.support, finalData.documentation, githubUrl, repoPat, finalData.livePreviewUrl,
+            finalData.license
         );
 
         if (result?.success) {
@@ -564,6 +567,25 @@ function AddProducts({ showAlert }) {
                             <div style={{ fontSize: '0.68rem', color: '#3a3a4a', marginTop: 2 }}>Check if this product comes with written documentation</div>
                         </div>
                     </label>
+                </div>
+
+                {/* ── Section 6: License ── */}
+                <div className="wmx-add-section">
+                    <div className="wmx-add-section-title">
+                        <FontAwesomeIcon icon={faFileLines} /> License Terms
+                    </div>
+                    <div className="wmx-add-field" style={{ marginBottom: 0 }}>
+                        <label className="wmx-add-label">License Text</label>
+                        <textarea
+                            className="wmx-add-textarea wmx-license-textarea"
+                            name="license"
+                            value={products.license}
+                            onChange={onchange}
+                            rows={4}
+                            placeholder="Describe the license terms for this product..."
+                        />
+                        <span className="wmx-hint">Buyers will see this on the product page. You can customize it.</span>
+                    </div>
                 </div>
 
                 <button type="submit" className="wmx-submit" onClick={handleClick} disabled={publishing}>

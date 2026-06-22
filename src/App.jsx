@@ -24,6 +24,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PublicProfile from './pages/PublicProfile';
 import Help from './pages/Help/Help';
+import SmartOrder from './pages/SmartOrder/SmartOrder';
 // import Github from './components/Github';
 
 function App() {
@@ -75,6 +76,11 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/seller/:id" element={<PublicProfile />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/smart-order" element={
+            <ProtectedRoute>
+              <SmartOrder />
+            </ProtectedRoute>
+          } />
           {/* <Route path="/github" element={<Github/>}/> */}
           <Route path="*" element={<NotFound />} />
         </Routes>

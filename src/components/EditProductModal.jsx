@@ -5,6 +5,8 @@ const CLOUDINARY_CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD;
 const CLOUDINARY_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
 
 const EditProductModal = ({ product, onClose, onSave }) => {
+  const DEFAULT_LICENSE_TEXT = 'This product is sold under Regular License. You can use it in one personal or client project. Reselling or redistributing is strictly prohibited.';
+
   const [form, setForm] = useState({
     title: product.title || '',
     description: product.description || '',
@@ -15,6 +17,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     features: Array.isArray(product.features) ? product.features.join(', ') : (product.features || ''),
     support: product.support || '',
     documentation: !!product.documentation,
+    license: product.license || DEFAULT_LICENSE_TEXT,
   });
 
   // { type: 'existing', url } | { type: 'new', file, preview }
@@ -88,6 +91,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
         support: form.support.trim(),
         documentation: form.documentation,
         images: finalImages,
+        license: form.license,
       };
 
       const token = localStorage.getItem('token');
@@ -188,6 +192,18 @@ const EditProductModal = ({ product, onClose, onSave }) => {
                 <span className="wmx-epm-check-label">Documentation included</span>
               </label>
             </div>
+          </div>
+
+          <div className="wmx-modal-section-title" style={{ marginTop: 8 }}>License Terms</div>
+          <div className="wmx-modal-field">
+            <label>License Text</label>
+            <textarea
+              name="license"
+              value={form.license}
+              onChange={handleChange}
+              rows={3}
+              placeholder="Describe the license terms..."
+            />
           </div>
 
           <div className="wmx-modal-section-title" style={{ marginTop: 4 }}>Images</div>
