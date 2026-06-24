@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import '../css/About.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCartShopping, faMoneyBillWave, faPaintbrush, faRocket,
+  faGlobe, faLaptop, faFolderOpen, faEnvelope,
+  faCheck
+} from '@fortawesome/free-solid-svg-icons';
 
 const About = () => {
   const sectionsRef = useRef([]);
@@ -25,18 +31,18 @@ const About = () => {
   };
 
   const features = [
-    { icon: "🛒", title: "Buy Websites", desc: "Browse ready-made websites, templates & full online businesses." },
-    { icon: "💰", title: "Sell Products", desc: "List your web products and reach thousands of buyers instantly." },
-    { icon: "🎨", title: "Modern Designs", desc: "Only professional, high-quality designs make it to our marketplace." },
-    { icon: "🚀", title: "Launch Faster", desc: "Skip months of development — start your online business today." },
+    { icon: faCartShopping,   title: "Buy Websites",    desc: "Browse ready-made websites, templates & full online businesses." },
+    { icon: faMoneyBillWave,  title: "Sell Products",   desc: "List your web products and reach thousands of buyers instantly." },
+    { icon: faPaintbrush,     title: "Modern Designs",  desc: "Only professional, high-quality designs make it to our marketplace." },
+    { icon: faRocket,         title: "Launch Faster",   desc: "Skip months of development — start your online business today." },
   ];
 
   const whyUs = [
-    { icon: "✦", label: "High-Quality Products" },
-    { icon: "✦", label: "Easy to Use Platform" },
-    { icon: "✦", label: "Affordable Pricing" },
-    { icon: "✦", label: "Secure Transactions" },
-    { icon: "✦", label: "Developer-Friendly System" },
+    { label: "High-Quality Products" },
+    { label: "Easy to Use Platform" },
+    { label: "Affordable Pricing" },
+    { label: "Secure Transactions" },
+    { label: "Developer-Friendly System" },
   ];
 
   const stats = [
@@ -47,10 +53,10 @@ const About = () => {
   ];
 
   const products = [
-    { icon: "🌐", title: "Website Templates",   desc: "Ready-made website templates you can customize and launch instantly." },
-    { icon: "💻", title: "Full Websites",        desc: "Complete, functional websites built and ready for deployment." },
-    { icon: "📁", title: "GitHub Repositories",  desc: "Source code repos with full documentation — download and build on top." },
-    { icon: "🎨", title: "UI Kits & Assets",     desc: "Design systems, component kits and frontend assets for developers." },
+    { icon: faGlobe,       title: "Website Templates",  desc: "Ready-made website templates you can customize and launch instantly." },
+    { icon: faLaptop,      title: "Full Websites",       desc: "Complete, functional websites built and ready for deployment." },
+    { icon: faFolderOpen,  title: "GitHub Repositories", desc: "Source code repos with full documentation — download and build on top." },
+    { icon: faPaintbrush,  title: "UI Kits & Assets",    desc: "Design systems, component kits and frontend assets for developers." },
   ];
 
   const buyerSteps = [
@@ -78,14 +84,12 @@ const About = () => {
     <>
       <div className="wmx-about">
 
-        {/* HERO */}
         <div className="wmx-about-hero">
           <div className="wmx-badge">Digital Marketplace</div>
           <h1>About<br />WebMarketX</h1>
           <p>Your trusted marketplace for buying and selling web products — built for developers &amp; entrepreneurs.</p>
         </div>
 
-        {/* WHO WE ARE + WHAT WE DO */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Our Story</div>
           <h2>Who We Are</h2>
@@ -96,7 +100,7 @@ const About = () => {
           <div className="wmx-grid">
             {features.map((f, i) => (
               <div className="wmx-card" key={i}>
-                <span className="wmx-card-icon">{f.icon}</span>
+                <span className="wmx-card-icon"><FontAwesomeIcon icon={f.icon} /></span>
                 <h3>{f.title}</h3>
                 <p>{f.desc}</p>
               </div>
@@ -104,7 +108,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* WHY CHOOSE US */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Our Strengths</div>
           <h2>Why Choose Us</h2>
@@ -118,7 +121,6 @@ const About = () => {
           </ul>
         </div>
 
-        {/* PLATFORM STATS */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">By The Numbers</div>
           <h2>WebMarketX At A Glance</h2>
@@ -132,14 +134,13 @@ const About = () => {
           </div>
         </div>
 
-        {/* WHAT YOU CAN BUY/SELL */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Our Products</div>
           <h2>What's Available on WebMarketX</h2>
           <div className="wmx-grid">
             {products.map((p, i) => (
               <div className="wmx-card" key={i}>
-                <span className="wmx-card-icon">{p.icon}</span>
+                <span className="wmx-card-icon"><FontAwesomeIcon icon={p.icon} /></span>
                 <h3>{p.title}</h3>
                 <p>{p.desc}</p>
               </div>
@@ -147,7 +148,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* HOW IT WORKS */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Simple Process</div>
           <h2>How It Works</h2>
@@ -179,7 +179,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* FAQ */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Common Questions</div>
           <h2>Frequently Asked Questions</h2>
@@ -201,7 +200,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* VISION */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Looking Ahead</div>
           <h2>Our Vision</h2>
@@ -213,18 +211,17 @@ const About = () => {
           </div>
         </div>
 
-        {/* CONTACT */}
         <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Get in Touch</div>
           <h2>Contact Us</h2>
           <p>Have questions or want to collaborate? We'd love to hear from you.</p>
           <div className="wmx-contact-row">
             <a className="wmx-contact-item" href="mailto:webmarketx1@gmail.com">
-              <span className="ci-icon">✉️</span>
+              <span className="ci-icon"><FontAwesomeIcon icon={faEnvelope} /></span>
               webmarketx1@gmail.com
             </a>
             <a className="wmx-contact-item" href="https://www.webmarketx.com" target="_blank" rel="noreferrer">
-              <span className="ci-icon">🌐</span>
+              <span className="ci-icon"><FontAwesomeIcon icon={faGlobe} /></span>
               www.webmarketx.com
             </a>
           </div>

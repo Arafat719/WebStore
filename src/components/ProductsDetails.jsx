@@ -47,6 +47,7 @@ const ProductDetails = ({ showAlert }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [hasPurchased, setHasPurchased] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportNote, setReportNote] = useState('');
@@ -61,9 +62,16 @@ const ProductDetails = ({ showAlert }) => {
 
   useEffect(() => {
     fetch(`${API}/products/getbyid/${id}`)
-      .then(res => res.json())
-      .then(data => setProduct(data))
-      .catch(() => {});
+      .then(res => {
+        if (!res.ok) { setNotFound(true); return null; }
+        return res.json();
+      })
+      .then(data => {
+        if (!data) return;
+        if (data.error || !data._id) { setNotFound(true); return; }
+        setProduct(data);
+      })
+      .catch(() => setNotFound(true));
   }, [id]);
 
   useEffect(() => {
@@ -102,7 +110,6 @@ const ProductDetails = ({ showAlert }) => {
   }, [lightboxOpen, images.length]);
 
   const handleDownload = async () => {
-    console.log("DEBUG repoName:", product?.repoName, "| full product:", product);
     const githubUsername = import.meta.env.VITE_GITHUB_USERNAME;
     const token = localStorage.getItem("token");
     if (!token) {
@@ -153,7 +160,10 @@ const ProductDetails = ({ showAlert }) => {
     }
     if (data.url) {
       window.location.href = data.url;
+      return;
     }
+    setHasPurchased(true);
+    showAlert("Purchase successful! Go to My Orders to download.", "success");
   };
 
   const handleWishlist = async () => {
@@ -223,6 +233,15 @@ const ProductDetails = ({ showAlert }) => {
       setReportLoading(false);
     }
   };
+
+  if (notFound) return (
+    <div className="wmx-pd-loading">
+      <p className="wmx-pd-loading-text">Product not found or no longer available.</p>
+      <button className="wmx-back" onClick={() => navigate(-1)} style={{ marginTop: '1rem' }}>
+        Go Back
+      </button>
+    </div>
+  );
 
   if (!product) return (
     <div className="wmx-pd-loading">

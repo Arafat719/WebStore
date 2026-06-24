@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComments } from '@fortawesome/free-solid-svg-icons';
 import "../css/Reviewsection.css";
 
 // ⭐ Star Rating display component
@@ -277,7 +279,7 @@ const ReviewSection = ({ productId, sellerId, currentUser, showAlert }) => {
         </div>
       ) : reviews.length === 0 ? (
         <div className="wmx-reviews__empty">
-          <span className="wmx-reviews__empty-icon">💬</span>
+          <span className="wmx-reviews__empty-icon"><FontAwesomeIcon icon={faComments} /></span>
           <p>No reviews yet. Be the first to review!</p>
         </div>
       ) : (

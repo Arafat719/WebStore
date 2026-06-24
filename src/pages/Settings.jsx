@@ -1,6 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/userContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser, faKey, faShield, faCreditCard, faStore,
+  faBell, faPaintbrush, faLink, faLaptop, faMobileScreen,
+  faDesktop, faEnvelope, faEye, faEyeSlash,
+  faTriangleExclamation, faLock, faSatelliteDish,
+  faClipboardList, faChartBar, faBuilding, faGlobe,
+  faHardHat
+} from '@fortawesome/free-solid-svg-icons';
 import './Settings.css';
 
 const API = import.meta.env.VITE_API_URL;
@@ -10,33 +19,33 @@ const NAV = [
   {
     group: 'Account',
     items: [
-      { id: 'profile',       icon: '👤', label: 'Profile' },
-      { id: 'account',       icon: '🔑', label: 'Account' },
-      { id: 'security',      icon: '🛡️',  label: 'Security' },
+      { id: 'profile',       icon: faUser,    label: 'Profile' },
+      { id: 'account',       icon: faKey,     label: 'Account' },
+      { id: 'security',      icon: faShield,  label: 'Security' },
     ],
   },
   {
     group: 'Commerce',
     items: [
-      { id: 'billing',       icon: '💳', label: 'Billing' },
-      { id: 'seller',        icon: '🏪', label: 'Seller Settings' },
+      { id: 'billing',       icon: faCreditCard, label: 'Billing' },
+      { id: 'seller',        icon: faStore,      label: 'Seller Settings' },
     ],
   },
   {
     group: 'Preferences',
     items: [
-      { id: 'notifications', icon: '🔔', label: 'Notifications' },
-      { id: 'preferences',   icon: '🎨', label: 'Preferences' },
-      { id: 'connected',     icon: '🔗', label: 'Connected Accounts' },
+      { id: 'notifications', icon: faBell,       label: 'Notifications' },
+      { id: 'preferences',   icon: faPaintbrush, label: 'Preferences' },
+      { id: 'connected',     icon: faLink,       label: 'Connected Accounts' },
     ],
   },
 ];
 
 /* ── Static dummy data ────────────────────────────────────────────── */
 const SESSIONS = [
-  { id: 1, icon: '💻', device: 'Chrome · macOS Ventura',     location: 'Dhaka, BD · 2 min ago',       current: true  },
-  { id: 2, icon: '📱', device: 'Safari · iPhone 15 Pro',     location: 'Dhaka, BD · 1 hr ago',        current: false },
-  { id: 3, icon: '🖥️', device: 'Firefox · Windows 11',       location: 'Chittagong, BD · 3 days ago', current: false },
+  { id: 1, icon: faLaptop,       device: 'Chrome · macOS Ventura',     location: 'Dhaka, BD · 2 min ago',       current: true  },
+  { id: 2, icon: faMobileScreen, device: 'Safari · iPhone 15 Pro',     location: 'Dhaka, BD · 1 hr ago',        current: false },
+  { id: 3, icon: faDesktop,      device: 'Firefox · Windows 11',       location: 'Chittagong, BD · 3 days ago', current: false },
 ];
 
 const LOGIN_HISTORY = [
@@ -106,7 +115,7 @@ function ProfilePanel() {
   return (
     <div className="wmx-panel">
       <div className="wmx-card">
-        <p className="wmx-card-title">👤 Public Profile</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faUser} /> Public Profile</p>
         <p className="wmx-card-desc">This information is shown on your public marketplace page.</p>
 
         <div className="wmx-avatar-upload">
@@ -227,7 +236,7 @@ function AccountPanel() {
     <div className="wmx-panel">
       {/* Email */}
       <div className="wmx-card">
-        <p className="wmx-card-title">📧 Email Address</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faEnvelope} /> Email Address</p>
         <p className="wmx-card-desc">Update the email linked to your WebMarketX account.</p>
         <div className="wmx-form-group">
           <label className="wmx-label">Current Email</label>
@@ -248,7 +257,7 @@ function AccountPanel() {
 
       {/* Password */}
       <div className="wmx-card">
-        <p className="wmx-card-title">🔑 Change Password</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faKey} /> Change Password</p>
         <p className="wmx-card-desc">Use a strong, unique password you don't use anywhere else.</p>
 
         <div className="wmx-form-group">
@@ -256,7 +265,7 @@ function AccountPanel() {
           <div className="wmx-input-wrap">
             <input className="wmx-input" type={vis.cur ? 'text' : 'password'} placeholder="••••••••"
               value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
-            <button className="wmx-eye-btn" onClick={() => toggle('cur')}>{vis.cur ? '🙈' : '👁️'}</button>
+            <button className="wmx-eye-btn" onClick={() => toggle('cur')}><FontAwesomeIcon icon={vis.cur ? faEyeSlash : faEye} /></button>
           </div>
         </div>
 
@@ -266,7 +275,7 @@ function AccountPanel() {
             <div className="wmx-input-wrap">
               <input className="wmx-input" type={vis.nxt ? 'text' : 'password'} placeholder="••••••••"
                 value={newPassword} onChange={e => setNewPassword(e.target.value)} />
-              <button className="wmx-eye-btn" onClick={() => toggle('nxt')}>{vis.nxt ? '🙈' : '👁️'}</button>
+              <button className="wmx-eye-btn" onClick={() => toggle('nxt')}><FontAwesomeIcon icon={vis.nxt ? faEyeSlash : faEye} /></button>
             </div>
           </div>
           <div className="wmx-form-group">
@@ -274,7 +283,7 @@ function AccountPanel() {
             <div className="wmx-input-wrap">
               <input className="wmx-input" type={vis.cfm ? 'text' : 'password'} placeholder="••••••••"
                 value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
-              <button className="wmx-eye-btn" onClick={() => toggle('cfm')}>{vis.cfm ? '🙈' : '👁️'}</button>
+              <button className="wmx-eye-btn" onClick={() => toggle('cfm')}><FontAwesomeIcon icon={vis.cfm ? faEyeSlash : faEye} /></button>
             </div>
           </div>
         </div>
@@ -287,7 +296,7 @@ function AccountPanel() {
 
       {/* Danger zone */}
       <div className="wmx-danger-card">
-        <p className="wmx-danger-title">⚠️ Danger Zone</p>
+        <p className="wmx-danger-title"><FontAwesomeIcon icon={faTriangleExclamation} /> Danger Zone</p>
         <p className="wmx-danger-desc">
           Deleting your account is permanent. All products, reviews, and earnings history will be
           erased and cannot be recovered. This action cannot be undone.
@@ -302,7 +311,7 @@ function AccountPanel() {
         <div className="wmx-modal-overlay"
           onClick={e => e.target === e.currentTarget && closeDeleteModal()}>
           <div className="wmx-modal">
-            <div className="wmx-modal-icon">⚠️</div>
+            <div className="wmx-modal-icon"><FontAwesomeIcon icon={faTriangleExclamation} /></div>
             <h3 className="wmx-modal-title">Delete Your Account</h3>
             <p className="wmx-modal-desc">
               This action is permanent and cannot be undone. All your products, reviews,
@@ -392,7 +401,7 @@ function NotificationsPanel() {
   return (
     <div className="wmx-panel">
       <div className="wmx-card">
-        <p className="wmx-card-title">🔔 Notification Preferences</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faBell} /> Notification Preferences</p>
         <p className="wmx-card-desc">Choose which updates you want to receive and how.</p>
 
         {rows.map(r => (
@@ -428,12 +437,12 @@ function SecurityPanel() {
   return (
     <div className="wmx-panel">
       <div className="wmx-coming-soon-banner">
-        🚧 This section is coming soon. We're working on it!
+        <FontAwesomeIcon icon={faHardHat} /> This section is coming soon. We're working on it!
       </div>
 
       {/* 2FA */}
       <div className="wmx-card">
-        <p className="wmx-card-title">🔐 Two-Factor Authentication</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faLock} /> Two-Factor Authentication</p>
         <p className="wmx-card-desc">Add an extra layer of security using an authenticator app.</p>
 
         <div className="wmx-toggle-row" style={{ borderBottom: 'none' }}>
@@ -461,12 +470,12 @@ function SecurityPanel() {
 
       {/* Active sessions */}
       <div className="wmx-card">
-        <p className="wmx-card-title">📡 Active Sessions</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faSatelliteDish} /> Active Sessions</p>
         <p className="wmx-card-desc">Devices currently signed into your account.</p>
         <div className="wmx-session-list">
           {sessions.map(s => (
             <div key={s.id} className="wmx-session-item">
-              <span className="wmx-session-icon">{s.icon}</span>
+              <span className="wmx-session-icon"><FontAwesomeIcon icon={s.icon} /></span>
               <div className="wmx-session-info">
                 <p className="wmx-session-device">{s.device}</p>
                 <p className="wmx-session-meta">{s.location}</p>
@@ -486,7 +495,7 @@ function SecurityPanel() {
 
       {/* Login history */}
       <div className="wmx-card">
-        <p className="wmx-card-title">📋 Login History</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faClipboardList} /> Login History</p>
         <p className="wmx-card-desc">Recent sign-in activity for your account.</p>
         <div className="wmx-table-wrapper">
           <table className="wmx-table">
@@ -524,12 +533,12 @@ function BillingPanel() {
   return (
     <div className="wmx-panel">
       <div className="wmx-coming-soon-banner">
-        🚧 This section is coming soon. We're working on it!
+        <FontAwesomeIcon icon={faHardHat} /> This section is coming soon. We're working on it!
       </div>
 
       {/* Card UI */}
       <div className="wmx-card">
-        <p className="wmx-card-title">💳 Payment Method</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faCreditCard} /> Payment Method</p>
         <p className="wmx-card-desc">Your saved card for purchases and subscription renewals.</p>
 
         <div className="wmx-payment-card">
@@ -556,7 +565,7 @@ function BillingPanel() {
 
       {/* Transaction history */}
       <div className="wmx-card">
-        <p className="wmx-card-title">📊 Transaction History</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faChartBar} /> Transaction History</p>
         <p className="wmx-card-desc">Last 30 days of account activity.</p>
         <div className="wmx-table-wrapper">
           <table className="wmx-table">
@@ -597,7 +606,7 @@ function BillingPanel() {
 
       {/* Withdrawal settings */}
       <div className="wmx-card">
-        <p className="wmx-card-title">🏦 Withdrawal Settings</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faBuilding} /> Withdrawal Settings</p>
         <p className="wmx-card-desc">Configure how and when your earnings are paid out.</p>
 
         <div className="wmx-form-group">
@@ -702,7 +711,7 @@ function SellerPanel() {
         </div>
       ) : (
         <div className="wmx-card">
-          <p className="wmx-card-title">🏪 Shop Details</p>
+          <p className="wmx-card-title"><FontAwesomeIcon icon={faStore} /> Shop Details</p>
           <p className="wmx-card-desc">Customise how your seller profile appears on the marketplace.</p>
 
           <div className="wmx-form-group">
@@ -839,7 +848,7 @@ function PreferencesPanel() {
   return (
     <div className="wmx-panel">
       <div className="wmx-card">
-        <p className="wmx-card-title">🌐 Language &amp; Region</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faGlobe} /> Language &amp; Region</p>
         <p className="wmx-card-desc">Set the language, currency and timezone used across the marketplace.</p>
 
         <div className="wmx-form-row">
@@ -939,11 +948,11 @@ function ConnectedPanel() {
   return (
     <div className="wmx-panel">
       <div className="wmx-coming-soon-banner">
-        🚧 This section is coming soon. We're working on it!
+        <FontAwesomeIcon icon={faHardHat} /> This section is coming soon. We're working on it!
       </div>
 
       <div className="wmx-card">
-        <p className="wmx-card-title">🔗 Connected Accounts</p>
+        <p className="wmx-card-title"><FontAwesomeIcon icon={faLink} /> Connected Accounts</p>
         <p className="wmx-card-desc">Link third-party accounts for faster login and additional features.</p>
 
         <div className="wmx-connect-list">
@@ -1011,7 +1020,7 @@ export default function Settings() {
                   className={`wmx-sidebar-btn ${active === item.id ? 'wmx-active' : ''}`}
                   onClick={() => setActive(item.id)}
                 >
-                  <span className="wmx-sidebar-icon">{item.icon}</span>
+                  <span className="wmx-sidebar-icon"><FontAwesomeIcon icon={item.icon} /></span>
                   {item.label}
                 </button>
               ))}

@@ -1,5 +1,5 @@
 import UserContext from "./userContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const getInitialTheme = () => {
@@ -73,6 +73,7 @@ const UserState = (props) => {
             localStorage.setItem("token", data.token)
             localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
+            fetchNotifications();
             navigate('/')
             return data;
         }
@@ -98,6 +99,7 @@ const UserState = (props) => {
             localStorage.setItem("token", data.token)
             localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
+            fetchNotifications();
             navigate("/")
             return data;
         }
@@ -165,6 +167,11 @@ const UserState = (props) => {
         const token = localStorage.getItem("token");
         if (token) {
             fetchNotifications();
+            const interval = setInterval(() => {
+                const t = localStorage.getItem("token");
+                if (t) fetchNotifications();
+            }, 60000);
+            return () => clearInterval(interval);
         }
     }, []);
 
@@ -287,13 +294,18 @@ const UserState = (props) => {
         return { success: false, data };
     };
 
-    const user = JSON.parse(localStorage.getItem("user") || 'null')
-    const id = JSON.parse(localStorage.getItem("id") || 'null')
-    let userId = id?.id || null
-    let firstLetter = user?.name?.[0]?.toUpperCase() || "U"
-    let profilePic = user?.profilePic || null
-    let userType = user?.type || null
-    let userRoles = user?.roles ?? ["buyer"]
+    const { user, userId, firstLetter, profilePic, userType, userRoles } = useMemo(() => {
+        const u = JSON.parse(localStorage.getItem("user") || 'null');
+        const idObj = JSON.parse(localStorage.getItem("id") || 'null');
+        return {
+            user: u,
+            userId: idObj?.id || null,
+            firstLetter: u?.name?.[0]?.toUpperCase() || "U",
+            profilePic: u?.profilePic || null,
+            userType: u?.type || null,
+            userRoles: u?.roles ?? ["buyer"],
+        };
+    }, [userVersion]);
 
     return (
         <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead }}>

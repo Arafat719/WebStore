@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   MapPin, Globe, AtSign, Briefcase, GitBranch,
-  Package, ShieldCheck
+  Package, ShieldCheck, Box, Star, MessageSquare
 } from 'lucide-react';
 import userContext from '../context/userContext';
 import Productcard from '../components/Productcard';
@@ -144,19 +144,19 @@ const PublicProfile = () => {
           {/* Stat chips */}
           <div className="wmx-pp-stats-row">
             <div className="wmx-pp-stat-chip">
-              <span className="wmx-pp-stat-icon">📦</span>
+              <span className="wmx-pp-stat-icon"><Box size={14} /></span>
               <span className="wmx-pp-stat-val">{products.length}</span>
               <span className="wmx-pp-stat-lbl">Products</span>
             </div>
             <div className="wmx-pp-stat-chip">
-              <span className="wmx-pp-stat-icon">⭐</span>
+              <span className="wmx-pp-stat-icon"><Star size={14} /></span>
               <span className="wmx-pp-stat-val">
                 {reviewStats.averageRating > 0 ? reviewStats.averageRating.toFixed(1) : '—'}
               </span>
               <span className="wmx-pp-stat-lbl">Rating</span>
             </div>
             <div className="wmx-pp-stat-chip">
-              <span className="wmx-pp-stat-icon">💬</span>
+              <span className="wmx-pp-stat-icon"><MessageSquare size={14} /></span>
               <span className="wmx-pp-stat-val">{reviewStats.totalReviews}</span>
               <span className="wmx-pp-stat-lbl">Reviews</span>
             </div>

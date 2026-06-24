@@ -483,3 +483,68 @@
     .wmx-terms-modal { padding: 24px 20px; }
     .wmx-github-info-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Repo info box ── */
+.wmx-repo-info-box {
+    display: flex;
+    gap: 14px;
+    background: rgba(134, 130, 250, 0.06);
+    border: 1px solid rgba(134, 130, 250, 0.2);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 16px;
+}
+
+.wmx-repo-info-icon {
+    color: #8682fa;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.wmx-repo-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wmx-repo-info-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.wmx-repo-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.wmx-repo-info-list li {
+    font-size: 13px;
+    color: var(--text-body);
+    line-height: 1.6;
+    padding-left: 14px;
+    position: relative;
+}
+
+.wmx-repo-info-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: #8682fa;
+    font-weight: 700;
+}
+
+.wmx-repo-info-list code {
+    background: rgba(134, 130, 250, 0.12);
+    color: #a8a4ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+}

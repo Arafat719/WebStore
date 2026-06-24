@@ -1,6 +1,8 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Send } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLightbulb } from '@fortawesome/free-solid-svg-icons';
 import userContext from '../../context/userContext';
 import './Help.css';
 
@@ -221,7 +223,9 @@ export default function Help() {
               sell web products — websites, templates, UI kits, and GitHub repositories.
             </p>
             <div className="wmx-help-callout">
-              <span className="wmx-help-callout-icon" aria-hidden="true">💡</span>
+              <span className="wmx-help-callout-icon" aria-hidden="true">
+                <FontAwesomeIcon icon={faLightbulb} />
+              </span>
               <span>
                 <strong>Buyer and Seller are not separate accounts.</strong> Any user can become a
                 seller with one click from Settings.

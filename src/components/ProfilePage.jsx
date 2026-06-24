@@ -5,7 +5,8 @@ import {
   Lock, Heart, ShoppingBag, Settings, LogOut,
   Star, Crown, ChevronRight, Bell, Package,
   TrendingUp, Globe, Edit3, Camera, AtSign,
-  Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil, Store
+  Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil, Store,
+  DollarSign, Download, ClipboardList, Rocket
 } from "lucide-react";
 import userContext from "../context/userContext";
 import "../css/ProfilePage.css";
@@ -389,7 +390,7 @@ const ProfilePage = ({ showAlert }) => {
                   Active Seller
                 </div>
                 <h2 className="wmx-hero-name">
-                  {seller?.name?.split(" ")[0] ?? "there"} 👋
+                  {seller?.name?.split(" ")[0] ?? "there"}
                 </h2>
                 <p className="wmx-hero-sub">
                   {seller?.bio || "Manage your profile and activity"}
@@ -524,7 +525,7 @@ const ProfilePage = ({ showAlert }) => {
                 </div>
               </div>
               <div className="wmx-hist-stat-card">
-                <div className="wmx-hist-stat-icon" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80' }}>💰</div>
+                <div className="wmx-hist-stat-icon" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80' }}><DollarSign size={16} /></div>
                 <div>
                   <div className="wmx-hist-stat-num">
                     {historyLoading ? '—' : historyData.transactions.filter(t => t.type === 'sale').length}
@@ -533,7 +534,7 @@ const ProfilePage = ({ showAlert }) => {
                 </div>
               </div>
               <div className="wmx-hist-stat-card">
-                <div className="wmx-hist-stat-icon" style={{ background: 'rgba(134,130,250,0.1)', color: '#8682fa' }}>📦</div>
+                <div className="wmx-hist-stat-icon" style={{ background: 'rgba(134,130,250,0.1)', color: '#8682fa' }}><Package size={16} /></div>
                 <div>
                   <div className="wmx-hist-stat-num">
                     {historyLoading ? '—' : historyData.transactions.filter(t => t.type === 'listing').length}
@@ -570,12 +571,12 @@ const ProfilePage = ({ showAlert }) => {
                   <div className="wmx-hist-error">{historyError}</div>
                 ) : historyData.transactions.length === 0 ? (
                   <div className="wmx-hist-empty">
-                    <div className="wmx-hist-empty-icon">📋</div>
+                    <div className="wmx-hist-empty-icon"><ClipboardList size={28} /></div>
                     <p>No history yet</p>
                   </div>
                 ) : historyData.transactions.map((tx, i) => (
                   <div key={tx._id || i} className="wmx-hist-tx-row">
-                    <div className="wmx-hist-tx-icon">{tx.type === 'sale' ? '💰' : '📦'}</div>
+                    <div className="wmx-hist-tx-icon">{tx.type === 'sale' ? <DollarSign size={15} /> : <Package size={15} />}</div>
                     <div className="wmx-hist-tx-main">
                       <div className="wmx-hist-tx-title">{tx.productTitle}</div>
                       {tx.type === 'sale' && tx.counterpartyName && (
@@ -607,12 +608,12 @@ const ProfilePage = ({ showAlert }) => {
                   <div className="wmx-hist-error">{downloadsError}</div>
                 ) : downloadsData.length === 0 ? (
                   <div className="wmx-hist-empty">
-                    <div className="wmx-hist-empty-icon">📥</div>
+                    <div className="wmx-hist-empty-icon"><Download size={28} /></div>
                     <p>No downloads yet</p>
                   </div>
                 ) : downloadsData.map((dl, i) => (
                   <div key={dl._id || i} className="wmx-hist-tx-row">
-                    <div className="wmx-hist-tx-icon">📥</div>
+                    <div className="wmx-hist-tx-icon"><Download size={15} /></div>
                     <div className="wmx-hist-tx-main">
                       <div className="wmx-hist-tx-title">{dl.productTitle}</div>
                     </div>
@@ -736,11 +737,11 @@ const ProfilePage = ({ showAlert }) => {
                 Priority listings, analytics dashboard, featured badge & more.
               </p>
               <ul className="wmx-premium-perks">
-                <li><span>✦</span> Featured listing placement</li>
-                <li><span>✦</span> Advanced analytics</li>
-                <li><span>✦</span> Verified seller badge</li>
+                <li><ChevronRight size={12} /> Featured listing placement</li>
+                <li><ChevronRight size={12} /> Advanced analytics</li>
+                <li><ChevronRight size={12} /> Verified seller badge</li>
               </ul>
-              <button className="wmx-premium-btn" onClick={() => { setSuccessToast('Premium plan coming soon! 🚀'); setTimeout(() => setSuccessToast(''), 3500); }}>
+              <button className="wmx-premium-btn" onClick={() => { setSuccessToast('Premium plan coming soon!'); setTimeout(() => setSuccessToast(''), 3500); }}>
                 Upgrade Now <ChevronRight size={13} />
               </button>
             </div>
@@ -832,7 +833,7 @@ const ProfilePage = ({ showAlert }) => {
           onClick={e => e.target === e.currentTarget && !deleteLoading && setDeleteTarget(null)}
         >
           <div className="wmx-delete-dialog">
-            <div className="wmx-delete-icon">🗑️</div>
+            <div className="wmx-delete-icon"><Trash2 size={28} /></div>
             <h3>Delete Product?</h3>
             <p>Are you sure you want to delete this product? This action cannot be undone.</p>
             {deleteError && <div className="wmx-modal-error" style={{ marginBottom: 16 }}>{deleteError}</div>}

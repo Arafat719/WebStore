@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faReceipt, faDownload } from '@fortawesome/free-solid-svg-icons';
 import {
   Search, ShoppingBag, Package, ChevronLeft, ChevronRight,
   X, CheckCircle, Circle, Clock,
@@ -456,7 +458,7 @@ const MyOrders = () => {
             <div className="wmx-orders-error">{buyerHistoryError}</div>
           ) : buyerHistory.length === 0 ? (
             <div className="wmx-orders-hist-empty">
-              <div className="wmx-orders-hist-empty-icon">🧾</div>
+              <div className="wmx-orders-hist-empty-icon"><FontAwesomeIcon icon={faReceipt} /></div>
               <h3 className="wmx-orders-hist-empty-title">No purchases yet</h3>
               <p className="wmx-orders-hist-empty-sub">Your purchase history will appear here.</p>
             </div>
@@ -464,7 +466,7 @@ const MyOrders = () => {
             <>
               {buyerHistory.map((tx, i) => (
                 <div key={tx._id || i} className="wmx-orders-hist-row">
-                  <div className="wmx-orders-hist-icon">🧾</div>
+                  <div className="wmx-orders-hist-icon"><FontAwesomeIcon icon={faReceipt} /></div>
                   <div className="wmx-orders-hist-main">
                     <div className="wmx-orders-hist-title">{tx.productTitle}</div>
                     {tx.counterpartyName && (
@@ -502,7 +504,7 @@ const MyOrders = () => {
             <div className="wmx-orders-error">{dlHistoryError}</div>
           ) : dlHistory.length === 0 ? (
             <div className="wmx-orders-hist-empty">
-              <div className="wmx-orders-hist-empty-icon">📥</div>
+              <div className="wmx-orders-hist-empty-icon"><FontAwesomeIcon icon={faDownload} /></div>
               <h3 className="wmx-orders-hist-empty-title">No downloads yet</h3>
               <p className="wmx-orders-hist-empty-sub">Files you download will appear here.</p>
             </div>
@@ -510,7 +512,7 @@ const MyOrders = () => {
             <>
               {dlHistory.map((dl, i) => (
                 <div key={dl._id || i} className="wmx-orders-hist-row">
-                  <div className="wmx-orders-hist-icon">📥</div>
+                  <div className="wmx-orders-hist-icon"><FontAwesomeIcon icon={faDownload} /></div>
                   <div className="wmx-orders-hist-main">
                     <div className="wmx-orders-hist-title">{dl.productTitle}</div>
                   </div>

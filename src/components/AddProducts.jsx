@@ -5,7 +5,8 @@ import {
     faTimes, faCloudArrowUp, faPlus, faCode, faLink, faDollarSign,
     faTags, faWrench, faList, faHeadset, faGlobe, faBoxOpen,
     faEye, faEyeSlash, faCheck, faCircleNotch, faLock, faPen,
-    faStar, faFile, faClock, faKey, faCodeBranch, faFileLines
+    faStar, faFile, faClock, faKey, faCodeBranch, faFileLines,
+    faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
 import '../css/AddProducts.css';
 
@@ -76,7 +77,7 @@ function AddProducts({ showAlert }) {
             owner = parts[0];
             repo = parts[1].replace('.git', '');
         } catch {
-            setGithubStatus({ error: '❌ Invalid GitHub URL format.' });
+            setGithubStatus({ error: 'Invalid GitHub URL format.' });
             return;
         }
 
@@ -91,22 +92,22 @@ function AddProducts({ showAlert }) {
             });
 
             if (res.status === 401) {
-                setGithubStatus({ error: '❌ Invalid PAT. Please check your Personal Access Token.' });
+                setGithubStatus({ error: 'Invalid PAT. Please check your Personal Access Token.' });
                 return;
             }
             if (res.status === 404) {
-                setGithubStatus({ error: '❌ Repository not found. Make sure the URL is correct and the token has access.' });
+                setGithubStatus({ error: 'Repository not found. Make sure the URL is correct and the token has access.' });
                 return;
             }
             if (!res.ok) {
-                setGithubStatus({ error: '❌ Something went wrong. Please try again.' });
+                setGithubStatus({ error: 'Something went wrong. Please try again.' });
                 return;
             }
 
             const data = await res.json();
 
             if (!data.permissions?.push) {
-                setGithubStatus({ error: "❌ You don't have sufficient access to this repository." });
+                setGithubStatus({ error: "You don't have sufficient access to this repository." });
                 return;
             }
             let lastCommit = null;
@@ -130,7 +131,7 @@ function AddProducts({ showAlert }) {
             } catch {}
 
             if (fileCount === 0) {
-                setGithubStatus({ error: '❌ This repository has no code. Please submit a project with actual files.' });
+                setGithubStatus({ error: 'This repository has no code. Please submit a project with actual files.' });
                 return;
             }
 
@@ -147,7 +148,7 @@ function AddProducts({ showAlert }) {
             setGithubLocked(true);
 
         } catch {
-            setGithubStatus({ error: '❌ Something went wrong. Please try again.' });
+            setGithubStatus({ error: 'Something went wrong. Please try again.' });
         }
     };
 
@@ -253,6 +254,14 @@ function AddProducts({ showAlert }) {
                         <li>
                             <span className="wmx-terms-num">06</span>
                             By listing a product, you agree that WebMarketX may store a copy of your repository for delivery purposes.
+                        </li>
+                        <li>
+                            <span className="wmx-terms-num">07</span>
+                            Include a <code>.env.example</code> file in your repository so buyers know which environment variables are required to run the project.
+                        </li>
+                        <li>
+                            <span className="wmx-terms-num">08</span>
+                            WebMarketX is not responsible for any sensitive information (API keys, passwords, secrets) that you accidentally include in your repository. You are solely responsible for reviewing your code before submission. By listing a product, you release WebMarketX from any liability arising from such disclosures.
                         </li>
                     </ul>
                     <div className="wmx-terms-footer">
@@ -364,6 +373,20 @@ function AddProducts({ showAlert }) {
                             <FontAwesomeIcon icon={faPen} /> Change Repository
                         </button>
                     )}
+
+                    <div className="wmx-repo-info-box">
+                        <div className="wmx-repo-info-icon">
+                            <FontAwesomeIcon icon={faCircleInfo} />
+                        </div>
+                        <div className="wmx-repo-info-text">
+                            <p className="wmx-repo-info-title">Before you submit</p>
+                            <ul className="wmx-repo-info-list">
+                                <li>Make sure your repo does <strong>not</strong> contain any <code>.env</code> files with real secrets — these will be automatically removed, but double-check anyway.</li>
+                                <li>Include a <code>.env.example</code> file listing all required environment variables (without real values) so buyers can set up the project easily.</li>
+                                <li>WebMarketX is not liable for any sensitive data you accidentally expose in your repository.</li>
+                            </ul>
+                        </div>
+                    </div>
 
                     {githubStatus === 'verifying' && (
                         <div className="wmx-github-status wmx-github-status--loading">

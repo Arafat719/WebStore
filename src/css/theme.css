@@ -162,3 +162,126 @@ html[data-theme='light'] {
   --scrollbar-thumb:   rgba(108, 99, 255, 0.25);
   --modal-backdrop:    rgba(0, 0, 0, 0.35);
 }
+
+/* ── Icon consistency: FontAwesome + Lucide ── */
+svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.wmx-card-icon svg,
+.wmx-card-icon .svg-inline--fa {
+  width: 20px;
+  height: 20px;
+}
+
+.wmx-sidebar-icon .svg-inline--fa,
+.wmx-sidebar-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.wmx-session-icon .svg-inline--fa {
+  width: 15px;
+  height: 15px;
+  color: var(--text-muted, rgba(226,226,240,0.45));
+}
+
+.wmx-hist-tx-icon .svg-inline--fa,
+.wmx-hist-tx-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.wmx-hist-stat-icon svg {
+  display: block;
+}
+
+.wmx-hist-empty-icon svg,
+.wmx-hist-empty-icon .svg-inline--fa {
+  width: 28px;
+  height: 28px;
+  opacity: 0.45;
+}
+
+.wmx-orders-hist-empty-icon .svg-inline--fa {
+  width: 28px;
+  height: 28px;
+  opacity: 0.45;
+}
+
+.wmx-orders-hist-icon .svg-inline--fa {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+}
+
+.wmx-delete-icon svg,
+.wmx-delete-icon .svg-inline--fa {
+  width: 28px;
+  height: 28px;
+  color: #ff6b6b;
+}
+
+.wmx-pp-stat-icon svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.85;
+}
+
+.wmx-help-callout-icon .svg-inline--fa {
+  width: 16px;
+  height: 16px;
+  color: #fbbf24;
+}
+
+.wmx-reviews__empty-icon .svg-inline--fa {
+  width: 32px;
+  height: 32px;
+  opacity: 0.35;
+  display: block;
+  margin: 0 auto 12px;
+}
+
+.wmx-so-type-icon .svg-inline--fa {
+  width: 28px;
+  height: 28px;
+}
+
+.wmx-so-success-icon .svg-inline--fa {
+  width: 48px;
+  height: 48px;
+  color: #8682fa;
+}
+
+.wmx-so-file-chosen .svg-inline--fa {
+  color: #4ade80;
+  margin-right: 6px;
+}
+
+.wmx-section-tag .svg-inline--fa {
+  color: #fb923c;
+  margin-right: 4px;
+}
+
+.wmx-card-title .svg-inline--fa {
+  margin-right: 8px;
+  opacity: 0.75;
+}
+
+.wmx-danger-title .svg-inline--fa,
+.wmx-modal-icon .svg-inline--fa {
+  color: #ff6b6b;
+  margin-right: 6px;
+}
+
+.wmx-coming-soon-banner .svg-inline--fa {
+  color: #fbbf24;
+  margin-right: 6px;
+}
+
+.ci-icon .svg-inline--fa {
+  width: 16px;
+  height: 16px;
+}

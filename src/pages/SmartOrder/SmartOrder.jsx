@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping, faBuilding, faCircleCheck, faRocket } from '@fortawesome/free-solid-svg-icons';
 import "./SmartOrder.css";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -8,13 +10,13 @@ const ORDER_TYPES = [
     key: "web_product",
     label: "For Web Product",
     desc: "Customize or develop an existing web product",
-    icon: "🛒",
+    icon: faCartShopping,
   },
   {
     key: "own_business",
     label: "For Own Business",
     desc: "Build a new website or app for your own business",
-    icon: "🏢",
+    icon: faBuilding,
   },
 ];
 
@@ -184,7 +186,7 @@ export default function SmartOrder() {
                   className="wmx-so-type-card"
                   onClick={() => handleTypeSelect(t.key)}
                 >
-                  <span className="wmx-so-type-icon">{t.icon}</span>
+                  <span className="wmx-so-type-icon"><FontAwesomeIcon icon={t.icon} /></span>
                   <span className="wmx-so-type-name">{t.label}</span>
                   <span className="wmx-so-type-desc">{t.desc}</span>
                   <span className="wmx-so-type-arrow">→</span>
@@ -205,7 +207,7 @@ export default function SmartOrder() {
                 ← Back
               </button>
               <span className="wmx-so-badge">
-                {selectedType?.icon} {selectedType?.label}
+                <FontAwesomeIcon icon={selectedType?.icon} /> {selectedType?.label}
               </span>
             </div>
 
@@ -309,7 +311,7 @@ export default function SmartOrder() {
                 />
                 <label htmlFor="uiFile" className="wmx-so-file-label">
                   {uiFile ? (
-                    <span className="wmx-so-file-chosen">✅ {uiFile.name}</span>
+                    <span className="wmx-so-file-chosen"><FontAwesomeIcon icon={faCircleCheck} /> {uiFile.name}</span>
                   ) : (
                     <span>📁 Choose a file</span>
                   )}
@@ -349,7 +351,7 @@ export default function SmartOrder() {
         {submitted && (
           <div className="wmx-so-success">
             <div className="wmx-so-success-orb" />
-            <span className="wmx-so-success-icon">🎉</span>
+            <span className="wmx-so-success-icon"><FontAwesomeIcon icon={faRocket} /></span>
             <h2 className="wmx-so-success-title">Order Placed!</h2>
             <p className="wmx-so-success-msg">
               Your order has been submitted successfully. Our team will review it and get in touch with you shortly.

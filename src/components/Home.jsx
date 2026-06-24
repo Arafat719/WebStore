@@ -3,7 +3,7 @@ import Productcard from './Productcard'
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLock, faBolt, faShield } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faBolt, faShield, faFire } from '@fortawesome/free-solid-svg-icons'
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -162,7 +162,7 @@ const Home = () => {
         <section className="wmx-listings" id="listings" ref={listingsRef}>
           <div className="wmx-section-header-row">
             <div className="wmx-section-header">
-              <span className="wmx-section-tag">🔥 Hot right now</span>
+              <span className="wmx-section-tag"><FontAwesomeIcon icon={faFire} /> Hot right now</span>
               <h2 className="wmx-section-title">Featured Websites for Sale</h2>
               <p className="wmx-section-sub">
                 {totalProducts} listing{totalProducts !== 1 ? 's' : ''} found
