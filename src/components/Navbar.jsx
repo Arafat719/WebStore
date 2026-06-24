@@ -8,7 +8,7 @@ import '../css/Navbar.css';
 
 const Navbar = ({ setAlert }) => {
   const context = useContext(userContext);
-  const { userId, firstLetter, profilePic, userType, userRoles, theme, toggleTheme } = context;
+  const { userId, firstLetter, profilePic, userType, userRoles, theme, toggleTheme, notifications, unreadCount, markNotificationRead, markAllNotificationsRead } = context;
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -17,8 +17,10 @@ const Navbar = ({ setAlert }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const lastScrollY = useRef(0);
   const dropdownRef = useRef(null);
+  const notifRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -44,6 +46,17 @@ const Navbar = ({ setAlert }) => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Close notif dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -98,6 +111,61 @@ const Navbar = ({ setAlert }) => {
               <button className="wmx-theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
                 <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
               </button>
+              {token && (
+                <div className="wmx-notif-wrap" ref={notifRef}>
+                  <button
+                    className="wmx-notif-btn"
+                    onClick={() => setNotifOpen(o => !o)}
+                    aria-label="Notifications"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    {unreadCount > 0 && (
+                      <span className="wmx-notif-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                    )}
+                  </button>
+
+                  {notifOpen && (
+                    <div className="wmx-notif-dropdown">
+                      <div className="wmx-notif-header">
+                        <span className="wmx-notif-title">Notifications</span>
+                        {unreadCount > 0 && (
+                          <button
+                            className="wmx-notif-mark-all"
+                            onClick={markAllNotificationsRead}
+                          >
+                            Mark all read
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="wmx-notif-list">
+                        {notifications.length === 0 ? (
+                          <div className="wmx-notif-empty">No notifications yet</div>
+                        ) : (
+                          notifications.map(n => (
+                            <div
+                              key={n._id}
+                              className={`wmx-notif-item ${!n.read ? "unread" : ""}`}
+                              onClick={() => {
+                                if (!n.read) markNotificationRead(n._id);
+                              }}
+                            >
+                              <div className="wmx-notif-item-title">{n.title}</div>
+                              <div className="wmx-notif-item-msg">{n.message}</div>
+                              <div className="wmx-notif-item-time">
+                                {new Date(n.createdAt).toLocaleDateString()}
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               {token ? (
                 <div className="wmx-avatar-wrap" ref={dropdownRef}>
                   <button className="wmx-avatar" onClick={() => setDropdownOpen(o => !o)}>

@@ -26,6 +26,8 @@ const UserState = (props) => {
     const [error, setError] = useState([])
     const [userVersion, setUserVersion] = useState(0)
     const [theme, setTheme] = useState(getInitialTheme);
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
@@ -52,6 +54,13 @@ const UserState = (props) => {
     useEffect(() => {
         getProducts()
     }, [])
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            fetchNotifications();
+        }
+    }, []);
 
     const signUP = async (name, email, password) => {
         const response = await apiFetch(`${API}/auth/signup`, {
@@ -100,6 +109,64 @@ const UserState = (props) => {
             return data;
         }
     }
+
+    const fetchNotifications = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+            const res = await apiFetch(`${API}/notifications`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token,
+                },
+            });
+            if (!res) return;
+            const data = await res.json();
+            setNotifications(data.notifications || []);
+            setUnreadCount(data.unreadCount || 0);
+        } catch (err) {
+            console.error("Failed to fetch notifications:", err);
+        }
+    };
+
+    const markNotificationRead = async (id) => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+            await apiFetch(`${API}/notifications/${id}/read`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token,
+                },
+            });
+            setNotifications(prev =>
+                prev.map(n => n._id === id ? { ...n, read: true } : n)
+            );
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        } catch (err) {
+            console.error("Failed to mark notification read:", err);
+        }
+    };
+
+    const markAllNotificationsRead = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+            await apiFetch(`${API}/notifications/read-all`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token,
+                },
+            });
+            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            setUnreadCount(0);
+        } catch (err) {
+            console.error("Failed to mark all notifications read:", err);
+        }
+    };
 
     const getProfile = async () => {
         const token = localStorage.getItem('token')
@@ -229,7 +296,7 @@ const UserState = (props) => {
     let userRoles = user?.roles ?? ["buyer"]
 
     return (
-        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead }}>
             {props.children}
         </UserContext.Provider>
     )
