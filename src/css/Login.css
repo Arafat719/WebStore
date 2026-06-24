@@ -213,3 +213,22 @@
 @media (max-width: 480px) {
   .wmx-login-card { padding: 30px 22px 28px; }
 }
+
+.wmx-blocked-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--danger-dim, rgba(239, 68, 68, 0.1));
+  border: 1px solid var(--danger, #ef4444);
+  color: var(--danger, #ef4444);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.wmx-blocked-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}

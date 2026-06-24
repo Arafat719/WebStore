@@ -90,6 +90,8 @@ const UserState = (props) => {
         } else if (data.problem === "password") {
             setError({ "password": "Invalid password" })
             setTimeout(() => setError([]), 2000);
+        } else if (data.problem === "blocked") {
+            setError({ "blocked": data.error })
         } else {
             localStorage.setItem("token", data.token)
             localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))

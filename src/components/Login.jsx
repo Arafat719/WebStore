@@ -103,6 +103,13 @@ const Login = () => {
             <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.8rem' }} />
           </button>
 
+          {error?.blocked && (
+            <div className="wmx-blocked-error">
+              <span className="wmx-blocked-icon">⊘</span>
+              <span>{error.blocked}</span>
+            </div>
+          )}
+
           {/* Footer */}
           <div className="wmx-login-footer">
             Don't have an account?
