@@ -55,13 +55,6 @@ const UserState = (props) => {
         getProducts()
     }, [])
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            fetchNotifications();
-        }
-    }, []);
-
     const signUP = async (name, email, password) => {
         const response = await apiFetch(`${API}/auth/signup`, {
             method: 'POST',
@@ -167,6 +160,13 @@ const UserState = (props) => {
             console.error("Failed to mark all notifications read:", err);
         }
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            fetchNotifications();
+        }
+    }, []);
 
     const getProfile = async () => {
         const token = localStorage.getItem('token')
