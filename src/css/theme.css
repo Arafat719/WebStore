@@ -285,3 +285,96 @@ svg {
   width: 16px;
   height: 16px;
 }
+
+/* ── Repo File Tree ─────────────────────────────────────── */
+.wmx-tree-section {
+    margin-top: 0.5rem;
+}
+
+.wmx-tree-toggle-btn {
+    background: var(--wmx-bg-secondary, #1e1e2e);
+    color: var(--wmx-text-primary, #cdd6f4);
+    border: 1px solid var(--wmx-border, #45475a);
+    border-radius: 8px;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.wmx-tree-toggle-btn:hover:not(:disabled) {
+    background: var(--wmx-bg-hover, #313244);
+}
+
+.wmx-tree-toggle-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.wmx-tree-container {
+    margin-top: 0.75rem;
+    background: var(--wmx-bg-secondary, #1e1e2e);
+    border: 1px solid var(--wmx-border, #45475a);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    max-height: 420px;
+    overflow-y: auto;
+    font-family: "Fira Code", "Courier New", monospace;
+    font-size: 0.82rem;
+}
+
+.wmx-tree-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.18rem 0.3rem;
+    border-radius: 5px;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.wmx-tree-folder .wmx-tree-row,
+.wmx-tree-folder {
+    cursor: pointer;
+}
+
+.wmx-tree-folder:hover > .wmx-tree-row {
+    background: var(--wmx-bg-hover, #313244);
+}
+
+.wmx-tree-name {
+    color: var(--wmx-text-primary, #cdd6f4);
+    flex: 1;
+}
+
+.wmx-tree-folder > .wmx-tree-row > .wmx-tree-name {
+    color: var(--wmx-accent, #89b4fa);
+    font-weight: 500;
+}
+
+.wmx-tree-count {
+    font-size: 0.7rem;
+    color: var(--wmx-text-muted, #6c7086);
+    background: var(--wmx-bg-tertiary, #313244);
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+}
+
+.wmx-tree-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.wmx-tree-error {
+    color: var(--wmx-error, #f38ba8);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+/* ─────────────────────────────────────────────────────────── */
+.wmx-r-card--tree .wmx-tree-container {
+    max-height: 320px;
+}
+.wmx-r-card--tree .wmx-tree-toggle-btn {
+    width: 100%;
+    text-align: center;
+}

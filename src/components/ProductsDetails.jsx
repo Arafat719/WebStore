@@ -1,10 +1,10 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck, faStar, faArrowLeft, faGlobe, faDownload,
   faCalendar, faRefresh, faFileLines, faHeadset,
-  faTag, faCode, faUser, faAlignLeft, faImage
+  faTag, faCode, faUser, faAlignLeft, faImage, faFolderOpen
 } from '@fortawesome/free-solid-svg-icons';
 import '../css/ProductsDetails.css';
 import ReviewSection from "./Reviewsection";
@@ -14,6 +14,92 @@ import { Flag } from 'lucide-react';
 const REPORT_REASONS = ['Fake product', 'Wrong description', 'Scam / fraud', 'Inappropriate content', 'Other'];
 
 const DEFAULT_LICENSE_TEXT = 'This product is sold under Regular License. You can use it in one personal or client project. Reselling or redistributing is strictly prohibited.';
+
+// ── Folder Tree Viewer ──────────────────────────────────────────
+function FileTreeNode({ node, depth = 0 }) {
+    const [open, setOpen] = React.useState(depth < 2);
+    const isFolder = node.type === "tree";
+
+    return (
+        <div className="wmx-tree-node" style={{ paddingLeft: depth === 0 ? 0 : "1.2rem" }}>
+            <div
+                className={`wmx-tree-row ${isFolder ? "wmx-tree-folder" : "wmx-tree-file"}`}
+                onClick={() => isFolder && setOpen((o) => !o)}
+            >
+                <span className="wmx-tree-icon">
+                    {isFolder ? (open ? "📂" : "📁") : getFileIcon(node.name)}
+                </span>
+                <span className="wmx-tree-name">{node.name}</span>
+                {isFolder && node.children?.length > 0 && (
+                    <span className="wmx-tree-count">{node.children.length}</span>
+                )}
+            </div>
+            {isFolder && open && node.children?.length > 0 && (
+                <div className="wmx-tree-children">
+                    {node.children
+                        .slice()
+                        .sort((a, b) => {
+                            if (a.type === b.type) return a.name.localeCompare(b.name);
+                            return a.type === "tree" ? -1 : 1; // folders first
+                        })
+                        .map((child, i) => (
+                            <FileTreeNode key={i} node={child} depth={depth + 1} />
+                        ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function getFileIcon(filename) {
+    const ext = filename.split(".").pop().toLowerCase();
+    const icons = {
+        js: "🟨", jsx: "🟨", ts: "🔷", tsx: "🔷",
+        json: "📋", md: "📝", css: "🎨", html: "🌐",
+        env: "🔒", gitignore: "🔒", png: "🖼️", jpg: "🖼️",
+        svg: "🖼️", sh: "⚙️", yml: "⚙️", yaml: "⚙️",
+    };
+    return icons[ext] || "📄";
+}
+
+function RepoTreeSection({ productId }) {
+    const [tree, setTree] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState(null);
+    const [expanded, setExpanded] = React.useState(false);
+
+    const fetchTree = async () => {
+        if (tree) { setExpanded((e) => !e); return; }
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}/tree`);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to fetch file structure");
+            setTree(data.tree);
+            setExpanded(true);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="wmx-tree-section">
+            <button className="wmx-tree-toggle-btn" onClick={fetchTree} disabled={loading}>
+                {loading ? "Loading structure..." : expanded ? "▲ Hide File Structure" : "▼ View File Structure"}
+            </button>
+            {error && <p className="wmx-tree-error">{error}</p>}
+            {expanded && tree && (
+                <div className="wmx-tree-container">
+                    <FileTreeNode node={tree} depth={0} />
+                </div>
+            )}
+        </div>
+    );
+}
+// ────────────────────────────────────────────────────────────────
 
 const LicenseSection = ({ license }) => {
   const [open, setOpen] = useState(true);
@@ -261,7 +347,7 @@ const ProductDetails = ({ showAlert }) => {
     <div className="wmx-pd">
 
       <div className="wmx-pd-topbar">
-        <button className="wmx-back" onClick={() => navigate(-1)}>
+        <button className="wmx-back" onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/')}>
           <FontAwesomeIcon icon={faArrowLeft} />
           Back to listings
         </button>
@@ -434,6 +520,14 @@ const ProductDetails = ({ showAlert }) => {
               <div className="wmx-iico"><FontAwesomeIcon icon={faHeadset} /></div>
               <div><div className="wmx-ilbl">Support</div><div className="wmx-ival">{product.support}</div></div>
             </div>
+          </div>
+
+          <div className="wmx-r-card wmx-r-card--tree">
+            <div className="wmx-r-title">
+              <FontAwesomeIcon icon={faFolderOpen} style={{ marginRight: 6 }} />
+              File Structure
+            </div>
+            <RepoTreeSection productId={product._id} />
           </div>
 
           <div className="wmx-r-card">
