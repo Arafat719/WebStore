@@ -43,7 +43,19 @@ function FileTreeNode({ node, depth = 0 }) {
                 onClick={() => isFolder && setOpen((o) => !o)}
             >
                 <span className="wmx-tree-icon">
-                    {isFolder ? (open ? "📂" : "📁") : getFileIcon(node.name)}
+                    {isFolder ? (
+                      open ? (
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+                          <path d="M2 6a2 2 0 012-2h4.586A2 2 0 0110 4.586L11.414 6H20a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" fill="#f5a623"/>
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none">
+                          <path d="M2 6a2 2 0 012-2h4.586A2 2 0 0110 4.586L11.414 6H20a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" fill="#f5a623" opacity="0.7"/>
+                        </svg>
+                      )
+                    ) : (
+                      <span className="wmx-tree-file-icon">{getFileIcon(node.name)}</span>
+                    )}
                 </span>
                 <span className="wmx-tree-name">{node.name}</span>
                 {isFolder && node.children?.length > 0 && (
@@ -68,14 +80,36 @@ function FileTreeNode({ node, depth = 0 }) {
 }
 
 function getFileIcon(filename) {
-    const ext = filename.split(".").pop().toLowerCase();
-    const icons = {
-        js: "🟨", jsx: "🟨", ts: "🔷", tsx: "🔷",
-        json: "📋", md: "📝", css: "🎨", html: "🌐",
-        env: "🔒", gitignore: "🔒", png: "🖼️", jpg: "🖼️",
-        svg: "🖼️", sh: "⚙️", yml: "⚙️", yaml: "⚙️",
-    };
-    return icons[ext] || "📄";
+  const ext = filename.split(".").pop().toLowerCase();
+
+  const svgIcons = {
+    js:        <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#f7df1e"/><text x="6" y="24" fontSize="16" fontWeight="bold" fill="#000">JS</text></svg>,
+    jsx:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#61dafb"/><text x="5" y="24" fontSize="14" fontWeight="bold" fill="#000">JSX</text></svg>,
+    ts:        <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#3178c6"/><text x="7" y="24" fontSize="16" fontWeight="bold" fill="#fff">TS</text></svg>,
+    tsx:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#3178c6"/><text x="3" y="24" fontSize="14" fontWeight="bold" fill="#fff">TSX</text></svg>,
+    json:      <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#f5a623"/><text x="1" y="24" fontSize="13" fontWeight="bold" fill="#fff">JSON</text></svg>,
+    md:        <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#4a90d9"/><text x="5" y="24" fontSize="14" fontWeight="bold" fill="#fff">MD</text></svg>,
+    css:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#264de4"/><text x="3" y="24" fontSize="14" fontWeight="bold" fill="#fff">CSS</text></svg>,
+    html:      <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#e44d26"/><text x="1" y="24" fontSize="12" fontWeight="bold" fill="#fff">HTML</text></svg>,
+    env:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#4caf50"/><text x="2" y="24" fontSize="13" fontWeight="bold" fill="#fff">ENV</text></svg>,
+    gitignore: <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#f05032"/><text x="8" y="24" fontSize="14" fontWeight="bold" fill="#fff">GI</text></svg>,
+    png:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#9c27b0"/><text x="2" y="24" fontSize="13" fontWeight="bold" fill="#fff">IMG</text></svg>,
+    jpg:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#9c27b0"/><text x="2" y="24" fontSize="13" fontWeight="bold" fill="#fff">IMG</text></svg>,
+    svg:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#ff9800"/><text x="2" y="24" fontSize="13" fontWeight="bold" fill="#fff">SVG</text></svg>,
+    sh:        <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#212121"/><text x="7" y="24" fontSize="14" fontWeight="bold" fill="#4caf50">SH</text></svg>,
+    yml:       <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#cc1018"/><text x="1" y="24" fontSize="12" fontWeight="bold" fill="#fff">YAML</text></svg>,
+    yaml:      <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#cc1018"/><text x="1" y="24" fontSize="12" fontWeight="bold" fill="#fff">YAML</text></svg>,
+    lock:      <svg viewBox="0 0 32 32" width="14" height="14"><rect width="32" height="32" rx="4" fill="#607d8b"/><text x="2" y="24" fontSize="11" fontWeight="bold" fill="#fff">LOCK</text></svg>,
+  };
+
+  if (svgIcons[ext]) return svgIcons[ext];
+
+  return (
+    <svg viewBox="0 0 32 32" width="14" height="14">
+      <rect width="32" height="32" rx="4" fill="#546e7a"/>
+      <text x="6" y="24" fontSize="14" fontWeight="bold" fill="#fff">F</text>
+    </svg>
+  );
 }
 
 function RepoTreeSection({ productId }) {
@@ -394,16 +428,18 @@ const ProductDetails = ({ showAlert }) => {
                   className="wmx-badge-avatar"
                 />
               )}
-              <span className="wmx-badge-by">
-                By{' '}
-                <Link
-                  to={`/seller/${product.seller?._id || product.sellerId?._id || product.sellerId || ''}`}
-                  className="wmx-badge-seller-link"
-                  onClick={e => e.stopPropagation()}
-                >
-                  {product.seller?.name || product.sellerName || 'Unknown'}
-                </Link>
-              </span>
+              {(product.seller?.name || product.sellerName) && (
+                <span className="wmx-badge-by">
+                  By{' '}
+                  <Link
+                    to={`/seller/${product.seller?._id || product.sellerId?._id || product.sellerId || ''}`}
+                    className="wmx-badge-seller-link"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {product.seller?.name || product.sellerName}
+                  </Link>
+                </span>
+              )}
             </div>
           </div>
 

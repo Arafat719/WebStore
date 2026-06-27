@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useContext } from 'react';
-import Logo from "../assets/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt, faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import userContext from '../context/userContext';
@@ -136,7 +135,10 @@ const Navbar = ({ setAlert }) => {
 
             {/* Logo */}
             <Link className="wmx-logo" to="/">
-              <img src={Logo} />
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#8682fa"/>
+                <path d="M7 10 L11.5 22 L16 14 L20.5 22 L25 10" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
               <span className="wmx-logo-text">Web<span>Market</span>X</span>
             </Link>
 

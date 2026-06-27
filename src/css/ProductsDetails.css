@@ -1008,8 +1008,14 @@ html[data-theme='light'] .wmx-report-textarea {
   text-overflow: ellipsis;
 }
 
+.wmx-tree-file-icon {
+  display: inline-flex;
+  align-items: center;
+}
 .wmx-tree-icon {
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  width: 18px;
   flex-shrink: 0;
 }
 
