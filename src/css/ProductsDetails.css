@@ -902,3 +902,148 @@ html[data-theme='light'] .wmx-report-textarea {
 .wmx-license-toggle.collapsed {
   transform: rotate(-90deg);
 }
+
+/* ── Badge seller credit ── */
+.wmx-img-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wmx-badge-divider {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.35);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.wmx-badge-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.wmx-badge-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(134, 130, 250, 0.25);
+  border: 1.5px solid rgba(134, 130, 250, 0.5);
+  font-size: 10px;
+  color: #8682fa;
+  flex-shrink: 0;
+}
+
+.wmx-badge-by {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+.wmx-badge-seller-link {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.wmx-badge-seller-link:hover {
+  color: #8682fa;
+}
+
+/* ── File Tree — themed ── */
+.wmx-tree-container {
+  background: var(--wmx-tree-bg, rgba(255,255,255,0.03));
+  border: 1px solid var(--wmx-tree-border, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  padding: 12px 10px;
+  font-family: 'DM Mono', 'Fira Mono', monospace;
+  font-size: 0.82rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.wmx-tree-node {
+  line-height: 1.6;
+}
+
+.wmx-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background 0.15s ease;
+  color: var(--wmx-tree-text, rgba(255,255,255,0.82));
+}
+
+.wmx-tree-folder {
+  cursor: pointer;
+  color: var(--wmx-tree-folder-color, #8682fa);
+  font-weight: 500;
+}
+
+.wmx-tree-folder:hover {
+  background: var(--wmx-tree-hover, rgba(134,130,250,0.1));
+}
+
+.wmx-tree-file:hover {
+  background: var(--wmx-tree-hover, rgba(255,255,255,0.05));
+}
+
+.wmx-tree-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wmx-tree-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.wmx-tree-count {
+  font-size: 0.7rem;
+  background: var(--wmx-tree-count-bg, rgba(134,130,250,0.15));
+  color: var(--wmx-tree-count-color, #8682fa);
+  border-radius: 10px;
+  padding: 1px 7px;
+  flex-shrink: 0;
+}
+
+.wmx-tree-children {
+  border-left: 1px dashed var(--wmx-tree-indent-line, rgba(134,130,250,0.25));
+  margin-left: 10px;
+  padding-left: 4px;
+}
+
+.wmx-tree-error {
+  color: var(--wmx-tree-error-color, #f87171);
+  font-size: 0.82rem;
+  margin-top: 6px;
+}
+
+/* Light theme overrides */
+:root[data-theme="light"] .wmx-tree-container,
+[data-theme="light"] .wmx-tree-container {
+  --wmx-tree-bg: rgba(0,0,0,0.03);
+  --wmx-tree-border: rgba(0,0,0,0.1);
+  --wmx-tree-text: rgba(0,0,0,0.78);
+  --wmx-tree-folder-color: #6c63ff;
+  --wmx-tree-hover: rgba(108,99,255,0.08);
+  --wmx-tree-count-bg: rgba(108,99,255,0.12);
+  --wmx-tree-count-color: #6c63ff;
+  --wmx-tree-indent-line: rgba(108,99,255,0.2);
+  --wmx-tree-error-color: #dc2626;
+}

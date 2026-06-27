@@ -20,6 +20,22 @@ function FileTreeNode({ node, depth = 0 }) {
     const [open, setOpen] = React.useState(depth < 2);
     const isFolder = node.type === "tree";
 
+    if (depth === 0 && node.name === "" && isFolder) {
+        return (
+            <div className="wmx-tree-node">
+                {node.children
+                    ?.slice()
+                    .sort((a, b) => {
+                        if (a.type === b.type) return a.name.localeCompare(b.name);
+                        return a.type === "tree" ? -1 : 1;
+                    })
+                    .map((child, i) => (
+                        <FileTreeNode key={i} node={child} depth={0} />
+                    ))}
+            </div>
+        );
+    }
+
     return (
         <div className="wmx-tree-node" style={{ paddingLeft: depth === 0 ? 0 : "1.2rem" }}>
             <div
@@ -40,7 +56,7 @@ function FileTreeNode({ node, depth = 0 }) {
                         .slice()
                         .sort((a, b) => {
                             if (a.type === b.type) return a.name.localeCompare(b.name);
-                            return a.type === "tree" ? -1 : 1; // folders first
+                            return a.type === "tree" ? -1 : 1;
                         })
                         .map((child, i) => (
                             <FileTreeNode key={i} node={child} depth={depth + 1} />
@@ -370,6 +386,24 @@ const ProductDetails = ({ showAlert }) => {
             <div className="wmx-img-badge">
               <span className="wmx-pulse-dot" />
               Digital Product
+              <span className="wmx-badge-divider" />
+              {product.seller?.profilePic && (
+                <img
+                  src={product.seller.profilePic}
+                  alt={product.seller?.name || 'seller'}
+                  className="wmx-badge-avatar"
+                />
+              )}
+              <span className="wmx-badge-by">
+                By{' '}
+                <Link
+                  to={`/seller/${product.seller?._id || product.sellerId?._id || product.sellerId || ''}`}
+                  className="wmx-badge-seller-link"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {product.seller?.name || product.sellerName || 'Unknown'}
+                </Link>
+              </span>
             </div>
           </div>
 

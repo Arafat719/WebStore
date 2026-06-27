@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './css/App.css'
 import Navbar from './components/Navbar'
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './components/Home'
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -27,13 +27,22 @@ import Help from './pages/Help/Help';
 import SmartOrder from './pages/SmartOrder/SmartOrder';
 // import Github from './components/Github';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   const [alert, setAlert] = useState(null);
 
-  const showAlert = (message, type) => {
+  const showAlert = (message, type, onOk) => {
     setAlert({
       msg: message,
-      type: type
+      type: type,
+      onOk: onOk || null,
     })
     setTimeout(() => {
       setAlert(null);
@@ -42,6 +51,7 @@ function App() {
   
   return (
     <>
+      <ScrollToTop />
       <Alert alert={alert} setAlert={setAlert} />
       <UserState>
       <Navbar setAlert={setAlert} />

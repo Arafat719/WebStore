@@ -1,14 +1,26 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/Productcard.css';
 
 const Productcard = ({ arr }) => {
     const isFree = arr.price === "Free";
+    const navigate = useNavigate();
 
     return (
         <>
 
-            <div className="wmx-card">
+            <div
+              className="wmx-card"
+              tabIndex={0}
+              role="article"
+              aria-label={`${arr.title} - ${isFree ? 'Free' : '$' + arr.price}`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') navigate(`/products/${arr._id}`);
+              }}
+              style={{ outline: 'none' }}
+              onFocus={(e) => e.currentTarget.classList.add('wmx-card--focused')}
+              onBlur={(e) => e.currentTarget.classList.remove('wmx-card--focused')}
+            >
                 {/* Image */}
                 <div className="wmx-card-img-wrap">
                     {isFree && <span className="wmx-free-badge">Free</span>}

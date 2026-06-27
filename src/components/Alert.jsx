@@ -7,11 +7,17 @@ function Alert({ alert, setAlert }) {
   // ESC key দিয়ে close
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.key === 'Escape') setAlert(null)
+      if (e.key === 'Escape') {
+        setAlert(null);
+      }
+      if (e.key === 'Enter') {
+        setAlert(null);
+        alert?.onOk?.();
+      }
     }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
-  }, [setAlert])
+  }, [setAlert, alert])
 
   if (!alert) return null
 

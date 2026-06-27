@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import userContext from '../context/userContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -24,6 +25,7 @@ function AddProducts({ showAlert }) {
     const [dragOver, setDragOver] = useState(false);
     const [publishing, setPublishing] = useState(false);
 
+    const navigate = useNavigate();
     const context = useContext(userContext);
     const { addProducts } = context;
 
@@ -195,8 +197,14 @@ function AddProducts({ showAlert }) {
         );
 
         if (result?.success) {
-            showAlert(result.message, "success");
             setRepoPat("");
+            setPublishing(false);
+            const targetPath = `/product/${result.productId}`;
+            showAlert(result.message, "success", () => navigate(targetPath));
+            setTimeout(() => {
+                navigate(targetPath);
+            }, 5000);
+            return;
         } else if (result?.message) {
             showAlert(result.message, "error");
         }

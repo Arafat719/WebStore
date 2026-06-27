@@ -148,3 +148,9 @@
 @media (max-width: 480px) {
   .wmx-card-img-wrap { height: 140px; }
 }
+
+.wmx-card--focused {
+  outline: 2px solid #8682fa;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(134, 130, 250, 0.15);
+}

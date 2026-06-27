@@ -266,7 +266,7 @@ const UserState = (props) => {
 
             if (res.ok) {
                 setArray(prev => [...prev, data]);
-                return { success: true, message: "Project uploaded successfully!" };
+                return { success: true, message: "Project uploaded successfully!", productId: data._id };
             } else {
                 return { success: false, message: data.error || "Something went wrong." };
             }
