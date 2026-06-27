@@ -387,7 +387,7 @@ const ProductDetails = ({ showAlert }) => {
               <span className="wmx-pulse-dot" />
               Digital Product
               <span className="wmx-badge-divider" />
-              {product.seller?.profilePic && (
+              {product.seller?.profileImage && (
                 <img
                   src={product.seller.profilePic}
                   alt={product.seller?.name || 'seller'}
