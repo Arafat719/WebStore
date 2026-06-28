@@ -241,14 +241,15 @@ const ProductDetails = ({ showAlert }) => {
   }, [id]);
 
   useEffect(() => {
-    if (!product?.seller?._id) return;
-    fetch(`${API}/seller/public/${product.seller._id}`)
+    const sellerId = product?.seller?._id || product?.seller || product?.sellerId?._id || product?.sellerId;
+    if (!sellerId || typeof sellerId !== 'string') return;
+    fetch(`${API}/seller/public/${sellerId}`)
       .then(res => res.json())
       .then(data => {
         if (data.whatsapp) setSellerWhatsapp(data.whatsapp);
       })
       .catch(() => {});
-  }, [product?.seller?._id]);
+  }, [product?.seller, product?.sellerId]);
 
   useEffect(() => {
     const handleKey = (e) => {
