@@ -241,12 +241,8 @@ const ProductDetails = ({ showAlert }) => {
   }, [id]);
 
   useEffect(() => {
-    const sellerId = product?.seller?._id || product?.seller || product?.sellerId?._id || product?.sellerId;
-    console.log("SELLER DEBUG:", {
-      seller: product?.seller,
-      sellerId: product?.sellerId,
-      resolved: sellerId
-    });
+    const sellerId = product?.seller?._id || product?.seller || product?.sellerId?._id || product?.sellerId || product?.user;
+    console.log("SELLER DEBUG:", { seller: product?.seller, sellerId: product?.sellerId, user: product?.user, resolved: sellerId });
     if (!sellerId || typeof sellerId !== 'string') return;
     fetch(`${API}/seller/public/${sellerId}`)
       .then(res => res.json())
@@ -255,7 +251,7 @@ const ProductDetails = ({ showAlert }) => {
         if (data.whatsapp) setSellerWhatsapp(data.whatsapp);
       })
       .catch(() => {});
-  }, [product?.seller, product?.sellerId]);
+  }, [product?.seller, product?.sellerId, product?.user]);
 
   useEffect(() => {
     const handleKey = (e) => {
