@@ -242,10 +242,16 @@ const ProductDetails = ({ showAlert }) => {
 
   useEffect(() => {
     const sellerId = product?.seller?._id || product?.seller || product?.sellerId?._id || product?.sellerId;
+    console.log("SELLER DEBUG:", {
+      seller: product?.seller,
+      sellerId: product?.sellerId,
+      resolved: sellerId
+    });
     if (!sellerId || typeof sellerId !== 'string') return;
     fetch(`${API}/seller/public/${sellerId}`)
       .then(res => res.json())
       .then(data => {
+        console.log("WHATSAPP DEBUG:", data.whatsapp);
         if (data.whatsapp) setSellerWhatsapp(data.whatsapp);
       })
       .catch(() => {});
