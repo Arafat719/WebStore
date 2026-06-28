@@ -1324,3 +1324,185 @@
   .wmx-hist-tx-row { flex-wrap: wrap; gap: 8px; }
   .wmx-hist-tx-amount { min-width: auto; }
 }
+
+/* ── My Listings redesign ── */
+.wmx-listings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wmx-listing-card {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 150px;
+  background: var(--wmx-card-bg, #13131f);
+  border: 0.5px solid var(--wmx-border, rgba(255,255,255,0.07));
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.wmx-listing-card:hover {
+  border-color: rgba(134, 130, 250, 0.35);
+}
+
+/* Preview */
+.wmx-listing-preview {
+  position: relative;
+  background: #0d0d14;
+  overflow: hidden;
+}
+
+.wmx-listing-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.88;
+  display: block;
+}
+
+.wmx-listing-preview-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(134, 130, 250, 0.3);
+}
+
+.wmx-listing-price-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.wmx-listing-price-badge.free {
+  background: rgba(134, 130, 250, 0.85);
+  color: #fff;
+}
+
+.wmx-listing-price-badge.paid {
+  background: rgba(29, 158, 117, 0.85);
+  color: #fff;
+}
+
+/* Body */
+.wmx-listing-body {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.wmx-listing-top {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wmx-listing-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--wmx-text, #e8e8f0);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.wmx-listing-desc {
+  font-size: 12px;
+  color: var(--wmx-muted, rgba(200, 200, 220, 0.45));
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tags */
+.wmx-listing-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.wmx-listing-tag {
+  font-size: 11px;
+  color: rgba(200, 200, 220, 0.55);
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+/* Footer */
+.wmx-listing-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.wmx-listing-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wmx-listing-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(200, 200, 220, 0.6);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.wmx-listing-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e8e8f0;
+}
+
+.wmx-listing-btn-edit:hover {
+  border-color: rgba(134, 130, 250, 0.4);
+  color: #8682fa;
+}
+
+.wmx-listing-btn-delete:hover {
+  border-color: rgba(224, 85, 128, 0.4);
+  color: #e05580;
+}
+
+.wmx-listing-btn-view {
+  background: rgba(134, 130, 250, 0.1);
+  border-color: rgba(134, 130, 250, 0.3);
+  color: #8682fa;
+}
+
+.wmx-listing-btn-view:hover {
+  background: rgba(134, 130, 250, 0.18);
+  color: #a8a4ff;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .wmx-listing-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: 140px 1fr;
+  }
+}

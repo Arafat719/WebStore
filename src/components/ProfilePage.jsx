@@ -6,7 +6,7 @@ import {
   Star, Crown, ChevronRight, Bell, Package,
   TrendingUp, Globe, Edit3, Camera, AtSign,
   Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil, Store,
-  DollarSign, Download, ClipboardList, Rocket
+  DollarSign, Download, ClipboardList, Rocket, ExternalLink
 } from "lucide-react";
 import userContext from "../context/userContext";
 import "../css/ProfilePage.css";
@@ -799,28 +799,73 @@ const ProfilePage = ({ showAlert }) => {
           ) : sellerProducts.length === 0 ? (
             <div className="wmx-empty">No products listed yet.</div>
           ) : (
-            <div className="wmx-sp-grid">
-              {sellerProducts.map((product) => (
-                <div key={product._id} className="wmx-sp-card-wrap">
-                  <div className="wmx-sp-card-actions">
-                    <button
-                      className="wmx-sp-action-btn wmx-edit"
-                      title="Edit product"
-                      onClick={() => setEditingProduct(product)}
-                    >
-                      <Pencil size={13} />
-                    </button>
-                    <button
-                      className="wmx-sp-action-btn wmx-del"
-                      title="Delete product"
-                      onClick={() => { setDeleteTarget(product._id); setDeleteError(''); }}
-                    >
-                      <Trash2 size={13} />
-                    </button>
+            <div className="wmx-listings-list">
+              {sellerProducts.map((product) => {
+                const isFree = product.price === "Free" || product.price === 0;
+                return (
+                  <div key={product._id} className="wmx-listing-card">
+
+                    {/* Left: preview image */}
+                    <div className="wmx-listing-preview">
+                      {product.images?.[0]
+                        ? <img src={product.images[0]} alt={product.title} className="wmx-listing-preview-img" />
+                        : <div className="wmx-listing-preview-placeholder">
+                            <Package size={20} />
+                          </div>
+                      }
+                      <span className={`wmx-listing-price-badge ${isFree ? 'free' : 'paid'}`}>
+                        {isFree ? 'Free' : `$${product.price}`}
+                      </span>
+                    </div>
+
+                    {/* Right: content */}
+                    <div className="wmx-listing-body">
+
+                      <div className="wmx-listing-top">
+                        <h4 className="wmx-listing-title">{product.title}</h4>
+                        <p className="wmx-listing-desc">{product.description}</p>
+
+                        {Array.isArray(product.techStack) && product.techStack.length > 0 && (
+                          <div className="wmx-listing-tags">
+                            {product.techStack.slice(0, 4).map((tag, i) => (
+                              <span key={i} className="wmx-listing-tag">{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="wmx-listing-footer">
+                        <div className="wmx-listing-actions">
+                          <button
+                            className="wmx-listing-btn wmx-listing-btn-edit"
+                            title="Edit product"
+                            onClick={() => { setEditingProduct(product); }}
+                          >
+                            <Pencil size={13} />
+                            Edit
+                          </button>
+                          <button
+                            className="wmx-listing-btn wmx-listing-btn-delete"
+                            title="Delete product"
+                            onClick={() => { setDeleteTarget(product._id); setDeleteError(''); }}
+                          >
+                            <Trash2 size={13} />
+                            Delete
+                          </button>
+                          <Link
+                            to={`/products/${product._id}`}
+                            className="wmx-listing-btn wmx-listing-btn-view"
+                          >
+                            <ExternalLink size={13} />
+                            View
+                          </Link>
+                        </div>
+                      </div>
+
+                    </div>
                   </div>
-                  <Productcard arr={product} />
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

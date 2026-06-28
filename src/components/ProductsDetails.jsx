@@ -189,6 +189,11 @@ const ProductDetails = ({ showAlert }) => {
   const [reportNote, setReportNote] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [reportMsg, setReportMsg] = useState({ text: '', type: '' });
+  const [customModalOpen, setCustomModalOpen] = useState(false);
+  const [customForm, setCustomForm] = useState({ buyerName: "", buyerEmail: "", message: "" });
+  const [customSubmitting, setCustomSubmitting] = useState(false);
+  const [customSuccess, setCustomSuccess] = useState(false);
+  const [customError, setCustomError] = useState("");
   const { userId, userType } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
@@ -367,6 +372,37 @@ const ProductDetails = ({ showAlert }) => {
       setReportMsg({ text: 'Something went wrong. Please try again.', type: 'error' });
     } finally {
       setReportLoading(false);
+    }
+  };
+
+  const handleCustomSubmit = async () => {
+    setCustomError("");
+    if (!customForm.buyerName.trim() || !customForm.buyerEmail.trim() || !customForm.message.trim()) {
+      setCustomError("All fields are required.");
+      return;
+    }
+    setCustomSubmitting(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/custom-request/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+          buyerName: customForm.buyerName,
+          buyerEmail: customForm.buyerEmail,
+          message: customForm.message,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCustomSuccess(true);
+      } else {
+        setCustomError(data.error || "Something went wrong.");
+      }
+    } catch {
+      setCustomError("Server error. Please try again.");
+    } finally {
+      setCustomSubmitting(false);
     }
   };
 
@@ -570,6 +606,18 @@ const ProductDetails = ({ showAlert }) => {
             {previewMsg && !product.livePreviewUrl && (
               <div className="wmx-preview-unavail">No live preview available for this product</div>
             )}
+            <button
+              className="wmx-custom-request-btn"
+              onClick={() => {
+                setCustomModalOpen(true);
+                setCustomSuccess(false);
+                setCustomError("");
+                setCustomForm({ buyerName: "", buyerEmail: "", message: "" });
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Request Customization
+            </button>
           </div>
 
           <div className="wmx-r-card">
@@ -671,6 +719,99 @@ const ProductDetails = ({ showAlert }) => {
 
       {wishlistToast && (
         <div className="wmx-wl-toast">{wishlistToast}</div>
+      )}
+
+      {customModalOpen && (
+        <div
+          className="wmx-custom-modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && !customSubmitting && setCustomModalOpen(false)}
+        >
+          <div className="wmx-custom-modal">
+            <div className="wmx-custom-modal-hd">
+              <span>Request Customization</span>
+              <button
+                className="wmx-custom-modal-close"
+                onClick={() => !customSubmitting && setCustomModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {customSuccess ? (
+              <div className="wmx-custom-modal-success">
+                <div className="wmx-custom-success-icon">✓</div>
+                <h4>Request Sent!</h4>
+                <p>The seller has been notified. They will reply to your email within 30 minutes. If they don't respond in time, the WebMarketX team will contact you directly.</p>
+                <button
+                  className="wmx-custom-done-btn"
+                  onClick={() => setCustomModalOpen(false)}
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <div className="wmx-custom-modal-body">
+                <p className="wmx-custom-modal-subtitle">
+                  Describe what you want customized. The seller will contact you within <strong>30 minutes</strong> — if they don't, WebMarketX team steps in.
+                </p>
+
+                <div className="wmx-custom-field">
+                  <label>Your Name</label>
+                  <input
+                    type="text"
+                    placeholder="John Doe"
+                    value={customForm.buyerName}
+                    onChange={(e) => setCustomForm(f => ({ ...f, buyerName: e.target.value }))}
+                    disabled={customSubmitting}
+                  />
+                </div>
+
+                <div className="wmx-custom-field">
+                  <label>Your Email</label>
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={customForm.buyerEmail}
+                    onChange={(e) => setCustomForm(f => ({ ...f, buyerEmail: e.target.value }))}
+                    disabled={customSubmitting}
+                  />
+                </div>
+
+                <div className="wmx-custom-field">
+                  <label>What do you need customized?</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Describe the changes you want — colors, content, features, branding..."
+                    value={customForm.message}
+                    onChange={(e) => setCustomForm(f => ({ ...f, message: e.target.value }))}
+                    disabled={customSubmitting}
+                  />
+                </div>
+
+                {customError && (
+                  <div className="wmx-custom-error">{customError}</div>
+                )}
+
+                <div className="wmx-custom-modal-ft">
+                  <button
+                    className="wmx-custom-cancel-btn"
+                    onClick={() => setCustomModalOpen(false)}
+                    disabled={customSubmitting}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="wmx-custom-submit-btn"
+                    onClick={handleCustomSubmit}
+                    disabled={customSubmitting}
+                  >
+                    {customSubmitting ? "Sending..." : "Send Request"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {reportOpen && (

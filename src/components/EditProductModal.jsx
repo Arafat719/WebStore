@@ -205,6 +205,17 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               placeholder="Describe the license terms..."
             />
           </div>
+          <div className="wmx-custom-terms-notice">
+            <div className="wmx-custom-terms-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div className="wmx-custom-terms-text">
+              <strong>Customization Request Policy</strong>
+              <p>
+                By listing this product, you agree that if a buyer sends a customization request and you do not respond within <strong>30 minutes</strong>, WebMarketX team reserves the right to handle the request on your behalf. Ensure your contact email is up to date.
+              </p>
+            </div>
+          </div>
 
           <div className="wmx-modal-section-title" style={{ marginTop: 4 }}>Images</div>
 
