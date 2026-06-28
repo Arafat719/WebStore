@@ -1257,3 +1257,26 @@ html[data-theme='light'] .wmx-report-textarea {
   cursor: pointer;
 }
 .wmx-custom-done-btn:hover { background: rgba(134, 130, 250, 0.18); }
+
+/* ── WhatsApp Button ── */
+.wmx-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 10px 18px;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #25D366;
+  background: rgba(37, 211, 102, 0.08);
+  border: 0.5px solid rgba(37, 211, 102, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.wmx-whatsapp-btn:hover {
+  background: rgba(37, 211, 102, 0.15);
+  border-color: rgba(37, 211, 102, 0.5);
+}

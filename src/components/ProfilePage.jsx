@@ -21,7 +21,7 @@ const ProfilePage = ({ showAlert }) => {
   const [activeTab, setActiveTab] = useState("profile");
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: "", phone: "", location: "", bio: "", website: "", profileImage: "",
+    name: "", phone: "", whatsapp: "", location: "", bio: "", website: "", profileImage: "",
     social: { twitter: "", linkedin: "", github: "" }
   });
   const [sellerProducts, setSellerProducts] = useState([]);
@@ -63,6 +63,7 @@ const ProfilePage = ({ showAlert }) => {
         setEditForm({
           name: data.seller.name || "",
           phone: data.seller.phone || "",
+          whatsapp: data.seller.whatsapp || "",
           location: data.seller.location || "",
           bio: data.seller.bio || "",
           website: data.seller.website || "",
@@ -301,6 +302,7 @@ const ProfilePage = ({ showAlert }) => {
     { label: "Full Name", value: seller?.name, icon: User },
     { label: "Email Address", value: seller?.email, icon: Mail },
     { label: "Phone", value: seller?.phone, icon: Phone },
+    { label: "WhatsApp", value: seller?.whatsapp, icon: Phone },
     { label: "Location", value: seller?.location, icon: MapPin },
     { label: "Website", value: seller?.website, icon: LinkIcon },
     { label: "Joined", value: seller?.joinedAt ? new Date(seller.joinedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : undefined, icon: Calendar },
@@ -936,6 +938,18 @@ const ProfilePage = ({ showAlert }) => {
                 <div className="wmx-modal-field">
                   <label>Phone</label>
                   <input name="phone" value={editForm.phone} onChange={onEditChange} placeholder="+1 234 567 890" />
+                </div>
+              </div>
+
+              <div className="wmx-modal-row">
+                <div className="wmx-modal-field">
+                  <label>WhatsApp Number</label>
+                  <input
+                    name="whatsapp"
+                    value={editForm.whatsapp}
+                    onChange={onEditChange}
+                    placeholder="+8801XXXXXXXXX"
+                  />
                 </div>
               </div>
 
