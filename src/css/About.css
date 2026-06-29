@@ -421,6 +421,27 @@
   max-width: 700px;
 }
 
+.wmx-services-box {
+  text-align: left;
+}
+
+.wmx-services-link {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.wmx-services-link:hover {
+  opacity: 0.85;
+  color: #fff;
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
   .wmx-stats-grid { grid-template-columns: repeat(2, 1fr); }

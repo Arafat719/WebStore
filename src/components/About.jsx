@@ -201,6 +201,30 @@ const About = () => {
         </div>
 
         <div className="wmx-section wmx-fade" ref={addRef}>
+          <div className="wmx-label">By WebMarketX Team</div>
+          <h2>Our Services</h2>
+          <p>
+            Beyond the marketplace, the WebMarketX team builds open-source developer tools
+            to help you work faster and smarter.
+          </p>
+          <div className="wmx-vision-box wmx-services-box">
+            <h3 style={{ marginBottom: '0.5rem', color: 'var(--accent)' }}>wmx-os — Developer CLI</h3>
+            <p style={{ marginBottom: '1.2rem' }}>
+              A powerful command-line toolkit built for modern web developers — scaffold projects,
+              scan dependencies, generate docs, manage environments and more. 12 commands, fully offline-capable.
+            </p>
+            <a
+              href="https://wmx-os-developer.vercel.app/"
+              target="_blank"
+              rel="noreferrer"
+              className="wmx-services-link"
+            >
+              Explore wmx-os →
+            </a>
+          </div>
+        </div>
+
+        <div className="wmx-section wmx-fade" ref={addRef}>
           <div className="wmx-label">Looking Ahead</div>
           <h2>Our Vision</h2>
           <div className="wmx-vision-box">

@@ -68,6 +68,12 @@ const Footer = () => {
                                         About Us
                                     </Link>
                                 </li>
+                                <li>
+                                    <a href="https://wmx-os-developer.vercel.app/" target="_blank" rel="noreferrer">
+                                        <FontAwesomeIcon icon={faArrowRight} className="arrow-icon" />
+                                        Our Services
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
