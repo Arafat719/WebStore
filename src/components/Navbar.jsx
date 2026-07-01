@@ -123,6 +123,7 @@ const Navbar = ({ setAlert }) => {
     { to: "/", label: "Home" },
     { to: "/about", label: "About" },
     { to: "/help", label: "Help" },
+    { to: "/docs", label: "Docs" },
   ];
 
   return (

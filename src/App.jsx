@@ -25,6 +25,7 @@ import ResetPassword from './pages/ResetPassword';
 import PublicProfile from './pages/PublicProfile';
 import Help from './pages/Help/Help';
 import SmartOrder from './pages/SmartOrder/SmartOrder';
+import Docs from './pages/Docs/Docs';
 // import Github from './components/Github';
 
 function ScrollToTop() {
@@ -86,6 +87,7 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/seller/:id" element={<PublicProfile />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/docs" element={<Docs />} />
           <Route path="/smart-order" element={
             <ProtectedRoute>
               <SmartOrder />
