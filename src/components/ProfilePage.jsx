@@ -21,7 +21,7 @@ const ProfilePage = ({ showAlert }) => {
   const [activeTab, setActiveTab] = useState("profile");
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: "", phone: "", whatsapp: "", location: "", bio: "", website: "", profileImage: "",
+    name: "", phone: "", whatsapp: "", location: "", bio: "", website: "", profilePic: "",
     social: { twitter: "", linkedin: "", github: "" }
   });
   const [sellerProducts, setSellerProducts] = useState([]);
@@ -67,7 +67,7 @@ const ProfilePage = ({ showAlert }) => {
           location: data.seller.location || "",
           bio: data.seller.bio || "",
           website: data.seller.website || "",
-          profileImage: data.seller.profileImage || "",
+          profilePic: data.seller.profilePic || "",
           social: {
             twitter: data.seller.social?.twitter || "",
             linkedin: data.seller.social?.linkedin || "",
@@ -244,7 +244,7 @@ const ProfilePage = ({ showAlert }) => {
   const handleImageFile = (file) => {
     if (!file || !file.type.startsWith("image/")) return;
     const reader = new FileReader();
-    reader.onload = (e) => setEditForm(f => ({ ...f, profileImage: e.target.result }));
+    reader.onload = (e) => setEditForm(f => ({ ...f, profilePic: e.target.result }));
     reader.readAsDataURL(file);
   };
 
@@ -327,8 +327,8 @@ const ProfilePage = ({ showAlert }) => {
       {/* ── Sidebar ── */}
       <aside className="wmx-sidebar">
         <div className="wmx-sb-avatar-wrap">
-          {seller?.profileImage
-            ? <img src={seller.profileImage} alt="avatar" className="wmx-sb-avatar" style={{ objectFit: "cover" }} />
+          {seller?.profilePic
+            ? <img src={seller.profilePic} alt="avatar" className="wmx-sb-avatar" style={{ objectFit: "cover" }} />
             : <div className="wmx-sb-avatar">{seller?.name?.[0] ?? "U"}</div>
           }
           <button className="wmx-sb-avatar-edit" onClick={() => setEditOpen(true)}><Camera size={12} /></button>
@@ -374,38 +374,38 @@ const ProfilePage = ({ showAlert }) => {
       <main className="wmx-prof-main">
 
         {/* Hero banner — hidden on orders tab */}
-        {activeTab !== "orders" && <div className="wmx-hero">
-          <div className="wmx-hero-orb wmx-hero-orb-1" />
-          <div className="wmx-hero-orb wmx-hero-orb-2" />
+        {activeTab !== "orders" && <div className="wmx-prof-hero">
+          <div className="wmx-prof-hero-orb wmx-prof-hero-orb-1" />
+          <div className="wmx-prof-hero-orb wmx-prof-hero-orb-2" />
 
-          <div className="wmx-hero-inner">
-            <div className="wmx-hero-left">
-              <div className="wmx-hero-avatar">
-                {seller?.profileImage
-                  ? <img src={seller.profileImage} alt="avatar" style={{ width: "100%", height: "100%", borderRadius: "20px", objectFit: "cover" }} />
+          <div className="wmx-prof-hero-inner">
+            <div className="wmx-prof-hero-left">
+              <div className="wmx-prof-hero-avatar">
+                {seller?.profilePic
+                  ? <img src={seller.profilePic} alt="avatar" style={{ width: "100%", height: "100%", borderRadius: "20px", objectFit: "cover" }} />
                   : seller?.name?.[0] ?? "U"
                 }
               </div>
-              <div className="wmx-hero-info">
-                <div className="wmx-hero-eyebrow">
-                  <span className="wmx-hero-pulse" />
+              <div className="wmx-prof-hero-info">
+                <div className="wmx-prof-hero-eyebrow">
+                  <span className="wmx-prof-hero-pulse" />
                   Active Seller
                 </div>
-                <h2 className="wmx-hero-name">
+                <h2 className="wmx-prof-hero-name">
                   {seller?.name?.split(" ")[0] ?? "there"}
                 </h2>
-                <p className="wmx-hero-sub">
+                <p className="wmx-prof-hero-sub">
                   {seller?.bio || "Manage your profile and activity"}
                 </p>
-                <div className="wmx-hero-tags">
+                <div className="wmx-prof-hero-tags">
                   {seller?.location && (
-                    <span className="wmx-hero-tag"><MapPin size={10} /> {seller.location}</span>
+                    <span className="wmx-prof-hero-tag"><MapPin size={10} /> {seller.location}</span>
                   )}
                   {seller?.isVerified && (
-                    <span className="wmx-hero-tag verified"><ShieldCheck size={10} /> Verified</span>
+                    <span className="wmx-prof-hero-tag verified"><ShieldCheck size={10} /> Verified</span>
                   )}
                   {seller?.isPremium && (
-                    <span className="wmx-hero-tag" style={{ color: "#f0c060", background: "rgba(240,192,96,0.08)", borderColor: "rgba(240,192,96,0.2)" }}>
+                    <span className="wmx-prof-hero-tag" style={{ color: "#f0c060", background: "rgba(240,192,96,0.08)", borderColor: "rgba(240,192,96,0.2)" }}>
                       <Crown size={10} /> Premium
                     </span>
                   )}
@@ -413,14 +413,14 @@ const ProfilePage = ({ showAlert }) => {
               </div>
             </div>
 
-            <div className="wmx-hero-stats">
+            <div className="wmx-prof-hero-stats">
               {stats.map(({ label, value, icon: Icon, color, soon }) => (
-                <div key={label} className="wmx-hero-stat">
-                  <div className="wmx-hero-stat-icon" style={{ color, background: `${color}18` }}>
+                <div key={label} className="wmx-prof-hero-stat">
+                  <div className="wmx-prof-hero-stat-icon" style={{ color, background: `${color}18` }}>
                     <Icon size={14} />
                   </div>
-                  <div className="wmx-hero-stat-num">{value}</div>
-                  <div className="wmx-hero-stat-label">
+                  <div className="wmx-prof-hero-stat-num">{value}</div>
+                  <div className="wmx-prof-hero-stat-label">
                     {label}
                     {soon && <span style={{ fontSize: "0.55rem", color: "#8682fa", marginLeft: 4, opacity: 0.7 }}>soon</span>}
                   </div>
@@ -915,7 +915,7 @@ const ProfilePage = ({ showAlert }) => {
 
       {/* ── Success Toast ── */}
       {successToast && (
-        <div className="wmx-toast">
+        <div className="wmx-profile-toast">
           <span>✓</span> {successToast}
         </div>
       )}
@@ -973,12 +973,12 @@ const ProfilePage = ({ showAlert }) => {
                   onDragLeave={() => setDragOver(false)}
                   onDrop={handleDrop}
                 >
-                  {editForm.profileImage ? (
+                  {editForm.profilePic ? (
                     <>
-                      <img src={editForm.profileImage} alt="preview" className="wmx-img-drop-preview" />
+                      <img src={editForm.profilePic} alt="preview" className="wmx-img-drop-preview" />
                       <button
                         className="wmx-img-drop-remove"
-                        onClick={(e) => { e.stopPropagation(); setEditForm(f => ({ ...f, profileImage: "" })); }}
+                        onClick={(e) => { e.stopPropagation(); setEditForm(f => ({ ...f, profilePic: "" })); }}
                       >
                         <X size={12} />
                       </button>
