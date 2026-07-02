@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt, faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt, faWandMagicSparkles, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import userContext from '../context/userContext';
 import '../css/Navbar.css';
 
@@ -10,6 +10,7 @@ const Navbar = ({ setAlert }) => {
   const { userId, firstLetter, profilePic, userType, userRoles, theme, toggleTheme, notifications, unreadCount, markNotificationRead, markAllNotificationsRead } = context;
 
   const navigate = useNavigate();
+  const location = useLocation();
   const token = localStorage.getItem("token");
 
   const [show, setShow] = useState(true);
@@ -17,11 +18,13 @@ const Navbar = ({ setAlert }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [orderMenuOpen, setOrderMenuOpen] = useState(false);
   const [dropdownFocusIndex, setDropdownFocusIndex] = useState(-1);
   const [notifFocusIndex, setNotifFocusIndex] = useState(-1);
   const lastScrollY = useRef(0);
   const dropdownRef = useRef(null);
   const notifRef = useRef(null);
+  const orderMenuRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -66,6 +69,17 @@ const Navbar = ({ setAlert }) => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Close order dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (orderMenuRef.current && !orderMenuRef.current.contains(e.target)) {
+        setOrderMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -80,6 +94,7 @@ const Navbar = ({ setAlert }) => {
         if (mobileOpen) { setMobileOpen(false); return; }
         if (dropdownOpen) { setDropdownOpen(false); setDropdownFocusIndex(-1); return; }
         if (notifOpen) { setNotifOpen(false); setNotifFocusIndex(-1); return; }
+        if (orderMenuOpen) { setOrderMenuOpen(false); return; }
       }
       // Avatar dropdown arrow key navigation
       if (dropdownOpen) {
@@ -117,7 +132,7 @@ const Navbar = ({ setAlert }) => {
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [mobileOpen, dropdownOpen, notifOpen, dropdownFocusIndex, notifFocusIndex]);
+  }, [mobileOpen, dropdownOpen, notifOpen, orderMenuOpen, dropdownFocusIndex, notifFocusIndex]);
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -147,9 +162,38 @@ const Navbar = ({ setAlert }) => {
             <ul className="wmx-nav-links wmx-desktop-only">
               {navLinks.map(({ to, label }) => (
                 <li key={to}>
-                  <Link className="wmx-nav-link" to={to}>{label}</Link>
+                  <NavLink
+                    className={({ isActive }) => `wmx-nav-link${isActive ? ' active' : ''}`}
+                    to={to}
+                    end={to === "/"}
+                  >
+                    {label}
+                  </NavLink>
                 </li>
               ))}
+              {token && (
+                <li className="wmx-nav-order-wrap" ref={orderMenuRef}>
+                  <button
+                    className={`wmx-nav-link wmx-nav-order-btn${["/smart-order", "/myorders"].includes(location.pathname) ? " active" : ""}`}
+                    onClick={() => setOrderMenuOpen(o => !o)}
+                  >
+                    Order
+                    <FontAwesomeIcon icon={faChevronDown} style={{ fontSize: '0.6rem' }} />
+                  </button>
+                  {orderMenuOpen && (
+                    <div className="wmx-dropdown wmx-nav-order-dropdown">
+                      <Link className="wmx-dd-item" to="/smart-order" onClick={() => setOrderMenuOpen(false)}>
+                        <FontAwesomeIcon icon={faWandMagicSparkles} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
+                        Smart Order
+                      </Link>
+                      <Link className="wmx-dd-item" to="/myorders" onClick={() => setOrderMenuOpen(false)}>
+                        <FontAwesomeIcon icon={faReceipt} style={{ fontSize: '0.75rem', color: 'var(--accent)' }} />
+                        My Orders
+                      </Link>
+                    </div>
+                  )}
+                </li>
+              )}
               {userRoles?.includes("seller") && (
                 <li>
                   <Link className="wmx-nav-link add-btn" to="/addproducts">
@@ -288,9 +332,15 @@ const Navbar = ({ setAlert }) => {
 
         <div className="wmx-drawer-body">
           {navLinks.map(({ to, label }) => (
-            <Link key={to} className="wmx-drawer-link" to={to} onClick={() => setMobileOpen(false)}>
+            <NavLink
+              key={to}
+              className={({ isActive }) => `wmx-drawer-link${isActive ? ' active' : ''}`}
+              to={to}
+              end={to === "/"}
+              onClick={() => setMobileOpen(false)}
+            >
               {label}
-            </Link>
+            </NavLink>
           ))}
           {userRoles?.includes("seller") && (
             <Link className="wmx-drawer-link purple" to="/addproducts" onClick={() => setMobileOpen(false)}>

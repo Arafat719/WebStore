@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faBuilding, faCircleCheck, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { X } from "lucide-react";
+import userContext from "../../context/userContext";
+import SmartOrderCard from "../../components/SmartOrderCard/SmartOrderCard";
 import "./SmartOrder.css";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -32,6 +35,11 @@ const SITE_TYPES = [
 ];
 
 export default function SmartOrder() {
+  const { userRoles } = useContext(userContext);
+  const isSeller = userRoles?.includes("seller");
+
+  const [activeTab, setActiveTab] = useState("place");
+
   const [step, setStep] = useState(1);
   const [orderType, setOrderType] = useState("");
   const [form, setForm] = useState({
@@ -47,6 +55,132 @@ export default function SmartOrder() {
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
   const [submitted, setSubmitted] = useState(false);
+
+  // Browse Orders (seller)
+  const [browseOrders, setBrowseOrders] = useState([]);
+  const [browseLoading, setBrowseLoading] = useState(false);
+  const [browsePage, setBrowsePage] = useState(1);
+  const [browseTotalPages, setBrowseTotalPages] = useState(1);
+  const [proposedIds, setProposedIds] = useState(new Set());
+
+  // My Requests (buyer)
+  const [mineOrders, setMineOrders] = useState([]);
+  const [mineLoading, setMineLoading] = useState(false);
+
+  // Send Proposal modal
+  const [proposalTarget, setProposalTarget] = useState(null);
+  const [proposalForm, setProposalForm] = useState({ price: "", timeline: "", message: "" });
+  const [proposalSubmitting, setProposalSubmitting] = useState(false);
+  const [proposalStatusMsg, setProposalStatusMsg] = useState({ type: "", text: "" });
+
+  // View Proposals modal
+  const [proposalsTarget, setProposalsTarget] = useState(null);
+  const [proposalsList, setProposalsList] = useState([]);
+  const [proposalsLoading, setProposalsLoading] = useState(false);
+  const [confirmingProposalId, setConfirmingProposalId] = useState(null);
+  const [acceptingId, setAcceptingId] = useState(null);
+
+  useEffect(() => {
+    if (activeTab !== "browse") return;
+    setBrowseLoading(true);
+    const token = localStorage.getItem("token");
+    fetch(`${API_BASE}/smartorder/browse?page=${browsePage}`, { headers: { token } })
+      .then((r) => r.json())
+      .then((data) => {
+        setBrowseOrders(data.orders || []);
+        setBrowseTotalPages(data.totalPages || 1);
+      })
+      .catch(() => setBrowseOrders([]))
+      .finally(() => setBrowseLoading(false));
+  }, [activeTab, browsePage]);
+
+  useEffect(() => {
+    if (activeTab !== "mine") return;
+    setMineLoading(true);
+    const token = localStorage.getItem("token");
+    fetch(`${API_BASE}/smartorder/mine`, { headers: { token } })
+      .then((r) => r.json())
+      .then((data) => setMineOrders(data.orders || []))
+      .catch(() => setMineOrders([]))
+      .finally(() => setMineLoading(false));
+  }, [activeTab]);
+
+  const openProposalModal = (order) => {
+    setProposalTarget(order);
+    setProposalForm({ price: "", timeline: "", message: "" });
+    setProposalStatusMsg({ type: "", text: "" });
+  };
+
+  const submitProposal = async (e) => {
+    e.preventDefault();
+    if (!proposalForm.price || isNaN(proposalForm.price) || Number(proposalForm.price) <= 0) {
+      setProposalStatusMsg({ type: "error", text: "Please enter a valid price." });
+      return;
+    }
+    if (!proposalForm.timeline.trim()) {
+      setProposalStatusMsg({ type: "error", text: "Please enter a timeline." });
+      return;
+    }
+    setProposalSubmitting(true);
+    setProposalStatusMsg({ type: "", text: "" });
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE}/smartorder/${proposalTarget._id}/proposals`, {
+        method: "POST",
+        headers: { token, "Content-Type": "application/json" },
+        body: JSON.stringify(proposalForm),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setProposedIds((prev) => new Set(prev).add(proposalTarget._id));
+        setProposalTarget(null);
+      } else {
+        setProposalStatusMsg({ type: "error", text: data.message || "Failed to send proposal." });
+      }
+    } catch {
+      setProposalStatusMsg({ type: "error", text: "Network error. Please try again." });
+    } finally {
+      setProposalSubmitting(false);
+    }
+  };
+
+  const openProposalsModal = (order) => {
+    setProposalsTarget(order);
+    setProposalsList([]);
+    setProposalsLoading(true);
+    setConfirmingProposalId(null);
+    const token = localStorage.getItem("token");
+    fetch(`${API_BASE}/smartorder/${order._id}/proposals`, { headers: { token } })
+      .then((r) => r.json())
+      .then((data) => setProposalsList(data.proposals || []))
+      .catch(() => setProposalsList([]))
+      .finally(() => setProposalsLoading(false));
+  };
+
+  const acceptProposal = async (proposalId) => {
+    setAcceptingId(proposalId);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `${API_BASE}/smartorder/${proposalsTarget._id}/proposals/${proposalId}/accept`,
+        { method: "PUT", headers: { token } }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setProposalsList((prev) =>
+          prev.map((p) => ({ ...p, status: p._id === proposalId ? "accepted" : "rejected" }))
+        );
+        setMineOrders((prev) =>
+          prev.map((o) => (o._id === proposalsTarget._id ? { ...o, status: "in_progress" } : o))
+        );
+      }
+    } catch {
+      // no-op — user can retry
+    } finally {
+      setAcceptingId(null);
+      setConfirmingProposalId(null);
+    }
+  };
 
   const handleTypeSelect = (key) => {
     setOrderType(key);
@@ -164,6 +298,24 @@ export default function SmartOrder() {
           </p>
         </div>
 
+        <div className="wmx-so-tabs">
+          {[
+            { id: "place", label: "Place Order" },
+            { id: "browse", label: "Browse Orders" },
+            { id: "mine", label: "My Requests" },
+          ].map(({ id, label }) => (
+            <button
+              key={id}
+              className={`wmx-so-tab-btn${activeTab === id ? " active" : ""}`}
+              onClick={() => setActiveTab(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "place" && (
+        <>
         <div className="wmx-so-steps">
           <div className={`wmx-so-step ${step >= 1 ? "wmx-so-step--active" : ""}`}>
             <span className="wmx-so-step-num">1</span>
@@ -361,8 +513,203 @@ export default function SmartOrder() {
             </button>
           </div>
         )}
+        </>
+        )}
+
+        {activeTab === "browse" && (
+          <div className="wmx-so-list-wrap">
+            {browseLoading ? (
+              <p className="wmx-so-empty-msg">Loading open orders…</p>
+            ) : browseOrders.length === 0 ? (
+              <p className="wmx-so-empty-msg">No open orders right now. Check back later.</p>
+            ) : (
+              <>
+                <div className="wmx-so-list">
+                  {browseOrders.map((order) => (
+                    <div key={order._id} className="wmx-so-list-item">
+                      <SmartOrderCard order={order} mode="browse" onAction={openProposalModal} canPropose={isSeller} />
+                      {proposedIds.has(order._id) && (
+                        <span className="wmx-so-proposed-tag">Proposal Sent</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {browseTotalPages > 1 && (
+                  <div className="wmx-so-pagination">
+                    <button
+                      className="wmx-so-page-btn"
+                      disabled={browsePage === 1}
+                      onClick={() => setBrowsePage((p) => Math.max(1, p - 1))}
+                    >
+                      ← Prev
+                    </button>
+                    <span className="wmx-so-page-info">Page {browsePage} of {browseTotalPages}</span>
+                    <button
+                      className="wmx-so-page-btn"
+                      disabled={browsePage === browseTotalPages}
+                      onClick={() => setBrowsePage((p) => Math.min(browseTotalPages, p + 1))}
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "mine" && (
+          <div className="wmx-so-list-wrap">
+            {mineLoading ? (
+              <p className="wmx-so-empty-msg">Loading your requests…</p>
+            ) : mineOrders.length === 0 ? (
+              <p className="wmx-so-empty-msg">You haven't placed any smart orders yet.</p>
+            ) : (
+              <div className="wmx-so-list">
+                {mineOrders.map((order) => (
+                  <SmartOrderCard key={order._id} order={order} mode="mine" onAction={openProposalsModal} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
       </div>
+
+      {proposalTarget && (
+        <div
+          className="wmx-so-modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && setProposalTarget(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Send Proposal"
+        >
+          <div className="wmx-so-modal">
+            <div className="wmx-so-modal-hd">
+              <h3 className="wmx-so-modal-title">Send Proposal — {proposalTarget.siteType}</h3>
+              <button className="wmx-so-modal-close" onClick={() => setProposalTarget(null)} aria-label="Close">
+                <X size={16} />
+              </button>
+            </div>
+            <form className="wmx-so-modal-body" onSubmit={submitProposal}>
+              <div className="wmx-so-field">
+                <label className="wmx-so-label" htmlFor="p-price">
+                  Your Price (USD) <span className="wmx-so-req">*</span>
+                </label>
+                <input
+                  id="p-price"
+                  type="number"
+                  min={1}
+                  className="wmx-so-input"
+                  value={proposalForm.price}
+                  onChange={(e) => setProposalForm((p) => ({ ...p, price: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="wmx-so-field">
+                <label className="wmx-so-label" htmlFor="p-timeline">
+                  Timeline <span className="wmx-so-req">*</span>
+                </label>
+                <input
+                  id="p-timeline"
+                  type="text"
+                  placeholder="e.g. 2 weeks"
+                  className="wmx-so-input"
+                  value={proposalForm.timeline}
+                  onChange={(e) => setProposalForm((p) => ({ ...p, timeline: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="wmx-so-field">
+                <label className="wmx-so-label" htmlFor="p-message">
+                  Message <span className="wmx-so-hint"> — optional</span>
+                </label>
+                <textarea
+                  id="p-message"
+                  className="wmx-so-textarea"
+                  rows={3}
+                  value={proposalForm.message}
+                  onChange={(e) => setProposalForm((p) => ({ ...p, message: e.target.value }))}
+                />
+              </div>
+              {proposalStatusMsg.text && (
+                <div className={`wmx-so-status wmx-so-status--${proposalStatusMsg.type}`}>
+                  {proposalStatusMsg.text}
+                </div>
+              )}
+              <button type="submit" className="wmx-so-submit" disabled={proposalSubmitting}>
+                {proposalSubmitting ? "Sending..." : "Send Proposal"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {proposalsTarget && (
+        <div
+          className="wmx-so-modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && setProposalsTarget(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Proposals"
+        >
+          <div className="wmx-so-modal">
+            <div className="wmx-so-modal-hd">
+              <h3 className="wmx-so-modal-title">Proposals — {proposalsTarget.siteType}</h3>
+              <button className="wmx-so-modal-close" onClick={() => setProposalsTarget(null)} aria-label="Close">
+                <X size={16} />
+              </button>
+            </div>
+            <div className="wmx-so-modal-body">
+              {proposalsLoading ? (
+                <p className="wmx-so-empty-msg">Loading proposals…</p>
+              ) : proposalsList.length === 0 ? (
+                <p className="wmx-so-empty-msg">No proposals yet.</p>
+              ) : (
+                proposalsList.map((p) => (
+                  <div key={p._id} className="wmx-so-proposal-row">
+                    <div className="wmx-so-proposal-top">
+                      <span className="wmx-so-proposal-seller">{p.seller?.name || "Seller"}</span>
+                      <span className={`wmx-so-proposal-status wmx-so-proposal-status--${p.status}`}>{p.status}</span>
+                    </div>
+                    <div className="wmx-so-proposal-meta">
+                      <span>${p.price}</span>
+                      <span>{p.timeline}</span>
+                    </div>
+                    {p.message && <p className="wmx-so-proposal-msg">{p.message}</p>}
+                    {p.status === "pending" && (
+                      confirmingProposalId === p._id ? (
+                        <div className="wmx-so-proposal-confirm">
+                          <span>Accept this proposal? Others will be rejected.</span>
+                          <div className="wmx-so-proposal-confirm-btns">
+                            <button
+                              className="wmx-so-submit"
+                              disabled={acceptingId === p._id}
+                              onClick={() => acceptProposal(p._id)}
+                            >
+                              {acceptingId === p._id ? "Accepting..." : "Yes, Accept"}
+                            </button>
+                            <button className="wmx-so-back" onClick={() => setConfirmingProposalId(null)}>
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          className="wmx-soc-action-btn"
+                          onClick={() => setConfirmingProposalId(p._id)}
+                        >
+                          Accept
+                        </button>
+                      )
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

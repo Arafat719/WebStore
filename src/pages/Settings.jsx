@@ -67,7 +67,7 @@ const TRANSACTIONS = [
    Section: Profile
    ══════════════════════════════════════════════════════════════ */
 function ProfilePanel() {
-  const { getProfile, firstLetter } = useContext(UserContext);
+  const { getProfile, firstLetter, setUserVersion } = useContext(UserContext);
   const [form, setForm] = useState({ name: '', username: '', bio: '', website: '' });
   const [msg, setMsg]       = useState({ text: '', type: '' });
   const [saving, setSaving] = useState(false);
@@ -100,6 +100,7 @@ function ProfilePanel() {
       if (res.ok) {
         const stored = JSON.parse(localStorage.getItem('user') || '{}');
         localStorage.setItem('user', JSON.stringify({ ...stored, name: form.name }));
+        setUserVersion(v => v + 1);
         setMsg({ text: 'Profile updated successfully', type: 'success' });
       } else {
         setMsg({ text: data.error || 'Failed to update profile', type: 'error' });

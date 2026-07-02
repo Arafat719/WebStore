@@ -32,7 +32,7 @@ function LoginSocialButtons() {
       if (!res.ok) throw new Error("Server responded with an error");
       const data = await res.json();
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user" }));
+      localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user", profilePic: data.profilePic || "" }));
       localStorage.setItem("id", JSON.stringify({ id: data.id }));
       navigate("/");
     } catch {

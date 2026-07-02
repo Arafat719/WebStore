@@ -18,6 +18,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     support: product.support || '',
     documentation: !!product.documentation,
     license: product.license || DEFAULT_LICENSE_TEXT,
+    whatsappNumber: product.whatsappNumber || '',
   });
 
   // { type: 'existing', url } | { type: 'new', file, preview }
@@ -92,6 +93,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
         documentation: form.documentation,
         images: finalImages,
         license: form.license,
+        whatsappNumber: form.whatsappNumber.trim(),
       };
 
       const token = localStorage.getItem('token');
@@ -192,6 +194,17 @@ const EditProductModal = ({ product, onClose, onSave }) => {
                 <span className="wmx-epm-check-label">Documentation included</span>
               </label>
             </div>
+          </div>
+
+          <div className="wmx-modal-field">
+            <label>WhatsApp Number</label>
+            <input
+              type="tel"
+              name="whatsappNumber"
+              value={form.whatsappNumber}
+              onChange={handleChange}
+              placeholder="e.g. +8801XXXXXXXXX"
+            />
           </div>
 
           <div className="wmx-modal-section-title" style={{ marginTop: 8 }}>License Terms</div>

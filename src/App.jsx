@@ -8,6 +8,7 @@ import Signup from './components/Signup'
 import UserState from './context/userState'
 import ProtectedRoute from "./components/ProtectedRoute";
 import Alert from './components/Alert'
+import NotificationToast from './components/NotificationToast'
 import Footer from './components/Footer'
 import AddProducts from './components/AddProducts'
 import NotFound from './components/NotFound'
@@ -56,6 +57,7 @@ function App() {
       <Alert alert={alert} setAlert={setAlert} />
       <UserState>
       <Navbar setAlert={setAlert} />
+      <NotificationToast />
         <Routes>
           <Route path="/" element={
             <Home />

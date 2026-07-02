@@ -1,0 +1,113 @@
+.wmx-soc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: border-color 0.2s, transform 0.18s;
+}
+
+.wmx-soc-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.wmx-soc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.wmx-soc-type-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.wmx-soc-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.wmx-soc-status {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.wmx-soc-status--pending { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+.wmx-soc-status--in_review { background: rgba(96, 165, 250, 0.12); color: var(--info); }
+.wmx-soc-status--in_progress { background: rgba(134, 130, 250, 0.12); color: var(--accent); }
+.wmx-soc-status--completed { background: rgba(74, 222, 128, 0.12); color: var(--success); }
+.wmx-soc-status--cancelled { background: rgba(248, 113, 113, 0.12); color: var(--danger); }
+
+.wmx-soc-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wmx-soc-feature-chip {
+  font-size: 0.75rem;
+  color: var(--text-body);
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+.wmx-soc-feature-more {
+  color: var(--text-muted);
+}
+
+.wmx-soc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.wmx-soc-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--text-label);
+}
+
+.wmx-soc-action-btn {
+  align-self: flex-start;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid rgba(134, 130, 250, 0.3);
+  border-radius: 10px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+}
+
+.wmx-soc-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.wmx-soc-seller-only-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+}

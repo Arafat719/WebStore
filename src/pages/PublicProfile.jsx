@@ -92,8 +92,8 @@ const PublicProfile = () => {
         <div className="wmx-pp-hero-inner">
           {/* Avatar */}
           <div className="wmx-pp-avatar-wrap">
-            {seller?.profileImage
-              ? <img src={seller.profileImage} alt={seller.name} className="wmx-pp-avatar wmx-pp-avatar-img" />
+            {seller?.profilePic
+              ? <img src={seller.profilePic} alt={seller.name} className="wmx-pp-avatar wmx-pp-avatar-img" />
               : <div className="wmx-pp-avatar wmx-pp-avatar-initials">
                   {seller?.name?.[0]?.toUpperCase() || (sellerLoading ? '' : '?')}
                 </div>

@@ -85,6 +85,24 @@
   color: #b8b5ff;
   border-color: rgba(134,130,250,0.38);
 }
+.wmx-nav-link.active {
+  color: #8682fa;
+  background: rgba(134,130,250,0.1);
+  font-weight: 500;
+}
+
+.wmx-nav-order-wrap { position: relative; }
+
+.wmx-nav-order-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.wmx-nav-link.active:hover {
+  color: #8682fa;
+  background: rgba(134,130,250,0.16);
+}
 
 .wmx-auth {
   display: flex;
@@ -290,6 +308,8 @@
 .wmx-drawer-link:hover { color: var(--text-primary); background: var(--bg-hover); }
 .wmx-drawer-link.purple { color: #8682fa; background: rgba(134,130,250,0.07); }
 .wmx-drawer-link.purple:hover { background: rgba(134,130,250,0.14); color: #b8b5ff; }
+.wmx-drawer-link.active { color: #8682fa; background: rgba(134,130,250,0.1); font-weight: 500; }
+.wmx-drawer-link.active:hover { background: rgba(134,130,250,0.16); color: #8682fa; }
 
 .wmx-drawer-footer {
   padding: 16px 12px;

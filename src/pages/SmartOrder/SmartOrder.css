@@ -462,3 +462,238 @@ html[data-theme='light'] .wmx-so-badge {
   position: relative;
   z-index: 1;
 }
+
+/* Tabs */
+.wmx-so-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.wmx-so-tab-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-label);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: 30px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s, border-color 0.18s;
+}
+
+.wmx-so-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.wmx-so-tab-btn.active {
+  color: #fff;
+  background: linear-gradient(135deg, #8682fa, #5f5bc7);
+  border-color: transparent;
+}
+
+/* Lists (Browse / My Requests) */
+.wmx-so-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.wmx-so-empty-msg {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 3rem 1rem;
+}
+
+.wmx-so-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wmx-so-list-item {
+  position: relative;
+}
+
+.wmx-so-proposed-tag {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--success);
+  background: rgba(74, 222, 128, 0.12);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.wmx-so-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.wmx-so-page-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 7px 16px;
+  cursor: pointer;
+}
+
+.wmx-so-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wmx-so-page-info {
+  font-size: 0.85rem;
+  color: var(--text-label);
+}
+
+/* Modal */
+.wmx-so-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: var(--modal-backdrop);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.wmx-so-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.wmx-so-modal-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+
+.wmx-so-modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.wmx-so-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: color 0.18s, background 0.18s;
+}
+
+.wmx-so-modal-close:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.wmx-so-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Proposal rows (inside "My Requests" modal) */
+.wmx-so-proposal-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+}
+
+.wmx-so-proposal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wmx-so-proposal-seller {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.wmx-so-proposal-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 3px 11px;
+  border-radius: 20px;
+}
+
+.wmx-so-proposal-status--pending  { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+.wmx-so-proposal-status--accepted { background: rgba(74, 222, 128, 0.12); color: var(--success); }
+.wmx-so-proposal-status--rejected { background: rgba(248, 113, 113, 0.12); color: var(--danger); }
+
+.wmx-so-proposal-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--text-label);
+}
+
+.wmx-so-proposal-msg {
+  font-size: 0.85rem;
+  color: var(--text-body);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wmx-so-proposal-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.83rem;
+  color: var(--text-label);
+}
+
+.wmx-so-proposal-confirm-btns {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}

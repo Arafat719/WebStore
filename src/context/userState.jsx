@@ -1,6 +1,9 @@
 import UserContext from "./userContext";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+const TOAST_REMINDER_INTERVAL = 5 * 60 * 1000;
+const TOAST_AUTO_DISMISS = 8000;
 
 const getInitialTheme = () => {
     const saved = localStorage.getItem("wmx-theme");
@@ -28,6 +31,11 @@ const UserState = (props) => {
     const [theme, setTheme] = useState(getInitialTheme);
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [toastNotif, setToastNotif] = useState(null);
+    const prevUnreadCountRef = useRef(0);
+    const unreadCountRef = useRef(0);
+    const notificationsRef = useRef([]);
+    const toastTimeoutRef = useRef(null);
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
@@ -71,7 +79,7 @@ const UserState = (props) => {
             setTimeout(() => setError([]), 2000);
         } else {
             localStorage.setItem("token", data.token)
-            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
             fetchNotifications();
             navigate('/')
@@ -97,13 +105,24 @@ const UserState = (props) => {
             setError({ "blocked": data.error })
         } else {
             localStorage.setItem("token", data.token)
-            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"] }))
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
             fetchNotifications();
             navigate("/")
             return data;
         }
     }
+
+    const showToast = (notif) => {
+        setToastNotif(notif);
+        clearTimeout(toastTimeoutRef.current);
+        toastTimeoutRef.current = setTimeout(() => setToastNotif(null), TOAST_AUTO_DISMISS);
+    };
+
+    const dismissToast = () => {
+        clearTimeout(toastTimeoutRef.current);
+        setToastNotif(null);
+    };
 
     const fetchNotifications = async () => {
         const token = localStorage.getItem("token");
@@ -118,8 +137,16 @@ const UserState = (props) => {
             });
             if (!res) return;
             const data = await res.json();
-            setNotifications(data.notifications || []);
-            setUnreadCount(data.unreadCount || 0);
+            const newNotifications = data.notifications || [];
+            const newUnreadCount = data.unreadCount || 0;
+            setNotifications(newNotifications);
+            setUnreadCount(newUnreadCount);
+
+            if (newUnreadCount > prevUnreadCountRef.current) {
+                const latestUnread = newNotifications.find(n => !n.read);
+                if (latestUnread) showToast(latestUnread);
+            }
+            prevUnreadCountRef.current = newUnreadCount;
         } catch (err) {
             console.error("Failed to fetch notifications:", err);
         }
@@ -139,7 +166,12 @@ const UserState = (props) => {
             setNotifications(prev =>
                 prev.map(n => n._id === id ? { ...n, read: true } : n)
             );
-            setUnreadCount(prev => Math.max(0, prev - 1));
+            setUnreadCount(prev => {
+                const next = Math.max(0, prev - 1);
+                prevUnreadCountRef.current = next;
+                return next;
+            });
+            setToastNotif(prev => (prev?._id === id ? null : prev));
         } catch (err) {
             console.error("Failed to mark notification read:", err);
         }
@@ -158,21 +190,34 @@ const UserState = (props) => {
             });
             setNotifications(prev => prev.map(n => ({ ...n, read: true })));
             setUnreadCount(0);
+            prevUnreadCountRef.current = 0;
+            dismissToast();
         } catch (err) {
             console.error("Failed to mark all notifications read:", err);
         }
     };
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            fetchNotifications();
-            const interval = setInterval(() => {
-                const t = localStorage.getItem("token");
-                if (t) fetchNotifications();
-            }, 60000);
-            return () => clearInterval(interval);
-        }
+        if (localStorage.getItem("token")) fetchNotifications();
+        const interval = setInterval(() => {
+            if (localStorage.getItem("token")) fetchNotifications();
+        }, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => { unreadCountRef.current = unreadCount; }, [unreadCount]);
+    useEffect(() => { notificationsRef.current = notifications; }, [notifications]);
+
+    // Re-show the latest unread notification as a reminder every 5 minutes
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (!localStorage.getItem("token")) return;
+            if (unreadCountRef.current > 0) {
+                const latestUnread = notificationsRef.current.find(n => !n.read);
+                if (latestUnread) showToast(latestUnread);
+            }
+        }, TOAST_REMINDER_INTERVAL);
+        return () => clearInterval(interval);
     }, []);
 
     const getProfile = async () => {
@@ -308,7 +353,7 @@ const UserState = (props) => {
     }, [userVersion]);
 
     return (
-        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead, toastNotif, dismissToast, setUserVersion }}>
             {props.children}
         </UserContext.Provider>
     )
