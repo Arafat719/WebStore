@@ -40,15 +40,11 @@
   text-decoration: none;
   flex-shrink: 0;
 }
-.wmx-logo img { height: 32px; width: auto; }
-.wmx-logo-text {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
-}
-.wmx-logo-text span { color: #8682fa; }
+.wmx-logo-img { height: 26px; width: auto; }
+.wmx-logo-img-dark { display: block; }
+.wmx-logo-img-light { display: none; }
+html[data-theme='light'] .wmx-logo-img-dark { display: none; }
+html[data-theme='light'] .wmx-logo-img-light { display: block; }
 
 .wmx-nav-links {
   display: flex;

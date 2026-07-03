@@ -151,11 +151,8 @@ const Navbar = ({ setAlert }) => {
 
             {/* Logo */}
             <Link className="wmx-logo" to="/">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="16" cy="16" r="16" fill="#8682fa"/>
-                <path d="M7 10 L11.5 22 L16 14 L20.5 22 L25 10" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-              </svg>
-              <span className="wmx-logo-text">Web<span>Market</span>X</span>
+              <img className="wmx-logo-img wmx-logo-img-light" src="/wmx-logo-full.png" alt="WebMarketX" />
+              <img className="wmx-logo-img wmx-logo-img-dark" src="/wmx-logo-full-dark.png" alt="WebMarketX" />
             </Link>
 
             {/* Desktop links */}
