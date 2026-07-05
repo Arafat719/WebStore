@@ -16,12 +16,12 @@ import MyOrders from "../pages/MyOrders/MyOrders";
 import EditProductModal from "./EditProductModal";
 
 const ProfilePage = ({ showAlert }) => {
-  const { getProfile, updateProfile, userId, userType, userRoles, becomeSeller } = useContext(userContext);
+  const { getProfile, updateProfile, userId, userType, userRoles, becomeSeller, setUserVersion } = useContext(userContext);
   const [seller, setSeller] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: "", phone: "", whatsapp: "", location: "", bio: "", website: "", profilePic: "",
+    name: "", phone: "", whatsapp: "", location: "", bio: "", website: "", profileImage: "",
     social: { twitter: "", linkedin: "", github: "" }
   });
   const [sellerProducts, setSellerProducts] = useState([]);
@@ -67,7 +67,7 @@ const ProfilePage = ({ showAlert }) => {
           location: data.seller.location || "",
           bio: data.seller.bio || "",
           website: data.seller.website || "",
-          profilePic: data.seller.profilePic || "",
+          profileImage: data.seller.profileImage || "",
           social: {
             twitter: data.seller.social?.twitter || "",
             linkedin: data.seller.social?.linkedin || "",
@@ -244,7 +244,7 @@ const ProfilePage = ({ showAlert }) => {
   const handleImageFile = (file) => {
     if (!file || !file.type.startsWith("image/")) return;
     const reader = new FileReader();
-    reader.onload = (e) => setEditForm(f => ({ ...f, profilePic: e.target.result }));
+    reader.onload = (e) => setEditForm(f => ({ ...f, profileImage: e.target.result }));
     reader.readAsDataURL(file);
   };
 
@@ -261,6 +261,9 @@ const ProfilePage = ({ showAlert }) => {
     if (data?.success) {
       setSeller(data.seller);
       setEditOpen(false);
+      setUserVersion(v => v + 1);
+    } else {
+      showAlert?.(data?.error || "Failed to save profile. Please try again.", "error");
     }
   };
 
@@ -327,8 +330,8 @@ const ProfilePage = ({ showAlert }) => {
       {/* ── Sidebar ── */}
       <aside className="wmx-sidebar">
         <div className="wmx-sb-avatar-wrap">
-          {seller?.profilePic
-            ? <img src={seller.profilePic} alt="avatar" className="wmx-sb-avatar" style={{ objectFit: "cover" }} />
+          {seller?.profileImage
+            ? <img src={seller.profileImage} alt="avatar" className="wmx-sb-avatar" style={{ objectFit: "cover" }} />
             : <div className="wmx-sb-avatar">{seller?.name?.[0] ?? "U"}</div>
           }
           <button className="wmx-sb-avatar-edit" onClick={() => setEditOpen(true)}><Camera size={12} /></button>
@@ -381,8 +384,8 @@ const ProfilePage = ({ showAlert }) => {
           <div className="wmx-prof-hero-inner">
             <div className="wmx-prof-hero-left">
               <div className="wmx-prof-hero-avatar">
-                {seller?.profilePic
-                  ? <img src={seller.profilePic} alt="avatar" style={{ width: "100%", height: "100%", borderRadius: "20px", objectFit: "cover" }} />
+                {seller?.profileImage
+                  ? <img src={seller.profileImage} alt="avatar" style={{ width: "100%", height: "100%", borderRadius: "20px", objectFit: "cover" }} />
                   : seller?.name?.[0] ?? "U"
                 }
               </div>
@@ -973,12 +976,12 @@ const ProfilePage = ({ showAlert }) => {
                   onDragLeave={() => setDragOver(false)}
                   onDrop={handleDrop}
                 >
-                  {editForm.profilePic ? (
+                  {editForm.profileImage ? (
                     <>
-                      <img src={editForm.profilePic} alt="preview" className="wmx-img-drop-preview" />
+                      <img src={editForm.profileImage} alt="preview" className="wmx-img-drop-preview" />
                       <button
                         className="wmx-img-drop-remove"
-                        onClick={(e) => { e.stopPropagation(); setEditForm(f => ({ ...f, profilePic: "" })); }}
+                        onClick={(e) => { e.stopPropagation(); setEditForm(f => ({ ...f, profileImage: "" })); }}
                       >
                         <X size={12} />
                       </button>

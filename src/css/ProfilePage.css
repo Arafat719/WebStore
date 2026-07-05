@@ -570,7 +570,8 @@
   display: flex; align-items: center; gap: 4px;
 }
 .wmx-modal-field input,
-.wmx-modal-field textarea {
+.wmx-modal-field textarea,
+.wmx-modal-field select {
   background: var(--bg-input);
   border: 1px solid var(--border-default);
   border-radius: 9px;
@@ -581,7 +582,8 @@
   transition: border-color 0.18s, background 0.18s;
 }
 .wmx-modal-field input:focus,
-.wmx-modal-field textarea:focus {
+.wmx-modal-field textarea:focus,
+.wmx-modal-field select:focus {
   border-color: rgba(134,130,250,0.38);
   background: rgba(134,130,250,0.03);
 }

@@ -1,32 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-.wmx-card {
+.wmx-pc-card {
     width: 100%;
-    background: var(--bg-card);
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
     border: 1px solid var(--border-default);
-    border-radius: 14px;
+    border-radius: 10px;
     overflow: hidden;
     position: relative;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
     font-family: 'DM Sans', sans-serif;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.wmx-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 16px 40px rgba(134, 130, 250, 0.2);
+.wmx-pc-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 44px -12px rgba(134, 130, 250, 0.28), 0 4px 20px rgba(0, 0, 0, 0.25);
     border-color: rgba(134, 130, 250, 0.4);
 }
 
 /* Image */
-.wmx-card-img-wrap {
+.wmx-pc-thumb {
     position: relative;
     overflow: hidden;
     height: 185px;
     background: var(--bg-hover);
 }
 
-.wmx-card-img-wrap img {
+.wmx-pc-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 35%);
+    pointer-events: none;
+}
+
+.wmx-pc-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -34,34 +42,49 @@
     display: block;
 }
 
-.wmx-card:hover .wmx-card-img-wrap img {
+.wmx-pc-card:hover .wmx-pc-thumb img {
     transform: scale(1.05);
 }
 
-/* Free badge */
-.wmx-free-badge {
+/* Badges over the thumbnail */
+.wmx-pc-badge {
     position: absolute;
     top: 10px;
-    left: 10px;
     z-index: 2;
-    background: linear-gradient(135deg, #8682fa, #5f5bc7);
-    color: #fff;
     font-family: 'Syne', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius: 6px;
+    backdrop-filter: blur(6px);
+}
+
+.wmx-pc-badge--free {
+    left: 10px;
+    background: linear-gradient(135deg, #8682fa, #5f5bc7);
+    color: #fff;
     box-shadow: 0 2px 10px rgba(134, 130, 250, 0.45);
 }
 
+.wmx-pc-badge--cat {
+    right: 10px;
+    max-width: 55%;
+    background: rgba(10, 10, 20, 0.5);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Body */
-.wmx-card-body {
+.wmx-pc-body {
     padding: 16px 18px 18px;
 }
 
-.wmx-card-title {
+.wmx-pc-title {
     font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 1rem;
@@ -72,7 +95,7 @@
     text-overflow: ellipsis;
 }
 
-.wmx-card-desc {
+.wmx-pc-desc {
     font-size: 0.82rem;
     color: var(--text-body);
     line-height: 1.6;
@@ -84,7 +107,7 @@
 }
 
 /* Footer */
-.wmx-card-footer {
+.wmx-pc-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -92,7 +115,7 @@
     border-top: 1px solid var(--border-subtle);
 }
 
-.wmx-price {
+.wmx-pc-price {
     font-family: 'Syne', sans-serif;
     font-weight: 800;
     font-size: 1.2rem;
@@ -100,56 +123,54 @@
     line-height: 1;
 }
 
-.wmx-price.free {
+.wmx-pc-price.free {
     background: linear-gradient(135deg, #8682fa, #b8b5ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* Button */
-.wmx-btn {
+/* CTA button */
+.wmx-pc-cta {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.8rem;
-    font-weight: 500;
-    color: #8682fa;
-    background: rgba(134, 130, 250, 0.1);
-    border: 1px solid rgba(134, 130, 250, 0.3);
-    border-radius: 8px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #8682fa, #5f5bc7);
+    border: none;
+    border-radius: 7px;
     padding: 7px 14px;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
     white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(134, 130, 250, 0.35);
 }
 
-.wmx-btn:hover {
-    background: #8682fa;
-    color: #fff;
-    border-color: #8682fa;
-    box-shadow: 0 4px 14px rgba(134, 130, 250, 0.4);
-    gap: 9px;
+.wmx-pc-cta:hover {
+    box-shadow: 0 6px 16px rgba(134, 130, 250, 0.45);
+    transform: translateY(-1px);
 }
 
-.wmx-btn svg {
+.wmx-pc-cta svg {
     width: 12px;
     height: 12px;
     transition: transform 0.2s;
 }
 
-.wmx-btn:hover svg {
+.wmx-pc-cta:hover svg {
     transform: translateX(2px);
 }
 
 @media (max-width: 768px) {
-  .wmx-card-img-wrap { height: 160px; }
+  .wmx-pc-thumb { height: 160px; }
 }
 @media (max-width: 480px) {
-  .wmx-card-img-wrap { height: 140px; }
+  .wmx-pc-thumb { height: 140px; }
 }
 
-.wmx-card--focused {
+.wmx-pc-card--focused {
   outline: 2px solid #8682fa;
   outline-offset: 3px;
   box-shadow: 0 0 0 4px rgba(134, 130, 250, 0.15);

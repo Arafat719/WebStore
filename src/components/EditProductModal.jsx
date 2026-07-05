@@ -11,6 +11,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     title: product.title || '',
     description: product.description || '',
     price: String(product.price ?? ''),
+    category: product.category && product.category !== 'Other' ? product.category : '',
     livePreviewUrl: product.livePreviewUrl || '',
     tags: Array.isArray(product.tags) ? product.tags.join(', ') : (product.tags || ''),
     builtWith: Array.isArray(product.builtWith) ? product.builtWith.join(', ') : (product.builtWith || ''),
@@ -66,6 +67,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     if (!form.title.trim()) { setError('Title is required'); return; }
     if (!form.description.trim()) { setError('Description is required'); return; }
     if (!form.price) { setError('Price is required'); return; }
+    if (!form.category) { setError('Please select a category'); return; }
 
     setError('');
     setSaving(true);
@@ -85,6 +87,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
         title: form.title.trim(),
         description: form.description.trim(),
         price: form.price,
+        category: form.category,
         livePreviewUrl: form.livePreviewUrl.trim(),
         tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
         builtWith: form.builtWith ? form.builtWith.split(',').map(t => t.trim()).filter(Boolean) : [],
@@ -158,6 +161,16 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               <label>Live Preview URL</label>
               <input name="livePreviewUrl" value={form.livePreviewUrl} onChange={handleChange} placeholder="https://demo.example.com" />
             </div>
+          </div>
+
+          <div className="wmx-modal-field">
+            <label>Category</label>
+            <select name="category" value={form.category} onChange={handleChange}>
+              <option value="" disabled>Select a category</option>
+              <option value="Templates">Templates</option>
+              <option value="Websites">Websites</option>
+              <option value="Businesses">Businesses</option>
+            </select>
           </div>
 
           <div className="wmx-modal-field">

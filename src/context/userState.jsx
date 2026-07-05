@@ -244,7 +244,7 @@ const UserState = (props) => {
             body: JSON.stringify(profileData)
         });
         if (!response) return null;
-        return response.json();
+        return response.json().catch(() => ({ success: false, error: "Unexpected server response" }));
     }
 
     const addProducts = async (
@@ -261,7 +261,8 @@ const UserState = (props) => {
         githubRepoUrl,
         repoPat,
         livePreviewUrl,
-        license
+        license,
+        category
     ) => {
         const token = localStorage.getItem('token')
         try {
@@ -299,7 +300,7 @@ const UserState = (props) => {
                 body: JSON.stringify({
                     title, images, description, price, storedRepoName,
                     githubRepoUrl, livePreviewUrl, tags, builtWith, features,
-                    documentation, support, previewLink, license
+                    documentation, support, previewLink, license, category
                 })
             });
             if (!res) {
@@ -339,17 +340,29 @@ const UserState = (props) => {
         return { success: false, data };
     };
 
-    const { user, userId, firstLetter, profilePic, userType, userRoles } = useMemo(() => {
+    const { user, userId, firstLetter, userType, userRoles } = useMemo(() => {
         const u = JSON.parse(localStorage.getItem("user") || 'null');
         const idObj = JSON.parse(localStorage.getItem("id") || 'null');
         return {
             user: u,
             userId: idObj?.id || null,
             firstLetter: u?.name?.[0]?.toUpperCase() || "U",
-            profilePic: u?.profilePic || null,
             userType: u?.type || null,
             userRoles: u?.roles ?? ["buyer"],
         };
+    }, [userVersion]);
+
+    // Navbar avatar — sourced from the live seller profile, not the stale
+    // localStorage snapshot from login, so it updates right after an edit.
+    const [profilePic, setProfilePic] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            const token = localStorage.getItem('token');
+            if (!token) { setProfilePic(null); return; }
+            const data = await getProfile();
+            setProfilePic(data?.success ? (data.seller.profileImage || null) : null);
+        })();
     }, [userVersion]);
 
     return (

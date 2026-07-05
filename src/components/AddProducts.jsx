@@ -32,7 +32,7 @@ function AddProducts({ showAlert }) {
     const DEFAULT_LICENSE_TEXT = 'This product is sold under Regular License. You can use it in one personal or client project. Reselling or redistributing is strictly prohibited.';
 
     const [products, setproducts] = useState({
-        title: "", images: [""], description: "", price: "",
+        title: "", images: [""], description: "", price: "", category: "",
         previewLink: "", livePreviewUrl: "", tags: "", builtWith: "", features: "",
         documentation: false, support: "", license: DEFAULT_LICENSE_TEXT,
     });
@@ -55,6 +55,10 @@ function AddProducts({ showAlert }) {
         }
         if (!products.price) {
             showAlert("Price is required", "error");
+            return false;
+        }
+        if (!products.category) {
+            showAlert("Please select a category", "error");
             return false;
         }
         if (products.images.filter(i => i?.preview).length === 0) {
@@ -193,7 +197,7 @@ function AddProducts({ showAlert }) {
             finalData.images, finalData.title, finalData.description, finalData.price,
             finalData.previewLink, finalData.tags, finalData.builtWith, finalData.features,
             finalData.support, finalData.documentation, githubUrl, repoPat, finalData.livePreviewUrl,
-            finalData.license
+            finalData.license, finalData.category
         );
 
         if (result?.success) {
@@ -496,6 +500,19 @@ function AddProducts({ showAlert }) {
                         <textarea className="wmx-add-textarea" name="description"
                             placeholder="Describe what your website/template does..."
                             value={products.description} onChange={onchange} />
+                    </div>
+
+                    <div className="wmx-add-field">
+                        <label className="wmx-add-label">Category</label>
+                        <div className="wmx-add-input-wrap">
+                            <span className="wmx-add-input-icon"><FontAwesomeIcon icon={faList} /></span>
+                            <select className="wmx-add-input" name="category" value={products.category} onChange={onchange}>
+                                <option value="" disabled>Select a category</option>
+                                <option value="Templates">Templates</option>
+                                <option value="Websites">Websites</option>
+                                <option value="Businesses">Businesses</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div className="wmx-two-col">
