@@ -227,6 +227,12 @@ const Signup = () => {
                     )}
                 </div>
 
+                {error?.unknown && (
+                    <span className="wmx-su-error" style={{ display: 'block', marginBottom: 12 }}>
+                        {error.unknown}
+                    </span>
+                )}
+
                 <button
                     type="button"
                     className="wmx-su-submit"

@@ -19,3 +19,10 @@
   width: 100% !important;
   min-width: unset !important;
 }
+
+.wmx-social-error {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #e0557d;
+  text-align: center;
+}

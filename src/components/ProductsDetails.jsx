@@ -124,7 +124,7 @@ function RepoTreeSection({ productId }) {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}/tree`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/products/${productId}/tree`);
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to fetch file structure");
             setTree(data.tree);
@@ -196,7 +196,7 @@ const ProductDetails = ({ showAlert }) => {
   const [customSuccess, setCustomSuccess] = useState(false);
   const [customError, setCustomError] = useState("");
   const [sellerWhatsapp, setSellerWhatsapp] = useState("");
-  const { userId, userType } = useContext(userContext);
+  const { userId, userRoles } = useContext(userContext);
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = userId ? { _id: userId, name: storedUser?.name || "" } : null;
   const API = import.meta.env.VITE_API_URL;
@@ -436,7 +436,7 @@ const ProductDetails = ({ showAlert }) => {
   );
 
   const isFree = product.price === "Free" || product.price === 0;
-  const isOwnProduct = userId && userType === 'seller' && (
+  const isOwnProduct = userId && userRoles?.includes('seller') && (
     userId === product.sellerId ||
     userId === product.seller?._id ||
     userId === product.sellerId?._id

@@ -67,20 +67,25 @@ const TRANSACTIONS = [
    Section: Profile
    ══════════════════════════════════════════════════════════════ */
 function ProfilePanel() {
-  const { getProfile, firstLetter, setUserVersion } = useContext(UserContext);
+  const { firstLetter, setUserVersion } = useContext(UserContext);
   const [form, setForm] = useState({ name: '', username: '', bio: '', website: '' });
   const [msg, setMsg]       = useState({ text: '', type: '' });
   const [saving, setSaving] = useState(false);
 
+  // /auth/getuser works for both buyers and sellers (unlike /seller/profile,
+  // which 404s for buyer-only accounts that never called become-seller).
   useEffect(() => {
-    getProfile()
+    const token = localStorage.getItem('token');
+    fetch(`${API}/auth/getuser`, { headers: { token } })
+      .then(r => r.json())
       .then(data => {
-        if (data) setForm({
-          name:     data.name     || '',
-          username: data.username || '',
-          bio:      data.bio      || '',
-          website:  data.website  || '',
-        });
+        const u = data?.user;
+        if (u) setForm(f => ({
+          ...f,
+          name:    u.name    || '',
+          bio:     u.bio     || '',
+          website: u.website || '',
+        }));
       })
       .catch(() => {});
   }, []);
@@ -651,13 +656,14 @@ function SellerPanel() {
   useEffect(() => {
     getProfile()
       .then(data => {
-        if (data) setForm(f => ({
+        const seller = data?.seller;
+        if (seller) setForm(f => ({
           ...f,
-          shopName:      data.shopName      || data.name || '',
-          tagline:       data.tagline       || '',
-          category:      data.category      || 'UI / UX Design',
-          payout:        data.payout        || 'bank',
-          listingPublic: data.listingPublic !== undefined ? data.listingPublic : true,
+          shopName:      seller.sellerSettings?.shopName      || seller.name || '',
+          tagline:       seller.sellerSettings?.tagline       || '',
+          category:      seller.sellerSettings?.category      || 'UI / UX Design',
+          payout:        seller.sellerSettings?.payoutPreference || 'bank',
+          listingPublic: (seller.sellerSettings?.listingVisibility || 'public') !== 'private',
         }));
       })
       .catch(() => {});
@@ -683,7 +689,13 @@ function SellerPanel() {
       const res  = await fetch(`${API}/auth/update-seller-settings`, {
         method: 'PUT',
         headers: { token, 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          shopName: form.shopName,
+          tagline: form.tagline,
+          category: form.category,
+          payoutPreference: form.payout,
+          listingVisibility: form.listingPublic ? 'public' : 'private',
+        }),
       });
       const data = await res.json();
       if (res.ok) {

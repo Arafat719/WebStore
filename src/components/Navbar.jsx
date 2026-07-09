@@ -7,7 +7,7 @@ import '../css/Navbar.css';
 
 const Navbar = ({ setAlert }) => {
   const context = useContext(userContext);
-  const { userId, firstLetter, profilePic, userType, userRoles, theme, toggleTheme, notifications, unreadCount, markNotificationRead, markAllNotificationsRead } = context;
+  const { userId, firstLetter, profilePic, userType, userRoles, theme, toggleTheme, notifications, unreadCount, markNotificationRead, markAllNotificationsRead, setUserVersion } = context;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +28,9 @@ const Navbar = ({ setAlert }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("id");
+    setUserVersion(v => v + 1);
     setMobileOpen(false);
     navigate("/login");
   };

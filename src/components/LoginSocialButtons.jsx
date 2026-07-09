@@ -7,6 +7,7 @@ function LoginSocialButtons() {
   const navigate = useNavigate();
   const wrapRef = useRef(null);
   const [btnWidth, setBtnWidth] = useState(0);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!wrapRef.current) return;
@@ -23,20 +24,21 @@ function LoginSocialButtons() {
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
+      setError("");
       const token = credentialResponse.credential;
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
-      if (!res.ok) throw new Error("Server responded with an error");
       const data = await res.json();
+      if (!res.ok || !data.token) throw new Error(data.error || "Google sign-in failed");
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user", profilePic: data.profilePic || "" }));
+      localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic || "" }));
       localStorage.setItem("id", JSON.stringify({ id: data.id }));
       navigate("/");
-    } catch {
-      // silently handle login failure
+    } catch (err) {
+      setError(err.message || "Google sign-in failed. Please try again.");
     }
   };
 
@@ -45,7 +47,7 @@ function LoginSocialButtons() {
       {btnWidth > 0 && (
         <GoogleLogin
           onSuccess={handleGoogleLogin}
-          onError={() => {}}
+          onError={() => setError("Google sign-in failed. Please try again.")}
           auto_select={false}
           width={btnWidth}
           theme="outline"
@@ -54,6 +56,7 @@ function LoginSocialButtons() {
           text="continue_with"
         />
       )}
+      {error && <span className="wmx-social-error">{error}</span>}
     </div>
   );
 }

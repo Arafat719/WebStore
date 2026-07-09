@@ -203,7 +203,7 @@ function AddProducts({ showAlert }) {
         if (result?.success) {
             setRepoPat("");
             setPublishing(false);
-            const targetPath = `/product/${result.productId}`;
+            const targetPath = `/products/${result.productId}`;
             showAlert(result.message, "success", () => navigate(targetPath));
             setTimeout(() => {
                 navigate(targetPath);

@@ -103,10 +103,10 @@ const Login = () => {
             <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.8rem' }} />
           </button>
 
-          {error?.blocked && (
+          {(error?.blocked || error?.unknown) && (
             <div className="wmx-blocked-error">
               <span className="wmx-blocked-icon">⊘</span>
-              <span>{error.blocked}</span>
+              <span>{error.blocked || error.unknown}</span>
             </div>
           )}
 

@@ -26,7 +26,7 @@ const Productcard = ({ arr }) => {
                 <div className="wmx-pc-thumb">
                     {isFree && <span className="wmx-pc-badge wmx-pc-badge--free">Free</span>}
                     {category && <span className="wmx-pc-badge wmx-pc-badge--cat">{category}</span>}
-                    <img src={arr.images[0]} alt={arr.title} />
+                    <img src={arr.images?.[0]} alt={arr.title} />
                 </div>
 
                 {/* Body */}

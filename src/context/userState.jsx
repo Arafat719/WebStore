@@ -11,6 +11,24 @@ const getInitialTheme = () => {
     return "dark";
 };
 
+// Global 401 handling: dozens of components call fetch() directly instead of
+// through apiFetch below, so an expired/invalid token would otherwise just
+// yield silent empty/broken data on those screens with no logout. Patching
+// window.fetch once here means every request in the app — not just the
+// handful routed through apiFetch — clears the session and redirects.
+if (typeof window !== "undefined" && !window.__wmxFetchPatched) {
+    window.__wmxFetchPatched = true;
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = async (...args) => {
+        const response = await nativeFetch(...args);
+        if (response.status === 401 && localStorage.getItem("token")) {
+            localStorage.clear();
+            window.location.href = "/login";
+        }
+        return response;
+    };
+}
+
 // Wraps fetch — clears session and redirects to /login on 401
 const apiFetch = async (url, options = {}) => {
     const response = await fetch(url, options);
@@ -71,19 +89,22 @@ const UserState = (props) => {
         });
         if (!response) return;
         const data = await response.json();
-        if (data.problem === "email") {
-            setError({ "email": "Invalid Email Address" })
-            setTimeout(() => setError([]), 2000);
-        } else if (data.problem === "password") {
-            setError({ "password": "Password must be atleast 8 characters" })
-            setTimeout(() => setError([]), 2000);
-        } else {
+        if (response.ok && data.token) {
             localStorage.setItem("token", data.token)
             localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
             localStorage.setItem("id", JSON.stringify({ id: data.id }))
             fetchNotifications();
             navigate('/')
             return data;
+        } else if (data.problem === "email") {
+            setError({ "email": "Invalid Email Address" })
+            setTimeout(() => setError([]), 2000);
+        } else if (data.problem === "password") {
+            setError({ "password": "Password must be atleast 8 characters" })
+            setTimeout(() => setError([]), 2000);
+        } else {
+            setError({ "unknown": data.error || "Something went wrong. Please try again." })
+            setTimeout(() => setError([]), 2000);
         }
     }
 
@@ -95,7 +116,14 @@ const UserState = (props) => {
         });
         if (!response) return;
         const data = await response.json();
-        if (data.problem === "email") {
+        if (response.ok && data.token) {
+            localStorage.setItem("token", data.token)
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
+            localStorage.setItem("id", JSON.stringify({ id: data.id }))
+            fetchNotifications();
+            navigate("/")
+            return data;
+        } else if (data.problem === "email") {
             setError({ "email": "Invalid Email Address" })
             setTimeout(() => setError([]), 2000);
         } else if (data.problem === "password") {
@@ -104,12 +132,8 @@ const UserState = (props) => {
         } else if (data.problem === "blocked") {
             setError({ "blocked": data.error })
         } else {
-            localStorage.setItem("token", data.token)
-            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
-            localStorage.setItem("id", JSON.stringify({ id: data.id }))
-            fetchNotifications();
-            navigate("/")
-            return data;
+            setError({ "unknown": data.error || "Login failed. Please try again." })
+            setTimeout(() => setError([]), 2000);
         }
     }
 

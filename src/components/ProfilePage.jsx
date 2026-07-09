@@ -225,6 +225,7 @@ const ProfilePage = ({ showAlert }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("id");
+    setUserVersion(v => v + 1);
     navigate("/login");
   };
 
