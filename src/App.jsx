@@ -27,6 +27,9 @@ import PublicProfile from './pages/PublicProfile';
 import Help from './pages/Help/Help';
 import SmartOrder from './pages/SmartOrder/SmartOrder';
 import Docs from './pages/Docs/Docs';
+import TermsOfUse from './pages/Legal/TermsOfUse';
+import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
+import RefundPolicy from './pages/Legal/RefundPolicy';
 // import Github from './components/Github';
 
 function ScrollToTop() {
@@ -90,6 +93,9 @@ function App() {
           <Route path="/seller/:id" element={<PublicProfile />} />
           <Route path="/help" element={<Help />} />
           <Route path="/docs" element={<Docs />} />
+          <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/smart-order" element={
             <ProtectedRoute>
               <SmartOrder />
