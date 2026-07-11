@@ -3,7 +3,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import "../css/LoginSocialButtons.css";
 
-function LoginSocialButtons() {
+function LoginSocialButtons({ onRequiresTwoFactor }) {
   const navigate = useNavigate();
   const wrapRef = useRef(null);
   const [btnWidth, setBtnWidth] = useState(0);
@@ -32,6 +32,13 @@ function LoginSocialButtons() {
         body: JSON.stringify({ token }),
       });
       const data = await res.json();
+      if (res.ok && data.requiresTwoFactor) {
+        if (onRequiresTwoFactor) {
+          onRequiresTwoFactor(data.tempToken);
+          return;
+        }
+        throw new Error("This account has two-factor authentication enabled — please sign in from the Login page.");
+      }
       if (!res.ok || !data.token) throw new Error(data.error || "Google sign-in failed");
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type || "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic || "" }));

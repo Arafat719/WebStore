@@ -116,6 +116,9 @@ const UserState = (props) => {
         });
         if (!response) return;
         const data = await response.json();
+        if (response.ok && data.requiresTwoFactor) {
+            return { requiresTwoFactor: true, tempToken: data.tempToken };
+        }
         if (response.ok && data.token) {
             localStorage.setItem("token", data.token)
             localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
@@ -135,6 +138,25 @@ const UserState = (props) => {
             setError({ "unknown": data.error || "Login failed. Please try again." })
             setTimeout(() => setError([]), 2000);
         }
+    }
+
+    const verifyTwoFactorLogin = async (tempToken, code, backupCode) => {
+        const response = await apiFetch(`${API}/auth/2fa/login-verify`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tempToken, code, backupCode })
+        });
+        if (!response) return { success: false, error: "Session expired, please log in again" };
+        const data = await response.json();
+        if (response.ok && data.token) {
+            localStorage.setItem("token", data.token)
+            localStorage.setItem("user", JSON.stringify({ name: data.name, type: data.type ?? "user", roles: data.roles ?? ["buyer"], profilePic: data.profilePic ?? "" }))
+            localStorage.setItem("id", JSON.stringify({ id: data.id }))
+            fetchNotifications();
+            navigate("/")
+            return { success: true };
+        }
+        return { success: false, error: data.error || "Invalid code" };
     }
 
     const showToast = (notif) => {
@@ -390,7 +412,7 @@ const UserState = (props) => {
     }, [userVersion]);
 
     return (
-        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead, toastNotif, dismissToast, setUserVersion }}>
+        <UserContext.Provider value={{ signUP, array, setArray, addProducts, loading, login, verifyTwoFactorLogin, getProfile, updateProfile, error, setError, firstLetter, userId, profilePic, userType, userRoles, becomeSeller, theme, toggleTheme, notifications, unreadCount, fetchNotifications, markNotificationRead, markAllNotificationsRead, toastNotif, dismissToast, setUserVersion }}>
             {props.children}
         </UserContext.Provider>
     )

@@ -4,7 +4,7 @@ import UserContext from '../context/userContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUser, faKey, faShield, faCreditCard, faStore,
-  faBell, faPaintbrush, faLink, faLaptop, faMobileScreen,
+  faBell, faPaintbrush, faLink, faMobileScreen,
   faDesktop, faEnvelope, faEye, faEyeSlash,
   faTriangleExclamation, faLock, faSatelliteDish,
   faClipboardList, faChartBar, faBuilding, faGlobe,
@@ -42,18 +42,33 @@ const NAV = [
 ];
 
 /* ── Static dummy data ────────────────────────────────────────────── */
-const SESSIONS = [
-  { id: 1, icon: faLaptop,       device: 'Chrome · macOS Ventura',     location: 'Dhaka, BD · 2 min ago',       current: true  },
-  { id: 2, icon: faMobileScreen, device: 'Safari · iPhone 15 Pro',     location: 'Dhaka, BD · 1 hr ago',        current: false },
-  { id: 3, icon: faDesktop,      device: 'Firefox · Windows 11',       location: 'Chittagong, BD · 3 days ago', current: false },
-];
+// Masks the trailing octet(s) of an IP so the raw address isn't shown on screen.
+function maskIp(ip) {
+  if (!ip) return '—';
+  // Only a bare IPv4 address (not an IPv4-mapped IPv6 form like "::ffff:1.2.3.4")
+  // gets octet-masked; anything else (IPv6, ::1, etc.) is truncated instead.
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) {
+    const parts = ip.split('.');
+    return `${parts[0]}.${parts[1]}.xx.xx`;
+  }
+  return ip.length > 8 ? `${ip.slice(0, 8)}…` : ip;
+}
 
-const LOGIN_HISTORY = [
-  { id: 1, event: 'Successful login',  date: 'Jun 15, 2026 · 11:32 AM', ip: '103.47.xx.xx' },
-  { id: 2, event: 'Successful login',  date: 'Jun 12, 2026 · 08:15 PM', ip: '103.47.xx.xx' },
-  { id: 3, event: 'Failed attempt',    date: 'Jun 10, 2026 · 03:44 AM', ip: '45.33.xx.xx'  },
-  { id: 4, event: 'Password changed',  date: 'Jun 05, 2026 · 10:00 AM', ip: '103.47.xx.xx' },
-];
+function timeAgo(date) {
+  const diffMs = Date.now() - new Date(date).getTime();
+  const min = Math.floor(diffMs / 60000);
+  if (min < 1)   return 'just now';
+  if (min < 60)  return `${min} min ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24)   return `${hr} hr ago`;
+  const days = Math.floor(hr / 24);
+  return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
+function sessionIcon(device = '') {
+  if (/Android|iOS/.test(device)) return faMobileScreen;
+  return faDesktop;
+}
 
 const TRANSACTIONS = [
   { id: 'TXN-0091', type: 'sale',       desc: 'UI Kit Pro v2',         amount: '+$29.00', date: 'Jun 14, 2026' },
@@ -177,10 +192,61 @@ function AccountPanel() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMsg, setPasswordMsg]         = useState({ text: '', type: '' });
 
+  const [currentEmail, setCurrentEmail]       = useState('');
+  const [newEmail, setNewEmail]               = useState('');
+  const [emailPassword, setEmailPassword]     = useState('');
+  const [emailMsg, setEmailMsg]               = useState({ text: '', type: '' });
+  const [emailSaving, setEmailSaving]         = useState(false);
+  const [isGoogleAccount, setIsGoogleAccount] = useState(false);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword]   = useState('');
   const [deleteError, setDeleteError]         = useState('');
   const [deleteLoading, setDeleteLoading]     = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch(`${API}/auth/getuser`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        const u = data?.user;
+        if (u) {
+          setCurrentEmail(u.email || '');
+          setIsGoogleAccount(u.provider === 'google');
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleEmailChange = async () => {
+    if (!newEmail || !emailPassword) {
+      setEmailMsg({ text: 'New email and password are required', type: 'error' });
+      return;
+    }
+    setEmailSaving(true);
+    const token = localStorage.getItem('token');
+    try {
+      const res  = await fetch(`${API}/auth/update-email`, {
+        method: 'PUT',
+        headers: { token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newEmail, password: emailPassword }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setCurrentEmail(data.email);
+        setNewEmail('');
+        setEmailPassword('');
+        setEmailMsg({ text: 'Email updated successfully', type: 'success' });
+      } else {
+        setEmailMsg({ text: data.error || 'Failed to update email', type: 'error' });
+      }
+    } catch {
+      setEmailMsg({ text: 'Network error. Please try again.', type: 'error' });
+    } finally {
+      setEmailSaving(false);
+      setTimeout(() => setEmailMsg({ text: '', type: '' }), 4000);
+    }
+  };
 
   const handlePasswordChange = async () => {
     if (!currentPassword || !newPassword) {
@@ -246,19 +312,33 @@ function AccountPanel() {
         <p className="wmx-card-desc">Update the email linked to your WebMarketX account.</p>
         <div className="wmx-form-group">
           <label className="wmx-label">Current Email</label>
-          <input className="wmx-input" type="email" defaultValue="arafatkhan0186@gmail.com" disabled />
+          <input className="wmx-input" type="email" value={currentEmail} disabled />
         </div>
-        <div className="wmx-form-group">
-          <label className="wmx-label">New Email</label>
-          <input className="wmx-input" type="email" placeholder="new@email.com" disabled />
-        </div>
-        <span className="wmx-hint" style={{ display: 'block', marginTop: '0.3rem' }}>
-          Email change coming soon
-        </span>
-        <button className="wmx-btn-save" disabled
-          style={{ opacity: 0.45, cursor: 'not-allowed', marginTop: '1.4rem' }}>
-          Update Email
-        </button>
+
+        {isGoogleAccount ? (
+          <span className="wmx-hint" style={{ display: 'block', marginTop: '0.3rem' }}>
+            This account signs in with Google — email is managed by your Google account.
+          </span>
+        ) : (
+          <>
+            <div className="wmx-form-group">
+              <label className="wmx-label">New Email</label>
+              <input className="wmx-input" type="email" placeholder="new@email.com"
+                value={newEmail} onChange={e => setNewEmail(e.target.value)} />
+            </div>
+            <div className="wmx-form-group">
+              <label className="wmx-label">Current Password</label>
+              <input className="wmx-input" type="password" placeholder="••••••••"
+                value={emailPassword} onChange={e => setEmailPassword(e.target.value)} />
+              <span className="wmx-hint">Confirm your password to change your email.</span>
+            </div>
+            {emailMsg.text && <p className={`wmx-inline-msg wmx-msg-${emailMsg.type}`}>{emailMsg.text}</p>}
+            <button className="wmx-btn-save" onClick={handleEmailChange} disabled={emailSaving}
+              style={{ marginTop: '1.4rem' }}>
+              {emailSaving ? 'Updating…' : 'Update Email'}
+            </button>
+          </>
+        )}
       </div>
 
       {/* Password */}
@@ -437,40 +517,282 @@ function NotificationsPanel() {
    ══════════════════════════════════════════════════════════════ */
 function SecurityPanel() {
   const [twoFA, setTwoFA]           = useState(false);
-  const [sessions, setSessions]     = useState(SESSIONS);
-  const revokeSession = id => setSessions(s => s.filter(x => x.id !== id));
+  const [twoFALoading, setTwoFALoading] = useState(true);
+  const [setupStep, setSetupStep]   = useState(null); // null | 'qr' | 'backupCodes'
+  const [qrCode, setQrCode]         = useState('');
+  const [manualSecret, setManualSecret] = useState('');
+  const [verifyCode, setVerifyCode] = useState('');
+  const [backupCodes, setBackupCodes]   = useState([]);
+  const [twoFAMsg, setTwoFAMsg]     = useState({ text: '', type: '' });
+  const [twoFABusy, setTwoFABusy]   = useState(false);
+  const [showDisableConfirm, setShowDisableConfirm] = useState(false);
+  const [disablePassword, setDisablePassword]       = useState('');
+  const [disableCode, setDisableCode]               = useState('');
+  const [isGoogleAccount, setIsGoogleAccount]       = useState(false);
+
+  const [sessions, setSessions]         = useState([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
+  const [revokingId, setRevokingId]     = useState(null);
+
+  const [loginHistory, setLoginHistory]     = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch(`${API}/auth/getuser`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        setTwoFA(!!data?.user?.twoFactor?.enabled);
+        setIsGoogleAccount(data?.user?.provider === 'google');
+      })
+      .catch(() => {})
+      .finally(() => setTwoFALoading(false));
+
+    fetch(`${API}/auth/login-history`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        if (data?.loginHistory) setLoginHistory(data.loginHistory);
+      })
+      .catch(() => {})
+      .finally(() => setHistoryLoading(false));
+
+    fetch(`${API}/auth/sessions`, { headers: { token } })
+      .then(r => r.json())
+      .then(data => {
+        if (data?.sessions) setSessions(data.sessions);
+      })
+      .catch(() => {})
+      .finally(() => setSessionsLoading(false));
+  }, []);
+
+  const startTwoFASetup = async () => {
+    setTwoFABusy(true);
+    setTwoFAMsg({ text: '', type: '' });
+    const token = localStorage.getItem('token');
+    try {
+      const res  = await fetch(`${API}/auth/2fa/setup`, { method: 'POST', headers: { token } });
+      const data = await res.json();
+      if (res.ok) {
+        setQrCode(data.qrCode);
+        setManualSecret(data.secret);
+        setSetupStep('qr');
+      } else {
+        setTwoFAMsg({ text: data.error || 'Failed to start setup', type: 'error' });
+      }
+    } catch {
+      setTwoFAMsg({ text: 'Network error. Please try again.', type: 'error' });
+    } finally {
+      setTwoFABusy(false);
+    }
+  };
+
+  const confirmTwoFASetup = async () => {
+    if (!verifyCode) return;
+    setTwoFABusy(true);
+    setTwoFAMsg({ text: '', type: '' });
+    const token = localStorage.getItem('token');
+    try {
+      const res  = await fetch(`${API}/auth/2fa/verify-setup`, {
+        method: 'POST',
+        headers: { token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: verifyCode }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setBackupCodes(data.backupCodes);
+        setSetupStep('backupCodes');
+        setTwoFA(true);
+        setVerifyCode('');
+      } else {
+        setTwoFAMsg({ text: data.error || 'Invalid code', type: 'error' });
+      }
+    } catch {
+      setTwoFAMsg({ text: 'Network error. Please try again.', type: 'error' });
+    } finally {
+      setTwoFABusy(false);
+    }
+  };
+
+  const finishTwoFASetup = () => {
+    setSetupStep(null);
+    setQrCode('');
+    setManualSecret('');
+    setBackupCodes([]);
+  };
+
+  const cancelTwoFASetup = () => {
+    setSetupStep(null);
+    setQrCode('');
+    setManualSecret('');
+    setVerifyCode('');
+    setTwoFAMsg({ text: '', type: '' });
+  };
+
+  const disableTwoFA = async () => {
+    setTwoFABusy(true);
+    setTwoFAMsg({ text: '', type: '' });
+    const token = localStorage.getItem('token');
+    try {
+      const res  = await fetch(`${API}/auth/2fa/disable`, {
+        method: 'POST',
+        headers: { token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          isGoogleAccount ? { code: disableCode } : { password: disablePassword }
+        ),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setTwoFA(false);
+        setShowDisableConfirm(false);
+        setDisablePassword('');
+        setDisableCode('');
+      } else {
+        setTwoFAMsg({ text: data.error || 'Failed to disable 2FA', type: 'error' });
+      }
+    } catch {
+      setTwoFAMsg({ text: 'Network error. Please try again.', type: 'error' });
+    } finally {
+      setTwoFABusy(false);
+    }
+  };
+
+  const revokeSession = async (sessionId) => {
+    setRevokingId(sessionId);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API}/auth/sessions/${sessionId}`, {
+        method: 'DELETE',
+        headers: { token },
+      });
+      if (res.ok) {
+        setSessions(s => s.filter(x => x.sessionId !== sessionId));
+      }
+    } catch {
+      /* leave the session in the list; user can retry */
+    } finally {
+      setRevokingId(null);
+    }
+  };
 
   return (
     <div className="wmx-panel">
-      <div className="wmx-coming-soon-banner">
-        <FontAwesomeIcon icon={faHardHat} /> This section is coming soon. We're working on it!
-      </div>
-
       {/* 2FA */}
       <div className="wmx-card">
         <p className="wmx-card-title"><FontAwesomeIcon icon={faLock} /> Two-Factor Authentication</p>
         <p className="wmx-card-desc">Add an extra layer of security using an authenticator app.</p>
 
-        <div className="wmx-toggle-row" style={{ borderBottom: 'none' }}>
-          <div className="wmx-toggle-info">
-            <p className="wmx-toggle-title">Enable 2FA</p>
-            <p className="wmx-toggle-desc">
-              {twoFA
-                ? 'Active — your account has extra protection'
-                : 'Disabled — only a password protects your account'}
-            </p>
-          </div>
-          <label className="wmx-switch">
-            <input type="checkbox" checked={twoFA} onChange={() => setTwoFA(v => !v)} />
-            <span className="wmx-switch-track" />
-          </label>
-        </div>
+        {twoFALoading ? (
+          <p style={{ color: 'var(--text-muted)' }}>Loading…</p>
 
-        {twoFA && (
-          <p style={{ marginTop: '1rem', fontSize: '0.82rem', color: 'rgba(226,226,240,0.42)', lineHeight: 1.6 }}>
-            Scan the QR code in your authenticator app (Google Authenticator, Authy, etc.) or
-            enter a backup code manually to complete setup.
-          </p>
+        ) : setupStep === 'qr' ? (
+          <div style={{ marginTop: '0.5rem' }}>
+            <p className="wmx-hint" style={{ display: 'block', marginBottom: '0.8rem' }}>
+              Scan this QR code with Google Authenticator, Authy, or any TOTP app, then enter the
+              6-digit code it shows to confirm.
+            </p>
+            {qrCode && (
+              <img src={qrCode} alt="2FA QR code" style={{ width: 180, height: 180, borderRadius: 8, background: '#fff', padding: 8 }} />
+            )}
+            <p className="wmx-hint" style={{ display: 'block', margin: '0.6rem 0' }}>
+              Can't scan? Enter this key manually: <code style={{ userSelect: 'all' }}>{manualSecret}</code>
+            </p>
+            <div className="wmx-form-group">
+              <label className="wmx-label">6-digit code</label>
+              <input className="wmx-input" type="text" inputMode="numeric" maxLength={6}
+                placeholder="123456" value={verifyCode}
+                onChange={e => setVerifyCode(e.target.value.trim())}
+                onKeyDown={e => e.key === 'Enter' && confirmTwoFASetup()}
+                style={{ maxWidth: 160 }} />
+            </div>
+            {twoFAMsg.text && <p className={`wmx-inline-msg wmx-msg-${twoFAMsg.type}`}>{twoFAMsg.text}</p>}
+            <div className="wmx-inline-btns">
+              <button className="wmx-btn-save" onClick={confirmTwoFASetup} disabled={twoFABusy}>
+                {twoFABusy ? 'Verifying…' : 'Verify & Enable'}
+              </button>
+              <button className="wmx-btn-ghost" onClick={cancelTwoFASetup}>Cancel</button>
+            </div>
+          </div>
+
+        ) : setupStep === 'backupCodes' ? (
+          <div style={{ marginTop: '0.5rem' }}>
+            <p className="wmx-inline-msg wmx-msg-success">Two-factor authentication is now active.</p>
+            <p className="wmx-hint" style={{ display: 'block', marginBottom: '0.8rem' }}>
+              Save these one-time backup codes somewhere safe. Each one can be used once to sign in
+              if you lose access to your authenticator app. They won't be shown again.
+            </p>
+            <div className="wmx-table-wrapper">
+              <table className="wmx-table">
+                <tbody>
+                  {backupCodes.map((c, i) => (
+                    <tr key={i}><td style={{ fontFamily: 'monospace' }}>{c}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button className="wmx-btn-save" onClick={finishTwoFASetup} style={{ marginTop: '1rem' }}>
+              I've saved my backup codes
+            </button>
+          </div>
+
+        ) : twoFA ? (
+          <>
+            <div className="wmx-toggle-row" style={{ borderBottom: 'none' }}>
+              <div className="wmx-toggle-info">
+                <p className="wmx-toggle-title">Enable 2FA</p>
+                <p className="wmx-toggle-desc">Active — your account has extra protection</p>
+              </div>
+              <label className="wmx-switch">
+                <input type="checkbox" checked={twoFA} onChange={() => setShowDisableConfirm(true)} />
+                <span className="wmx-switch-track" />
+              </label>
+            </div>
+
+            {showDisableConfirm && (
+              <div style={{ marginTop: '1rem' }}>
+                <div className="wmx-form-group" style={{ margin: 0 }}>
+                  {isGoogleAccount ? (
+                    <>
+                      <label className="wmx-label">Enter your authenticator code to disable 2FA</label>
+                      <input className="wmx-input" type="text" inputMode="numeric" maxLength={6}
+                        placeholder="123456" style={{ maxWidth: 160 }}
+                        value={disableCode} onChange={e => setDisableCode(e.target.value.trim())}
+                        onKeyDown={e => e.key === 'Enter' && disableTwoFA()} />
+                      <span className="wmx-hint">This account signs in with Google, so a code confirms it's you instead of a password.</span>
+                    </>
+                  ) : (
+                    <>
+                      <label className="wmx-label">Enter your password to disable 2FA</label>
+                      <input className="wmx-input" type="password" placeholder="••••••••"
+                        value={disablePassword} onChange={e => setDisablePassword(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && disableTwoFA()} />
+                    </>
+                  )}
+                </div>
+                {twoFAMsg.text && <p className={`wmx-inline-msg wmx-msg-${twoFAMsg.type}`}>{twoFAMsg.text}</p>}
+                <div className="wmx-inline-btns" style={{ marginTop: '0.8rem' }}>
+                  <button className="wmx-btn-danger" onClick={disableTwoFA} disabled={twoFABusy}>
+                    {twoFABusy ? 'Disabling…' : 'Disable 2FA'}
+                  </button>
+                  <button className="wmx-btn-ghost" onClick={() => { setShowDisableConfirm(false); setDisablePassword(''); setDisableCode(''); }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+
+        ) : (
+          <div className="wmx-toggle-row" style={{ borderBottom: 'none' }}>
+            <div className="wmx-toggle-info">
+              <p className="wmx-toggle-title">Enable 2FA</p>
+              <p className="wmx-toggle-desc">Disabled — only a password protects your account</p>
+              {twoFAMsg.text && <p className={`wmx-inline-msg wmx-msg-${twoFAMsg.type}`}>{twoFAMsg.text}</p>}
+            </div>
+            <label className="wmx-switch">
+              <input type="checkbox" checked={twoFA} onChange={startTwoFASetup} disabled={twoFABusy} />
+              <span className="wmx-switch-track" />
+            </label>
+          </div>
         )}
       </div>
 
@@ -479,23 +801,30 @@ function SecurityPanel() {
         <p className="wmx-card-title"><FontAwesomeIcon icon={faSatelliteDish} /> Active Sessions</p>
         <p className="wmx-card-desc">Devices currently signed into your account.</p>
         <div className="wmx-session-list">
-          {sessions.map(s => (
-            <div key={s.id} className="wmx-session-item">
-              <span className="wmx-session-icon"><FontAwesomeIcon icon={s.icon} /></span>
-              <div className="wmx-session-info">
-                <p className="wmx-session-device">{s.device}</p>
-                <p className="wmx-session-meta">{s.location}</p>
+          {sessionsLoading ? (
+            <p style={{ color: 'var(--text-muted)' }}>Loading…</p>
+          ) : sessions.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)' }}>No active sessions found.</p>
+          ) : (
+            sessions.map(s => (
+              <div key={s.sessionId} className="wmx-session-item">
+                <span className="wmx-session-icon"><FontAwesomeIcon icon={sessionIcon(s.device)} /></span>
+                <div className="wmx-session-info">
+                  <p className="wmx-session-device">{s.device}</p>
+                  <p className="wmx-session-meta">{maskIp(s.ip)} · {timeAgo(s.lastActive)}</p>
+                </div>
+                <span className={`wmx-session-badge ${s.current ? 'wmx-current' : 'wmx-other'}`}>
+                  {s.current ? 'This device' : 'Active'}
+                </span>
+                {!s.current && (
+                  <button className="wmx-btn-revoke" onClick={() => revokeSession(s.sessionId)}
+                    disabled={revokingId === s.sessionId}>
+                    {revokingId === s.sessionId ? 'Revoking…' : 'Revoke'}
+                  </button>
+                )}
               </div>
-              <span className={`wmx-session-badge ${s.current ? 'wmx-current' : 'wmx-other'}`}>
-                {s.current ? 'This device' : 'Active'}
-              </span>
-              {!s.current && (
-                <button className="wmx-btn-revoke" onClick={() => revokeSession(s.id)}>
-                  Revoke
-                </button>
-              )}
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
@@ -513,17 +842,25 @@ function SecurityPanel() {
               </tr>
             </thead>
             <tbody>
-              {LOGIN_HISTORY.map(h => (
-                <tr key={h.id}>
-                  <td style={{ color: h.event.startsWith('Failed') ? '#ff6b6b' : undefined }}>
-                    {h.event}
-                  </td>
-                  <td>{h.date}</td>
-                  <td style={{ fontFamily: 'monospace', fontSize: '0.78rem', color: 'rgba(226,226,240,0.42)' }}>
-                    {h.ip}
-                  </td>
-                </tr>
-              ))}
+              {historyLoading ? (
+                <tr><td colSpan={3} style={{ color: 'var(--text-muted)' }}>Loading…</td></tr>
+              ) : loginHistory.length === 0 ? (
+                <tr><td colSpan={3} style={{ color: 'var(--text-muted)' }}>No login activity yet.</td></tr>
+              ) : (
+                loginHistory.map(h => (
+                  <tr key={h._id}>
+                    <td style={{ color: h.event.startsWith('Failed') ? '#ff6b6b' : undefined }}>
+                      {h.event}
+                    </td>
+                    <td>{new Date(h.date).toLocaleString('en-US', {
+                      month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
+                    })}</td>
+                    <td style={{ fontFamily: 'monospace', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      {maskIp(h.ip)}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -587,7 +924,7 @@ function BillingPanel() {
             <tbody>
               {TRANSACTIONS.map(tx => (
                 <tr key={tx.id}>
-                  <td style={{ fontFamily: 'monospace', fontSize: '0.76rem', color: 'rgba(226,226,240,0.38)' }}>
+                  <td style={{ fontFamily: 'monospace', fontSize: '0.76rem', color: 'var(--text-muted)' }}>
                     {tx.id}
                   </td>
                   <td>
@@ -602,7 +939,7 @@ function BillingPanel() {
                   }}>
                     {tx.amount}
                   </td>
-                  <td style={{ color: 'rgba(226,226,240,0.42)' }}>{tx.date}</td>
+                  <td style={{ color: 'var(--text-muted)' }}>{tx.date}</td>
                 </tr>
               ))}
             </tbody>

@@ -1008,6 +1008,12 @@ html[data-theme='light'] .wmx-session-meta {
   color: var(--text-muted);
 }
 
+html[data-theme='light'] .wmx-session-badge.wmx-current {
+  background: rgba(134,130,250,0.12);
+  color: #6c63ff;
+  border-color: rgba(134,130,250,0.3);
+}
+
 html[data-theme='light'] .wmx-session-badge.wmx-other {
   background: var(--bg-hover);
   color: var(--text-secondary);
