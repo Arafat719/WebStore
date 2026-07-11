@@ -585,12 +585,51 @@
   justify-content: center;
   box-shadow: 0 24px 80px rgba(0,0,0,0.6);
 }
+.wmx-lb-img-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.wmx-lb-img-wrap.swipeable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.wmx-lb-img-wrap.swipeable.dragging {
+  cursor: grabbing;
+}
+.wmx-lb-img-wrap.swipeable .wmx-lb-img {
+  pointer-events: none;
+}
 .wmx-lb-img {
   max-width: 80vw;
   max-height: 78vh;
   object-fit: contain;
   border-radius: 10px;
   display: block;
+}
+.wmx-lb-segments {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+  pointer-events: none;
+}
+.wmx-lb-seg {
+  flex: 1;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.3);
+  transition: background 0.15s ease;
+}
+.wmx-lb-seg.active {
+  background: #fff;
 }
 .wmx-lb-close {
   position: absolute;

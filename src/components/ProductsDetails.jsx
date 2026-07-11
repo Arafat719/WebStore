@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -183,6 +183,12 @@ const ProductDetails = ({ showAlert }) => {
   const [wishlistToast, setWishlistToast] = useState('');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lbDragging, setLbDragging] = useState(false);
+  const [lbDragX, setLbDragX] = useState(0);
+  const [lbPhase, setLbPhase] = useState('idle'); // 'idle' | 'exiting' | 'enterStart' | 'entering'
+  const [lbDir, setLbDir] = useState(null); // 'left' | 'right'
+  const lbStartXRef = useRef(0);
+  const lbPendingIndexRef = useRef(null);
   const [hasPurchased, setHasPurchased] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -251,6 +257,95 @@ const ProductDetails = ({ showAlert }) => {
       })
       .catch(() => {});
   }, [product?.seller, product?.sellerId, product?.user]);
+
+  const LB_SWIPE_THRESHOLD = 60; // px of horizontal drag before it counts as a swipe
+  const LB_TRANSITION = 'transform 0.26s cubic-bezier(0.22, 1, 0.36, 1)';
+
+  // Reset any in-flight animation state whenever the lightbox (re)opens.
+  useEffect(() => {
+    if (lightboxOpen) {
+      setLbPhase('idle');
+      setLbDir(null);
+      setLbDragX(0);
+      setLbDragging(false);
+    }
+  }, [lightboxOpen]);
+
+  // enterStart places the incoming image off-screen with no transition; on the
+  // next painted frame we flip to "entering" so the browser has two real
+  // frames to animate between (a transition can't run if start and end are
+  // set in the same commit).
+  useEffect(() => {
+    if (lbPhase !== 'enterStart') return;
+    let cancelled = false;
+    const raf1 = requestAnimationFrame(() => {
+      if (cancelled) return;
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        setLbPhase('entering');
+      });
+    });
+    return () => { cancelled = true; cancelAnimationFrame(raf1); };
+  }, [lbPhase]);
+
+  const handleLbPointerDown = (e) => {
+    if (images.length <= 1) return;
+    if (lbPhase !== 'idle') return; // ignore new gesture while a swipe is still settling
+    e.currentTarget.setPointerCapture(e.pointerId);
+    lbStartXRef.current = e.clientX;
+    setLbDragX(0);
+    setLbDragging(true);
+  };
+
+  const handleLbPointerMove = (e) => {
+    if (!lbDragging || images.length <= 1) return;
+    setLbDragX(e.clientX - lbStartXRef.current);
+  };
+
+  const endLbDrag = (e) => {
+    if (!lbDragging) return;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* already released */ }
+    setLbDragging(false);
+    if (lbDragX <= -LB_SWIPE_THRESHOLD) {
+      lbPendingIndexRef.current = (lightboxIndex + 1) % images.length;
+      setLbDir('left');
+      setLbPhase('exiting');
+    } else if (lbDragX >= LB_SWIPE_THRESHOLD) {
+      lbPendingIndexRef.current = (lightboxIndex - 1 + images.length) % images.length;
+      setLbDir('right');
+      setLbPhase('exiting');
+    } else {
+      setLbDragX(0); // below threshold: spring back to center
+    }
+  };
+
+  const handleLbTransitionEnd = (e) => {
+    if (e.propertyName !== 'transform') return;
+    if (lbPhase === 'exiting') {
+      // old image has fully left the frame; swap content, then place it
+      // off-screen on the entry side ready to slide in
+      setLightboxIndex(lbPendingIndexRef.current);
+      setLbPhase('enterStart');
+    } else if (lbPhase === 'entering') {
+      setLbPhase('idle');
+      setLbDir(null);
+      setLbDragX(0);
+      lbPendingIndexRef.current = null;
+    }
+  };
+
+  const getLbTransform = () => {
+    if (lbDragging) return `translateX(${lbDragX}px)`;
+    if (lbPhase === 'exiting') return lbDir === 'left' ? 'translateX(-100%)' : 'translateX(100%)';
+    if (lbPhase === 'enterStart') return lbDir === 'left' ? 'translateX(100%)' : 'translateX(-100%)';
+    if (lbPhase === 'entering') return 'translateX(0)';
+    return `translateX(${lbDragX}px)`;
+  };
+
+  const getLbTransition = () => {
+    if (lbDragging || lbPhase === 'enterStart') return 'none';
+    return LB_TRANSITION;
+  };
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -742,7 +837,32 @@ const ProductDetails = ({ showAlert }) => {
             {images.length > 1 && (
               <button className="wmx-lb-arrow wmx-lb-prev" onClick={() => setLightboxIndex(i => (i - 1 + images.length) % images.length)}>‹</button>
             )}
-            <img src={images[lightboxIndex]} alt={`preview-${lightboxIndex}`} className="wmx-lb-img" />
+            <div
+              className={`wmx-lb-img-wrap${images.length > 1 ? ' swipeable' : ''}${lbDragging ? ' dragging' : ''}`}
+              onPointerDown={handleLbPointerDown}
+              onPointerMove={handleLbPointerMove}
+              onPointerUp={endLbDrag}
+              onPointerCancel={endLbDrag}
+            >
+              {images.length > 1 && (
+                <div className="wmx-lb-segments">
+                  {images.map((_, i) => (
+                    <span key={i} className={`wmx-lb-seg${i === lightboxIndex ? ' active' : ''}`} />
+                  ))}
+                </div>
+              )}
+              <img
+                src={images[lightboxIndex]}
+                alt={`preview-${lightboxIndex}`}
+                className="wmx-lb-img"
+                draggable={false}
+                onTransitionEnd={handleLbTransitionEnd}
+                style={{
+                  transform: getLbTransform(),
+                  transition: getLbTransition(),
+                }}
+              />
+            </div>
             {images.length > 1 && (
               <button className="wmx-lb-arrow wmx-lb-next" onClick={() => setLightboxIndex(i => (i + 1) % images.length)}>›</button>
             )}
