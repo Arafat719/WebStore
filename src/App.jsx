@@ -3,6 +3,7 @@ import './css/App.css'
 import Navbar from './components/Navbar'
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './components/Home'
+import VisitorTracker from './components/VisitorTracker'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import UserState from './context/userState'
@@ -57,6 +58,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <VisitorTracker />
       <Alert alert={alert} setAlert={setAlert} />
       <UserState>
       <Navbar setAlert={setAlert} />
