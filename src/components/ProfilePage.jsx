@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import {
   User, Mail, Phone, MapPin, ShieldCheck,
   Lock, Heart, ShoppingBag, Settings, LogOut,
-  Star, Crown, ChevronRight, Bell, Package,
+  Star, Crown, ChevronRight, Package,
   TrendingUp, Globe, Edit3, Camera, AtSign,
   Briefcase, GitBranch, Link as LinkIcon, Calendar, X, Trash2, Pencil, Store,
   DollarSign, Download, ClipboardList, Rocket, ExternalLink
@@ -690,18 +690,6 @@ const ProfilePage = ({ showAlert }) => {
               </div>
             </div>
 
-            {/* Recent Activity */}
-            <div className="wmx-card">
-              <div className="wmx-card-hd">
-                <div className="wmx-card-hd-left">
-                  <div className="wmx-card-icon-wrap"><Bell size={14} /></div>
-                  <span>Recent Activity</span>
-                </div>
-              </div>
-
-              <div className="wmx-empty">No recent activity yet.</div>
-            </div>
-
           </div>
 
           {/* ── Right column ── */}
@@ -729,27 +717,6 @@ const ProfilePage = ({ showAlert }) => {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Premium */}
-            <div className="wmx-premium">
-              <div className="wmx-premium-orb" />
-              <div className="wmx-premium-top">
-                <Crown size={16} color="#f0c060" />
-                <span className="wmx-premium-eyebrow">Upgrade</span>
-              </div>
-              <h3 className="wmx-premium-title">Go Premium</h3>
-              <p className="wmx-premium-sub">
-                Priority listings, analytics dashboard, featured badge & more.
-              </p>
-              <ul className="wmx-premium-perks">
-                <li><ChevronRight size={12} /> Featured listing placement</li>
-                <li><ChevronRight size={12} /> Advanced analytics</li>
-                <li><ChevronRight size={12} /> Verified seller badge</li>
-              </ul>
-              <button className="wmx-premium-btn" onClick={() => { setSuccessToast('Premium plan coming soon!'); setTimeout(() => setSuccessToast(''), 3500); }}>
-                Upgrade Now <ChevronRight size={13} />
-              </button>
             </div>
 
             {/* Quick links */}

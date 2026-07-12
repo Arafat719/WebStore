@@ -20,6 +20,14 @@ const STATUS_OPTIONS = [
   "Refund Requested",
 ];
 
+const STATUS_MAP = {
+  pending: "Pending",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  failed: "Cancelled",
+  refunded: "Refund Requested",
+};
+
 const SORT_OPTIONS = [
   { value: "newest",     label: "Newest First" },
   { value: "oldest",     label: "Oldest First" },
@@ -66,7 +74,7 @@ const normalizeOrder = (o) => {
     license: "Standard License",
     price,
     date: o.createdAt,
-    status: o.status || "Pending",
+    status: STATUS_MAP[o.status] || "Pending",
     productId: o.product?._id || null,
     repoName: o.product?.repoName || null,
   };
@@ -85,7 +93,7 @@ const normalizeSaleOrder = (o) => {
     license: "Standard License",
     price,
     date: o.createdAt,
-    status: o.status || "Pending",
+    status: STATUS_MAP[o.status] || "Pending",
     buyerName: o.buyer?.name || o.buyerName || "Unknown Buyer",
     buyerEmail: o.buyer?.email || o.buyerEmail || "",
   };
@@ -124,6 +132,8 @@ const MyOrders = () => {
   const [salesLoading, setSalesLoading]   = useState(false);
   const [salesError, setSalesError]       = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const [completeLoading, setCompleteLoading] = useState(false);
+  const [completeError, setCompleteError]     = useState("");
 
   const [buyerHistory, setBuyerHistory]             = useState([]);
   const [buyerHistoryLoading, setBuyerHistoryLoading] = useState(false);
@@ -263,6 +273,29 @@ const MyOrders = () => {
     finally { setDownloadLoading(false); }
   };
 
+  const handleMarkComplete = async (order) => {
+    setCompleteLoading(true);
+    setCompleteError("");
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API}/orders/${order.id}/complete`, {
+        method: "PUT",
+        headers: { token },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCompleteError(data.error || "Failed to mark order as completed.");
+        return;
+      }
+      setSalesOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "Completed" } : o));
+      setSelectedOrder(prev => prev && prev.id === order.id ? { ...prev, status: "Completed" } : prev);
+    } catch {
+      setCompleteError("Failed to mark order as completed.");
+    } finally {
+      setCompleteLoading(false);
+    }
+  };
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setPage(1);
@@ -270,12 +303,9 @@ const MyOrders = () => {
     setStatusFilter("All Orders");
   };
 
-  const platformFee = selectedOrder
-    ? parseFloat((selectedOrder.price * 0.05).toFixed(2))
-    : 0;
-  const totalPaid = selectedOrder
-    ? parseFloat((selectedOrder.price + platformFee).toFixed(2))
-    : 0;
+  useEffect(() => {
+    setCompleteError("");
+  }, [selectedOrder]);
 
   const timelineSteps = selectedOrder ? getTimelineSteps(selectedOrder) : [];
   const firstPendingIdx = timelineSteps.findIndex((s) => !s.done);
@@ -607,28 +637,23 @@ const MyOrders = () => {
                   ) : (
                     <p className="wmx-orders-delivery-pending">Delivery info will be available shortly.</p>
                   )}
+                  {selectedOrder.status !== "Completed" && (
+                    <p className="wmx-orders-delivery-pending">
+                      Waiting for the seller to confirm your payment. You'll be able to download once they mark this order as completed.
+                    </p>
+                  )}
                 </div>
               )}
 
               <div>
                 <div className="wmx-orders-payment-title">Payment Summary</div>
                 <div className="wmx-orders-payment-table">
-                  <div className="wmx-orders-payment-row">
-                    <span className="wmx-orders-payment-label">Product Price</span>
+                  <div className="wmx-orders-payment-row wmx-orders-payment-total">
+                    <span className="wmx-orders-payment-label">
+                      {activeTab === 'sales' ? 'Amount to Collect' : 'Amount to Pay Seller'}
+                    </span>
                     <span className="wmx-orders-payment-value">
                       ${selectedOrder.price.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="wmx-orders-payment-row">
-                    <span className="wmx-orders-payment-label">Platform Fee (5%)</span>
-                    <span className="wmx-orders-payment-value">
-                      ${platformFee.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="wmx-orders-payment-row wmx-orders-payment-total">
-                    <span className="wmx-orders-payment-label">Total Paid</span>
-                    <span className="wmx-orders-payment-value">
-                      ${totalPaid.toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -637,13 +662,25 @@ const MyOrders = () => {
             </div>
 
             <div className="wmx-orders-modal-ft">
-              {activeTab === 'purchases' && selectedOrder.repoName && (
+              {completeError && (
+                <p className="wmx-orders-error" style={{ width: "100%" }}>{completeError}</p>
+              )}
+              {activeTab === 'purchases' && selectedOrder.status === 'Completed' && selectedOrder.repoName && (
                 <button
                   className="wmx-orders-btn-accent"
                   onClick={() => handleDownload(selectedOrder)}
                   disabled={downloadLoading}
                 >
                   {downloadLoading ? 'Downloading…' : 'Download Product'}
+                </button>
+              )}
+              {activeTab === 'sales' && selectedOrder.status === 'Pending' && (
+                <button
+                  className="wmx-orders-btn-accent"
+                  onClick={() => handleMarkComplete(selectedOrder)}
+                  disabled={completeLoading}
+                >
+                  {completeLoading ? 'Marking…' : 'Mark as Completed'}
                 </button>
               )}
               <button

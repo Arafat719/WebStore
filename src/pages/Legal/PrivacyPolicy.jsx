@@ -1,6 +1,6 @@
 import './Legal.css';
 
-const UPDATED = 'July 9, 2026';
+const UPDATED = 'July 12, 2026';
 const CONTACT_EMAIL = 'arafatkhan01867160064@gmail.com';
 
 export default function PrivacyPolicy() {
@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
             <li><strong>Account data:</strong> name, email address, and password (stored securely hashed) when you sign up directly, or your name/email/profile picture when you sign up via Google or Facebook.</li>
             <li><strong>Profile data:</strong> profile picture (hosted via Cloudinary), bio, and seller information if you become a seller.</li>
             <li><strong>Product & order data:</strong> products you list or purchase, order history, and messages related to customization requests.</li>
-            <li><strong>Payment data:</strong> we do <strong>not</strong> collect or store your card/payment details. Payments are processed entirely by our third-party payment provider (e.g. Paddle), who handles and stores payment information under their own privacy policy.</li>
+            <li><strong>Payment data:</strong> WebMarketX does not process payments and never collects, sees, or stores your card or payment details. Buyers and sellers arrange and complete payment directly with each other, outside the platform.</li>
             <li><strong>Usage data:</strong> basic technical data such as login sessions (via authentication tokens) and support/chat messages if you use our live chat widget.</li>
           </ul>
         </div>
@@ -48,8 +48,8 @@ export default function PrivacyPolicy() {
           <ul>
             <li><strong>Google Sign-In / Facebook Login</strong> — for account authentication.</li>
             <li><strong>Cloudinary</strong> — for storing and serving uploaded profile/product images.</li>
-            <li><strong>Payment processor (e.g. Paddle)</strong> — for securely processing payments. They act as merchant of record and handle your payment details directly; WebMarketX never sees or stores your full card information.</li>
             <li><strong>Live chat widget (Tawk.to)</strong> — for customer support conversations.</li>
+            <li><strong>WhatsApp</strong> — buyers and sellers may be shown each other's WhatsApp contact to arrange payment and communicate about an order; WebMarketX does not see the content of those conversations.</li>
           </ul>
         </div>
 

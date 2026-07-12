@@ -538,8 +538,16 @@
   color: rgba(226,226,240,0.35);
 }
 
-.wmx-sort-select {
+.wmx-sort-dropdown {
+  position: relative;
+}
+
+.wmx-sort-trigger {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 8px 12px;
   background: var(--bg-input);
   border: 1px solid rgba(134,130,250,0.3);
@@ -549,11 +557,66 @@
   font-size: 0.82rem;
   cursor: pointer;
   outline: none;
+  transition: border-color 0.18s ease, background 0.18s ease;
 }
 
-.wmx-sort-select option {
-  background: var(--bg-card);
+.wmx-sort-trigger:hover {
+  border-color: rgba(134,130,250,0.5);
+}
+
+.wmx-sort-chevron {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform 0.18s ease;
+  flex-shrink: 0;
+}
+
+.wmx-sort-chevron.open {
+  transform: rotate(180deg);
+}
+
+.wmx-sort-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-dropdown);
+  border: 1px solid rgba(134,130,250,0.15);
+  border-radius: 10px;
+  box-shadow: 0 16px 48px var(--shadow-dropdown);
+  overflow: hidden;
+  z-index: 20;
+  animation: wmx-dd-in 0.18s ease;
+}
+
+.wmx-sort-option {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.wmx-sort-option:hover {
   color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.wmx-sort-option.active {
+  color: #8682fa;
+  background: rgba(134,130,250,0.1);
+  font-weight: 600;
+}
+
+@keyframes wmx-dd-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ─────────────────────────────────────────

@@ -3,12 +3,17 @@ import Productcard from './Productcard'
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLock, faBolt, faShield, faFire } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faBolt, faShield, faFire, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 const API = import.meta.env.VITE_API_URL;
 
 const CATEGORIES = ['All', 'Templates', 'Websites', 'Businesses'];
 const PRICES = ['All', 'Free', 'Paid'];
+const SORT_OPTIONS = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'popular', label: 'Most Popular' },
+];
 const LIMIT = 12;
 
 const getPageNumbers = (current, total) => {
@@ -38,6 +43,8 @@ const Home = () => {
   const [category, setCategory]           = useState('All');
   const [priceFilter, setPriceFilter]     = useState('All');
   const [sort, setSort]                   = useState('newest');
+  const [sortOpen, setSortOpen]           = useState(false);
+  const sortRef = useRef(null);
   const [currentPage, setCurrentPage]     = useState(1);
   const [totalPages, setTotalPages]       = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -77,6 +84,15 @@ const Home = () => {
     }, 400);
     return () => clearTimeout(timer);
   }, [search]);
+
+  // Close sort dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (sortRef.current && !sortRef.current.contains(e.target)) setSortOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handlePageChange = (page) => {
     if (page === currentPage) return;
@@ -287,15 +303,30 @@ const Home = () => {
 
               <div className="wmx-sidebar-section">
                 <p className="wmx-sidebar-label">Sort</p>
-                <select
-                  value={sort}
-                  onChange={e => setSort(e.target.value)}
-                  className="wmx-sort-select"
-                >
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="popular">Most Popular</option>
-                </select>
+                <div className="wmx-sort-dropdown" ref={sortRef}>
+                  <button
+                    type="button"
+                    className="wmx-sort-trigger"
+                    onClick={() => setSortOpen(o => !o)}
+                  >
+                    <span>{SORT_OPTIONS.find(o => o.value === sort)?.label}</span>
+                    <FontAwesomeIcon icon={faChevronDown} className={`wmx-sort-chevron${sortOpen ? ' open' : ''}`} />
+                  </button>
+                  {sortOpen && (
+                    <div className="wmx-sort-menu">
+                      {SORT_OPTIONS.map(opt => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`wmx-sort-option${sort === opt.value ? ' active' : ''}`}
+                          onClick={() => { setSort(opt.value); setSortOpen(false); }}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </aside>
           </div>

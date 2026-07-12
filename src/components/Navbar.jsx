@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faSun, faMoon, faGear, faReceipt, faWandMagicSparkles, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faBars, faXmark, faRightFromBracket, faUser, faMoon, faLightbulb, faGear, faReceipt, faWandMagicSparkles, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import userContext from '../context/userContext';
 import '../css/Navbar.css';
 
@@ -207,7 +207,7 @@ const Navbar = ({ setAlert }) => {
             {/* Desktop auth */}
             <div className="wmx-auth wmx-desktop-only">
               <button className="wmx-theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-                <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
+                <FontAwesomeIcon icon={theme === 'dark' ? faLightbulb : faMoon} />
               </button>
               {token && (
                 <div className="wmx-notif-wrap" ref={notifRef}>
@@ -352,7 +352,7 @@ const Navbar = ({ setAlert }) => {
 
         <div className="wmx-drawer-footer">
           <button className="wmx-theme-toggle wmx-drawer-theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-            <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
+            <FontAwesomeIcon icon={theme === 'dark' ? faLightbulb : faMoon} />
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </button>
           {token ? (

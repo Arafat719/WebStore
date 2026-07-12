@@ -354,27 +354,30 @@ html[data-theme='light'] .wmx-logo-img-light { display: block; }
 
 .wmx-notif-btn {
   position: relative;
-  background: transparent;
-  border: none;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
   color: var(--text-secondary, #a0a0b0);
   cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.18s ease, background 0.18s ease;
+  flex-shrink: 0;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
 .wmx-notif-btn:hover {
   color: var(--accent, #8682fa);
-  background: rgba(134, 130, 250, 0.08);
+  background: rgba(134, 130, 250, 0.1);
+  border-color: rgba(134,130,250,0.3);
 }
 
 .wmx-notif-badge {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: -4px;
+  right: -4px;
   background: var(--accent, #8682fa);
   color: white;
   font-size: 10px;
@@ -394,10 +397,10 @@ html[data-theme='light'] .wmx-logo-img-light { display: block; }
   top: calc(100% + 10px);
   right: 0;
   width: 320px;
-  background: var(--card-bg, #13131f);
-  border: 1px solid var(--border, #2a2a3e);
+  background: var(--bg-dropdown, #13131f);
+  border: 1px solid var(--border-default, #2a2a3e);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px var(--shadow-dropdown, rgba(0, 0, 0, 0.3));
   z-index: 1000;
   overflow: hidden;
 }
@@ -407,7 +410,7 @@ html[data-theme='light'] .wmx-logo-img-light { display: block; }
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--border, #2a2a3e);
+  border-bottom: 1px solid var(--border-default, #2a2a3e);
 }
 
 .wmx-notif-title {
@@ -444,7 +447,7 @@ html[data-theme='light'] .wmx-logo-img-light { display: block; }
 
 .wmx-notif-item {
   padding: 14px 16px;
-  border-bottom: 1px solid var(--border, #2a2a3e);
+  border-bottom: 1px solid var(--border-default, #2a2a3e);
   cursor: pointer;
   transition: background 0.15s ease;
   position: relative;
@@ -485,10 +488,8 @@ html[data-theme='light'] .wmx-logo-img-light { display: block; }
   color: var(--text-secondary, #a0a0b0);
   line-height: 1.5;
   margin-bottom: 6px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .wmx-notif-item-time {

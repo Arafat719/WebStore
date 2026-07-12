@@ -1,6 +1,6 @@
 import './Legal.css';
 
-const UPDATED = 'July 9, 2026';
+const UPDATED = 'July 12, 2026';
 const CONTACT_EMAIL = 'arafatkhan01867160064@gmail.com';
 
 export default function TermsOfUse() {
@@ -34,9 +34,9 @@ export default function TermsOfUse() {
         <div className="wmx-legal-section">
           <h2>3. Buyers</h2>
           <ul>
-            <li>Payments are processed by our third-party payment provider (e.g. Paddle). WebMarketX does not store your card details.</li>
-            <li>After a successful payment, you get access to the product's GitHub repository as described on the product page.</li>
-            <li>Digital products are delivered instantly upon payment. Because of this, <strong>all sales are final and non-refundable</strong> once access has been granted, except where required by law.</li>
+            <li>WebMarketX does not process payments. When you click "Buy Now" on a paid product, an order is placed and you're given the seller's contact details to arrange and complete payment directly with them.</li>
+            <li>Once the seller confirms your payment was received, they mark the order as completed in WebMarketX and you get access to the product's GitHub repository as described on the product page.</li>
+            <li>Because access is granted only after the seller confirms payment, disputes about whether payment was made should first be resolved directly with the seller.</li>
             <li>If a product is materially different from its listing, contact the seller first, then reach us at the email below.</li>
           </ul>
         </div>
@@ -46,7 +46,8 @@ export default function TermsOfUse() {
           <ul>
             <li>Becoming a seller is free. You must own or have the right to sell any product you list.</li>
             <li>You are responsible for the accuracy of your product listings, pricing, and license terms.</li>
-            <li>If a buyer requests reasonable customization of a purchased product under the license terms you set, you are expected to complete those changes before payment is released to you.</li>
+            <li>You are responsible for arranging and confirming payment directly with the buyer, and must only mark an order as completed once you have actually received payment.</li>
+            <li>If a buyer requests reasonable customization of a purchased product under the license terms you set, you are expected to complete those changes as agreed with the buyer.</li>
             <li>WebMarketX reserves the right to remove any listing that violates these terms, contains malicious code, infringes third-party rights, or is otherwise unlawful.</li>
           </ul>
         </div>
@@ -54,10 +55,11 @@ export default function TermsOfUse() {
         <div className="wmx-legal-section">
           <h2>5. Payments</h2>
           <p>
-            Payments on WebMarketX are handled by a licensed third-party payment processor. That
-            processor may act as merchant of record for your purchase, meaning your transaction may
-            appear under their name on your bank/card statement. Their terms and policies apply to
-            the payment itself in addition to these Terms.
+            WebMarketX is not a payment processor and is not a party to any payment between a buyer
+            and a seller. All payments are arranged and completed directly between the buyer and the
+            seller, outside of WebMarketX, using whatever method they agree on (e.g. mobile banking,
+            bank transfer). WebMarketX does not collect, store, or have access to your payment
+            details, and does not guarantee, hold, or refund any payment made between users.
           </p>
         </div>
 
@@ -65,7 +67,7 @@ export default function TermsOfUse() {
           <h2>6. Prohibited Use</h2>
           <ul>
             <li>Uploading malicious, pirated, or illegal content.</li>
-            <li>Attempting to defraud buyers or sellers, or bypass the platform's payment system.</li>
+            <li>Attempting to defraud buyers or sellers — including a seller marking an order as completed without having actually received payment, or a buyer disputing a payment they did in fact make.</li>
             <li>Scraping, reverse-engineering, or disrupting the platform's infrastructure.</li>
           </ul>
         </div>

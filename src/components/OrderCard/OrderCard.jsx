@@ -1,4 +1,4 @@
-import { Calendar, Download, MessageCircle, RotateCcw, Eye, User } from "lucide-react";
+import { Calendar, Download, MessageCircle, Eye, User } from "lucide-react";
 import "./OrderCard.css";
 
 const STATUS_CONFIG = {
@@ -103,13 +103,6 @@ const OrderCard = ({ order, onViewDetails, userRole, index }) => {
             <MessageCircle size={12} />
             {userRole === "buyer" ? "Contact Seller" : "Contact Buyer"}
           </button>
-
-          {order.status === "Completed" && userRole !== "seller" && (
-            <button className="wmx-orders-btn-danger">
-              <RotateCcw size={12} />
-              Request Refund
-            </button>
-          )}
         </div>
       </div>
     </article>

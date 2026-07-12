@@ -190,6 +190,9 @@ const ProductDetails = ({ showAlert }) => {
   const lbStartXRef = useRef(0);
   const lbPendingIndexRef = useRef(null);
   const [hasPurchased, setHasPurchased] = useState(false);
+  const [orderPending, setOrderPending] = useState(false);
+  const [pendingModalOpen, setPendingModalOpen] = useState(false);
+  const [pendingContact, setPendingContact] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportReason, setReportReason] = useState('');
@@ -243,6 +246,10 @@ const ProductDetails = ({ showAlert }) => {
           o => o.product?._id === id && o.status === 'completed'
         );
         setHasPurchased(purchased);
+        const pending = orders.some(
+          o => o.product?._id === id && o.status === 'pending'
+        );
+        setOrderPending(pending);
       })
       .catch(() => {});
   }, [id]);
@@ -407,12 +414,11 @@ const ProductDetails = ({ showAlert }) => {
       await handleDownload();
       return;
     }
-    if (data.url) {
-      window.location.href = data.url;
-      return;
+    if (data.pending) {
+      setOrderPending(true);
+      setPendingContact(data.sellerContact || null);
+      setPendingModalOpen(true);
     }
-    setHasPurchased(true);
-    showAlert("Purchase successful! Go to My Orders to download.", "success");
   };
 
   const handleWishlist = async () => {
@@ -686,7 +692,7 @@ const ProductDetails = ({ showAlert }) => {
               <div className="wmx-buy-row">
                 <button className="wmx-buy-btn" onClick={isFree ? (hasPurchased ? handleDownload : handleBuy) : handleBuy}>
                   <FontAwesomeIcon icon={faDownload} />
-                  {isFree ? (hasPurchased ? 'Download Free' : 'Get Free') : 'Buy Now'}
+                  {isFree ? (hasPurchased ? 'Download Free' : 'Get Free') : (orderPending ? 'Order Pending' : 'Buy Now')}
                 </button>
                 <button
                   className={`wmx-wishlist-btn${wishlisted ? ' active' : ''}`}
@@ -966,6 +972,46 @@ const ProductDetails = ({ showAlert }) => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {pendingModalOpen && (
+        <div
+          className="wmx-custom-modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && setPendingModalOpen(false)}
+        >
+          <div className="wmx-custom-modal">
+            <div className="wmx-custom-modal-hd">
+              <span>Order Placed</span>
+              <button className="wmx-custom-modal-close" onClick={() => setPendingModalOpen(false)}>✕</button>
+            </div>
+            <div className="wmx-custom-modal-success">
+              <div className="wmx-custom-success-icon">✓</div>
+              <h4>Contact the seller to pay</h4>
+              <p>
+                Your order for "{product.title}" has been placed. Message {pendingContact?.shopName || pendingContact?.name || 'the seller'} on WhatsApp to arrange payment — once they confirm it, you can download from My Orders.
+              </p>
+              {pendingContact?.whatsapp ? (
+                <a
+                  href={`https://wa.me/${pendingContact.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi, I just placed an order for "${product.title}" on WebMarketX. I'd like to arrange payment.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wmx-whatsapp-btn"
+                >
+                  <FontAwesomeIcon icon={faWhatsapp} />
+                  Chat on WhatsApp
+                </a>
+              ) : (
+                <p>Seller contact info isn't available yet — check My Orders for updates.</p>
+              )}
+              <button
+                className="wmx-custom-done-btn"
+                onClick={() => setPendingModalOpen(false)}
+              >
+                Done
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -15,12 +15,12 @@ const BUYER_STEPS = [
   {
     n: 2,
     title: 'Buy Now',
-    desc: 'Click "Buy Now" and complete the payment.',
+    desc: 'Click "Buy Now" to place your order, then contact the seller on WhatsApp to arrange payment.',
   },
   {
     n: 3,
     title: 'Get Repository Access',
-    desc: "After successful payment, you get access to the product's GitHub repository.",
+    desc: "Once the seller confirms your payment and marks the order complete, you get access to the product's GitHub repository.",
   },
   {
     n: 4,
@@ -58,8 +58,12 @@ const FAQS = [
     a: 'Go to MyOrders → Purchases tab. Find your order and click the Download button to get the ZIP file.',
   },
   {
-    q: 'What happens if my payment fails?',
-    a: 'Your payment will not be charged. You can try again from the product page. If the issue persists, contact us.',
+    q: 'How does payment work on WebMarketX?',
+    a: "WebMarketX doesn't process payments directly. After you click \"Buy Now\", you'll get the seller's WhatsApp contact to arrange payment. Once the seller confirms they've received it, they mark the order as completed and you can download the product from MyOrders.",
+  },
+  {
+    q: "What if the seller doesn't respond after I contact them?",
+    a: 'Give them a little time to reply on WhatsApp. If they remain unresponsive, use the Report button on the product page to notify WebMarketX and we\'ll follow up.',
   },
   {
     q: 'How much does it cost to become a seller?',

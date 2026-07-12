@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/userContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faUser, faKey, faShield, faCreditCard, faStore,
+  faUser, faKey, faShield, faStore,
   faBell, faPaintbrush, faLink, faMobileScreen,
   faDesktop, faEnvelope, faEye, faEyeSlash,
   faTriangleExclamation, faLock, faSatelliteDish,
-  faClipboardList, faChartBar, faBuilding, faGlobe,
+  faClipboardList, faGlobe,
   faHardHat
 } from '@fortawesome/free-solid-svg-icons';
 import './Settings.css';
@@ -27,7 +27,6 @@ const NAV = [
   {
     group: 'Commerce',
     items: [
-      { id: 'billing',       icon: faCreditCard, label: 'Billing' },
       { id: 'seller',        icon: faStore,      label: 'Seller Settings' },
     ],
   },
@@ -69,14 +68,6 @@ function sessionIcon(device = '') {
   if (/Android|iOS/.test(device)) return faMobileScreen;
   return faDesktop;
 }
-
-const TRANSACTIONS = [
-  { id: 'TXN-0091', type: 'sale',       desc: 'UI Kit Pro v2',         amount: '+$29.00', date: 'Jun 14, 2026' },
-  { id: 'TXN-0090', type: 'purchase',   desc: 'SEO Booster Pack',      amount: '-$12.00', date: 'Jun 13, 2026' },
-  { id: 'TXN-0089', type: 'sale',       desc: 'Icon Bundle 500+',      amount: '+$19.00', date: 'Jun 11, 2026' },
-  { id: 'TXN-0088', type: 'withdrawal', desc: 'Payout to bank',        amount: '-$75.00', date: 'Jun 08, 2026' },
-  { id: 'TXN-0087', type: 'sale',       desc: 'Landing Page HTML',     amount: '+$35.00', date: 'Jun 06, 2026' },
-];
 
 /* ══════════════════════════════════════════════════════════════
    Section: Profile
@@ -432,21 +423,21 @@ function AccountPanel() {
    ══════════════════════════════════════════════════════════════ */
 function NotificationsPanel() {
   const [toggles, setToggles] = useState({
-    newMessage:     true,
-    newSale:        true,
-    newPurchase:    true,
-    marketingEmail: false,
-    pushNotif:      false,
+    messages:  true,
+    sales:     true,
+    purchases: true,
+    marketing: false,
+    push:      false,
   });
   const [msg, setMsg]       = useState({ text: '', type: '' });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch(`${API}/auth/notifications`, { headers: { token } })
+    fetch(`${API}/auth/getuser`, { headers: { token } })
       .then(r => r.json())
       .then(data => {
-        if (data?.notifications) setToggles(t => ({ ...t, ...data.notifications }));
+        if (data?.user?.notifications) setToggles(t => ({ ...t, ...data.user.notifications }));
       })
       .catch(() => {});
   }, []);
@@ -460,7 +451,7 @@ function NotificationsPanel() {
       const res  = await fetch(`${API}/auth/update-notifications`, {
         method: 'PUT',
         headers: { token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notifications: toggles }),
+        body: JSON.stringify(toggles),
       });
       const data = await res.json();
       if (res.ok) {
@@ -477,11 +468,11 @@ function NotificationsPanel() {
   };
 
   const rows = [
-    { key: 'newMessage',     title: 'New Message',        desc: 'When a buyer or seller sends you a message' },
-    { key: 'newSale',        title: 'New Sale',           desc: 'When someone purchases your product' },
-    { key: 'newPurchase',    title: 'New Purchase',       desc: 'Order confirmation for your own purchases' },
-    { key: 'marketingEmail', title: 'Marketing Emails',   desc: 'Deals, new features, and platform highlights' },
-    { key: 'pushNotif',      title: 'Push Notifications', desc: 'Browser and mobile push alerts' },
+    { key: 'messages',  title: 'New Message',        desc: 'When a buyer or seller sends you a message' },
+    { key: 'sales',     title: 'New Sale',           desc: 'When someone purchases your product' },
+    { key: 'purchases', title: 'New Purchase',       desc: 'Order confirmation for your own purchases' },
+    { key: 'marketing', title: 'Marketing Emails',   desc: 'Deals, new features, and platform highlights' },
+    { key: 'push',      title: 'Push Notifications', desc: 'Browser and mobile push alerts' },
   ];
 
   return (
@@ -870,110 +861,6 @@ function SecurityPanel() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   Section: Billing
-   ══════════════════════════════════════════════════════════════ */
-function BillingPanel() {
-  return (
-    <div className="wmx-panel">
-      <div className="wmx-coming-soon-banner">
-        <FontAwesomeIcon icon={faHardHat} /> This section is coming soon. We're working on it!
-      </div>
-
-      {/* Card UI */}
-      <div className="wmx-card">
-        <p className="wmx-card-title"><FontAwesomeIcon icon={faCreditCard} /> Payment Method</p>
-        <p className="wmx-card-desc">Your saved card for purchases and subscription renewals.</p>
-
-        <div className="wmx-payment-card">
-          <div className="wmx-card-chip" />
-          <p className="wmx-card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;4242</p>
-          <div className="wmx-card-footer">
-            <div>
-              <p className="wmx-card-label">Card Holder</p>
-              <p className="wmx-card-value">Arafat Khan</p>
-            </div>
-            <div>
-              <p className="wmx-card-label">Expires</p>
-              <p className="wmx-card-value">09 / 28</p>
-            </div>
-            <div className="wmx-card-brand">VISA</div>
-          </div>
-        </div>
-
-        <div className="wmx-inline-btns">
-          <button className="wmx-btn-save">Replace Card</button>
-          <button className="wmx-btn-danger">Remove Card</button>
-        </div>
-      </div>
-
-      {/* Transaction history */}
-      <div className="wmx-card">
-        <p className="wmx-card-title"><FontAwesomeIcon icon={faChartBar} /> Transaction History</p>
-        <p className="wmx-card-desc">Last 30 days of account activity.</p>
-        <div className="wmx-table-wrapper">
-          <table className="wmx-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {TRANSACTIONS.map(tx => (
-                <tr key={tx.id}>
-                  <td style={{ fontFamily: 'monospace', fontSize: '0.76rem', color: 'var(--text-muted)' }}>
-                    {tx.id}
-                  </td>
-                  <td>
-                    <span className={`wmx-tx-badge wmx-${tx.type}`}>
-                      {tx.type === 'sale' ? '↑' : tx.type === 'purchase' ? '↓' : '⇄'} {tx.type}
-                    </span>
-                  </td>
-                  <td>{tx.desc}</td>
-                  <td style={{
-                    fontWeight: 600,
-                    color: tx.type === 'sale' ? '#34d399' : tx.type === 'withdrawal' ? '#fbbf24' : undefined,
-                  }}>
-                    {tx.amount}
-                  </td>
-                  <td style={{ color: 'var(--text-muted)' }}>{tx.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Withdrawal settings */}
-      <div className="wmx-card">
-        <p className="wmx-card-title"><FontAwesomeIcon icon={faBuilding} /> Withdrawal Settings</p>
-        <p className="wmx-card-desc">Configure how and when your earnings are paid out.</p>
-
-        <div className="wmx-form-group">
-          <label className="wmx-label">Minimum Withdrawal Amount (USD)</label>
-          <input className="wmx-input" type="number" defaultValue="50" style={{ maxWidth: 160 }} />
-          <span className="wmx-hint">Payouts are processed every Friday for balances above this threshold.</span>
-        </div>
-
-        <div className="wmx-form-group">
-          <label className="wmx-label">Payout Schedule</label>
-          <select className="wmx-select" style={{ maxWidth: 240 }}>
-            <option>Weekly (every Friday)</option>
-            <option>Bi-weekly</option>
-            <option>Monthly</option>
-          </select>
-        </div>
-
-        <button className="wmx-btn-save">Save Withdrawal Settings</button>
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════
    Section: Seller Settings
    ══════════════════════════════════════════════════════════════ */
 function SellerPanel() {
@@ -1155,11 +1042,11 @@ function PreferencesPanel() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch(`${API}/auth/preferences`, { headers: { token } })
+    fetch(`${API}/auth/getuser`, { headers: { token } })
       .then(r => r.json())
       .then(data => {
-        if (data?.preferences) {
-          const { theme: savedTheme, ...rest } = data.preferences;
+        if (data?.user?.preferences) {
+          const { theme: savedTheme, ...rest } = data.user.preferences;
           setPrefs(p => ({ ...p, ...rest }));
           if (savedTheme) setSelectedTheme(savedTheme);
         }
@@ -1179,7 +1066,7 @@ function PreferencesPanel() {
       const res  = await fetch(`${API}/auth/update-preferences`, {
         method: 'PUT',
         headers: { token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ preferences: { ...prefs, theme: selectedTheme } }),
+        body: JSON.stringify({ ...prefs, theme: selectedTheme }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -1345,7 +1232,6 @@ export default function Settings() {
     account:       <AccountPanel />,
     notifications: <NotificationsPanel />,
     security:      <SecurityPanel />,
-    billing:       <BillingPanel />,
     seller:        <SellerPanel />,
     preferences:   <PreferencesPanel />,
     connected:     <ConnectedPanel />,
